@@ -11,3 +11,8 @@
 /packages
 /Madingley/packages.config
 
+*.db
+Madingley/input/Model setup/Environmental Data Layer List/EnvironmentalDataLayers_backup.csv
+Madingley/Madingley.csproj
+Madingley.VC.db
+Madingley/Madingley.csproj
