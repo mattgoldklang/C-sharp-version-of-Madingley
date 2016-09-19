@@ -8,16 +8,17 @@ Top Latitude,10
 Bottom Latitude,-10
 Leftmost Longitude,-30
 Rightmost Longitude,-10
-Grid Cell Size,1
+Grid Cell Size,5
 Read State,
 Specific Location File,
 Plankton size threshold,0.01
 Draw Randomly,yes
 Extinction Threshold,1
 Maximum Number Of Cohorts,1000
-Run Cells In Parallel,yes
+Run Cells In Parallel,no
 Run Simulations In Parallel,no
 Run Single Realm,marine
 Impact Cell Index,all
 Dispersal only,no
 Dispersal only type,advection
+Multi size class phytoplankton,yes

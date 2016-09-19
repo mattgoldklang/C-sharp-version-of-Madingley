@@ -447,7 +447,7 @@ namespace Madingley
 
                  // Initialise cross grid cell ecology
                  MadingleyEcologyCrossGridCell.InitializeCrossGridCellEcology(_GlobalModelTimeStepUnit, DrawRandomly, initialisation);
-
+                
                  EcologyTimer.Start();
 
                  // Loop over grid cells and run biological processes

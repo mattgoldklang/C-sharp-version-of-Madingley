@@ -3,15 +3,15 @@
   <Class Name="Madingley.Activity" Collapsed="true">
     <Position X="13.5" Y="5.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AATAAQAAAgAIQEAAAgABQQAAAAABQABAABQAAADCAAI=</HashCode>
-      <FileName>Ecological processes cohorts\Activity.cs</FileName>
+      <HashCode>AATAAQAAAAAIQEAAAgABQQAAAAABAAAAABQAAADCAAA=</HashCode>
+      <FileName>Ecology\Ecological processes cohorts\Activity.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Madingley.AdvectiveDispersal" Collapsed="true">
     <Position X="9.5" Y="7.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>RBIAEBAggAEIAEAAAEAAQgAAIIAAAASAAAAAAFgAAAA=</HashCode>
-      <FileName>Ecological processes cohorts\Dispersal implementations\AdvectiveDispersal.cs</FileName>
+      <FileName>Ecology\Ecological processes cohorts\Dispersal implementations\AdvectiveDispersal.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
@@ -19,14 +19,14 @@
     <Position X="11" Y="6" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAABAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAA=</HashCode>
-      <FileName>Ecological processes cohorts\Dispersal implementations\CommonDispersalMethods.cs</FileName>
+      <FileName>Ecology\Ecological processes cohorts\Dispersal implementations\CommonDispersalMethods.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Madingley.DiffusiveDispersal" Collapsed="true">
     <Position X="11" Y="7.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>RAAAABIAAAEAAEAAAEAAAAAAIAUAAACAABAAgAAgAAA=</HashCode>
-      <FileName>Ecological processes cohorts\Dispersal implementations\DiffusiveDispersal.cs</FileName>
+      <FileName>Ecology\Ecological processes cohorts\Dispersal implementations\DiffusiveDispersal.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
@@ -34,7 +34,7 @@
     <Position X="12.5" Y="7.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>RAAAADIEAAEAAEAAAEAAAAACIIUAAACACBAAgAAAAIA=</HashCode>
-      <FileName>Ecological processes cohorts\Dispersal implementations\ResponsiveDispersal.cs</FileName>
+      <FileName>Ecology\Ecological processes cohorts\Dispersal implementations\ResponsiveDispersal.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
@@ -42,7 +42,7 @@
     <Position X="9.5" Y="6" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAIAAAAAAAAAQAAAAAAAAAAAAAAACAAAAA=</HashCode>
-      <FileName>Ecological processes cohorts\Dispersal.cs</FileName>
+      <FileName>Ecology\Ecological processes cohorts\Dispersal.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
@@ -50,15 +50,15 @@
     <Position X="15" Y="6.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>xABGihQEQAFoDUERAAAAgEQwMMEYYBAQQABCiAFRAAA=</HashCode>
-      <FileName>Ecological processes cohorts\Eating implementations\RevisedHerbivory.cs</FileName>
+      <FileName>Ecology\Ecological processes cohorts\Eating implementations\RevisedHerbivory.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
   <Class Name="Madingley.RevisedPredation" Collapsed="true" BaseTypeListCollapsed="true">
     <Position X="15" Y="6.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>VMDGAhAEaFFILUMjAQIZYMtZM6EYcgIRSBBGCEVJoCE=</HashCode>
-      <FileName>Ecological processes cohorts\Eating implementations\RevisedPredation.cs</FileName>
+      <HashCode>VMBGAhAEaFFILUEjAQIZYMtZM6EYcgIRSBBGCEVJoCE=</HashCode>
+      <FileName>Ecology\Ecological processes cohorts\Eating implementations\RevisedPredation.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
@@ -66,7 +66,7 @@
     <Position X="15" Y="5.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAQAAAEABAAAAAAAAQAAAgAAIAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Ecological processes cohorts\Eating.cs</FileName>
+      <FileName>Ecology\Ecological processes cohorts\Eating.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
@@ -74,14 +74,14 @@
     <Position X="12.5" Y="3.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAYAAAAAAAEA=</HashCode>
-      <FileName>Ecological processes cohorts\EcologicalParameters.cs</FileName>
+      <FileName>Ecology\EcologicalParameters.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Madingley.MetabolismEctotherm" Collapsed="true" BaseTypeListCollapsed="true">
     <Position X="16.5" Y="6.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>RATBgJAAAABAgFAAAgBAAQAAIIARABAAIBQAAAAEAAQ=</HashCode>
-      <FileName>Ecological processes cohorts\Metabolism implementations\MetabolismEctotherm.cs</FileName>
+      <HashCode>RAABgJAAAABAgFAAAABAAAAAIIARABAAIAAAAAAEAAQ=</HashCode>
+      <FileName>Ecology\Ecological processes cohorts\Metabolism implementations\MetabolismEctotherm.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
@@ -89,7 +89,7 @@
     <Position X="16.5" Y="6.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>RAABgJAAAABACFAAAABAAAAAIAABAAAAIAAAAAAEAAQ=</HashCode>
-      <FileName>Ecological processes cohorts\Metabolism implementations\MetabolismEndotherm.cs</FileName>
+      <FileName>Ecology\Ecological processes cohorts\Metabolism implementations\MetabolismEndotherm.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
@@ -97,7 +97,7 @@
     <Position X="16.5" Y="5.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAQAAAAABAAAAAAAAQAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Ecological processes cohorts\Metabolism.cs</FileName>
+      <FileName>Ecology\Ecological processes cohorts\Metabolism.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
@@ -105,7 +105,7 @@
     <Position X="18" Y="6.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>xAAIABAAAAAAAEAAAAAAAQAAIAAAAAIAAAAAAAAAAAA=</HashCode>
-      <FileName>Ecological processes cohorts\Mortality implementations\BackgroundMortality.cs</FileName>
+      <FileName>Ecology\Ecological processes cohorts\Mortality implementations\BackgroundMortality.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
@@ -113,7 +113,7 @@
     <Position X="18" Y="6.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>xAIIABAAAABAAEAAAAAAAQAAIAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Ecological processes cohorts\Mortality implementations\SenescenceMortality.cs</FileName>
+      <FileName>Ecology\Ecological processes cohorts\Mortality implementations\SenescenceMortality.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
@@ -121,7 +121,7 @@
     <Position X="18" Y="7.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>xAEAABAAAAAAAEAAAUAAAAAAMAAAAAAAAAIAAQBAAAA=</HashCode>
-      <FileName>Ecological processes cohorts\Mortality implementations\StarvationMortality.cs</FileName>
+      <FileName>Ecology\Ecological processes cohorts\Mortality implementations\StarvationMortality.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
@@ -129,7 +129,7 @@
     <Position X="18" Y="5.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAQAAAAABAAAAAAAAQAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Ecological processes cohorts\Mortality.cs</FileName>
+      <FileName>Ecology\Ecological processes cohorts\Mortality.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
@@ -137,7 +137,7 @@
     <Position X="19.5" Y="6.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>RAACgBAEgAMAAEQAIgAAEAAAIAAAAACACQAAAAAAAAA=</HashCode>
-      <FileName>Ecological processes cohorts\Reproduction implementations\ReproductionBasic.cs</FileName>
+      <FileName>Ecology\Ecological processes cohorts\Reproduction implementations\ReproductionBasic.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
@@ -145,7 +145,7 @@
     <Position X="19.5" Y="5.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAQAAAAABAAAAAAAAQAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Ecological processes cohorts\Reproduction.cs</FileName>
+      <FileName>Ecology\Ecological processes cohorts\Reproduction.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
@@ -230,7 +230,7 @@
     <Position X="21.25" Y="5.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AgAQAAAAAARAIAAAAAAAAAAAAAAAAAAAAAAAAAAAgAA=</HashCode>
-      <FileName>Model structure\AutotrophProcessor.cs</FileName>
+      <FileName>Ecology\Ecological processes stocks\AutotrophProcessor.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Madingley.BasicTerrestrialPlantModel" Collapsed="true">
@@ -299,7 +299,7 @@
   <Class Name="Madingley.GridCell" Collapsed="true">
     <Position X="6.75" Y="2.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>QIAAAARCAEFAEECAAAAMAEQAAAAAmAAAEAAAAICAABg=</HashCode>
+      <HashCode>QIAAAARCAEFAEECAAAAMAEQAAAAAmAAAEAAAAICBABg=</HashCode>
       <FileName>Model structure\GridCell.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -338,7 +338,7 @@
   <Class Name="Madingley.InputModelState" Collapsed="true">
     <Position X="5.25" Y="1" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAACAAAAAAAAAAAAAAAAAEAAiAAAEAgAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAACBAgAAAAAAAAAAAAAAEAAiAAAEAiAAAgAAAA=</HashCode>
       <FileName>Model structure\InputModelState.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -352,14 +352,14 @@
   <Class Name="Madingley.MadingleyModel" Collapsed="true">
     <Position X="3.75" Y="2.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>gABG4QowQEBRAABKBBCJgeJ4EGoUBAQC0CUAgKAkAAw=</HashCode>
+      <HashCode>gABG4QowQEBRAABKBBCJgeJ4EGoUBAQS0CUAgKAkAAw=</HashCode>
       <FileName>Model structure\MadingleyModel.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Madingley.MadingleyModelInitialisation" Collapsed="true">
     <Position X="3.75" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>EYBWwZoI0AFDKCDY4AOLwSrBUOYCgQILEA8CUCoEBAg=</HashCode>
+      <HashCode>EYBWwZoI0CFCKCDY4AODwSrBUOYDgQMbFA8CUC4EBAg=</HashCode>
       <FileName>Model structure\MadingleyModelInitialisation.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -381,10 +381,10 @@
     <Position X="21.25" Y="6.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>ABIAC6QABoBIAGEAEBFBFADESgBIBhoITAAAQCgigAY=</HashCode>
-      <FileName>Model structure\RevisedTerrestrialPlantModel.cs</FileName>
+      <FileName>Ecology\Ecological processes stocks\RevisedTerrestrialPlantModel.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Madingley.RunSimulations" Collapsed="true">
+  <Class Name="Madingley.RunSimulations">
     <Position X="1.25" Y="2.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAgAIAAAAAAAAAAAAAAAA=</HashCode>
@@ -570,49 +570,49 @@
     <Position X="11" Y="5.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>RAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAA=</HashCode>
-      <FileName>Ecological processes cohorts\Dispersal implementations\Technical code\IDispersalImplementation.cs</FileName>
+      <FileName>Ecology\Ecological processes cohorts\Dispersal implementations\Technical code\IDispersalImplementation.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Madingley.IEatingImplementation" Collapsed="true">
     <Position X="15" Y="5.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>RABEAAAEAAEAAAEAAAAAAEAAAAAQAAAAAABAAAAAAAA=</HashCode>
-      <FileName>Ecological processes cohorts\Eating implementations\Technical code\IEatingImplementation.cs</FileName>
+      <FileName>Ecology\Ecological processes cohorts\Eating implementations\Technical code\IEatingImplementation.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Madingley.IMetabolismImplementation" Collapsed="true">
     <Position X="16.5" Y="5.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>RAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Ecological processes cohorts\Metabolism implementations\Technical code\IMetabolismImplementation.cs</FileName>
+      <FileName>Ecology\Ecological processes cohorts\Metabolism implementations\Technical code\IMetabolismImplementation.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Madingley.IMortalityImplementation" Collapsed="true">
     <Position X="18" Y="5.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Ecological processes cohorts\Mortality implementations\Technical code\IMortalityImplementation.cs</FileName>
+      <FileName>Ecology\Ecological processes cohorts\Mortality implementations\Technical code\IMortalityImplementation.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Madingley.IReproductionImplementation" Collapsed="true">
     <Position X="19.5" Y="5.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>RAAAAAAAAAAAAAAAAAAAEAAAAAAAAACAAAAAAAAAAAA=</HashCode>
-      <FileName>Ecological processes cohorts\Reproduction implementations\Technical code\IReproductionImplementation.cs</FileName>
+      <FileName>Ecology\Ecological processes cohorts\Reproduction implementations\Technical code\IReproductionImplementation.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Madingley.IEcologicalProcessAcrossGridCells" Collapsed="true">
     <Position X="9.5" Y="5.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAA=</HashCode>
-      <FileName>Ecological processes cohorts\Technical code\IEcologicalProcessAcrossGridCells.cs</FileName>
+      <FileName>Ecology\Ecological processes cohorts\Technical code\IEcologicalProcessAcrossGridCells.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Madingley.IEcologicalProcessWithinGridCell" Collapsed="true">
     <Position X="19.25" Y="4.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAQAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Ecological processes cohorts\Technical code\IEcologicalProcessWithinGridCells.cs</FileName>
+      <FileName>Ecology\Ecological processes cohorts\Technical code\IEcologicalProcessWithinGridCells.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Font Name="Segoe UI" Size="9" />

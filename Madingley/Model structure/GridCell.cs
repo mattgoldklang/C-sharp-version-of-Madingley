@@ -288,11 +288,11 @@ namespace Madingley
 
                         if (!_CellEnvironment.ContainsKey("NPP"))
                         {
-                            _CellEnvironment.Add("NPP", _CellEnvironment["OceanNPP"]);
+                            _CellEnvironment.Add("NPP", _CellEnvironment["microNPP"]);
                         }
                         else
                         {
-                            _CellEnvironment["NPP"] = _CellEnvironment["OceanNPP"];
+                            _CellEnvironment["NPP"] = _CellEnvironment["microNPP"];
                         }
 
                         if (!_CellEnvironment.ContainsKey("DiurnalTemperatureRange"))

@@ -591,7 +591,16 @@ namespace Madingley
             get { return _ModelStateType; }
             set { _ModelStateType = value; }
         }
-        
+
+        private Boolean _NSFPhyto;
+
+        public Boolean NSFPhyto
+        {
+            get { return _NSFPhyto; }
+            set { _NSFPhyto = value; }
+        }
+
+
         /// <summary>
         /// Reads the initalization file to get information for the set of simulations to be run
         /// </summary>
@@ -791,6 +800,11 @@ namespace Madingley
                         break;
                     case "plankton size threshold":
                         _PlanktonDispersalThreshold = Convert.ToDouble(VarValues.GetValue(row));
+                        break;
+                    case "multi size class phytoplankton":
+                        if (VarValues.GetValue(row).ToString() == "yes")
+                            _NSFPhyto = true;
+                        else _NSFPhyto = false;
                         break;
                 }
             }
