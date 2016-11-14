@@ -128,7 +128,7 @@ namespace Madingley
         public GridCell(float latitude, uint latIndex, float longitude, uint lonIndex, float latCellSize, float lonCellSize,
             SortedList<string, EnviroData> dataLayers, SortedList<string, EnviroDataTemporal> dataLayersTemporal, double missingValue, FunctionalGroupDefinitions cohortFunctionalGroups, 
             FunctionalGroupDefinitions stockFunctionalGroups, SortedList<string, double> globalDiagnostics,Boolean tracking,
-            bool specificLocations)
+            bool specificLocations, Boolean nsfPhyto)
         {
 
             // Boolean to track when environmental data are missing
@@ -288,13 +288,9 @@ namespace Madingley
 
                         if (!_CellEnvironment.ContainsKey("NPP"))
                         {
-                            _CellEnvironment.Add("NPP", _CellEnvironment["microNPP"]);
+                            _CellEnvironment["NPP"] = _CellEnvironment["OceanNPP"];
                         }
-                        else
-                        {
-                            _CellEnvironment["NPP"] = _CellEnvironment["microNPP"];
-                        }
-
+                       
                         if (!_CellEnvironment.ContainsKey("DiurnalTemperatureRange"))
                         {
                             _CellEnvironment.Add("DiurnalTemperatureRange", _CellEnvironment["OceanDTR"]);
@@ -1019,6 +1015,7 @@ namespace Madingley
 
             Stock NewStock;
 
+
             // Define local variables
             int[] FunctionalGroupsToUse;
 
@@ -1061,7 +1058,7 @@ namespace Madingley
                         double LeafMass = PlantModel.CalculateEquilibriumLeafMass(_CellEnvironment, functionalGroups.GetTraitNames("leaf strategy", FunctionalGroup) == "deciduous");
 
                         // Initialise the new stock with the relevant properties
-                        NewStock = new Stock((byte)FunctionalGroup, IndividualMass[FunctionalGroup], LeafMass);
+                        NewStock = new Stock((byte)FunctionalGroup, IndividualMass[FunctionalGroup], LeafMass, functionalGroups.GetTraitNames("Stock name", FunctionalGroup));
 
                         // Add the new stock to the list of grid cell stocks
                         _GridCellStocks[FunctionalGroup].Add(NewStock);
@@ -1074,7 +1071,7 @@ namespace Madingley
                     else if (FunctionalGroupsToUse.Contains(FunctionalGroup))
                     {
                         // Initialise the new stock with the relevant properties
-                        NewStock = new Stock((byte)FunctionalGroup, IndividualMass[FunctionalGroup], 1e12);
+                        NewStock = new Stock((byte)FunctionalGroup, IndividualMass[FunctionalGroup], 1e12, functionalGroups.GetTraitNames("Stock name", FunctionalGroup));
 
                         // Add the new stock to the list of grid cell stocks
                         _GridCellStocks[FunctionalGroup].Add(NewStock);

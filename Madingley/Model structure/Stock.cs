@@ -45,6 +45,15 @@ namespace Madingley
             set { _TotalBiomass = value; }
         }
 
+        // The name of the stock
+        private string _StockName;
+
+        public string StockName
+        {
+            get { return _StockName; }
+            set { _StockName = value; }
+        }
+
         /// <summary>
         /// Constructor for stock class. Assigns stock starting properties
         /// </summary>
@@ -58,6 +67,20 @@ namespace Madingley
             _TotalBiomass = initialTotalBiomass;
         }
 
+
+        /// <summary>
+        /// Constructor for stock class. Assigns stock starting properties
+        /// </summary>
+        /// <param name="functionalGroupIndex">The functional group index of the stock being generated</param>
+        /// <param name="individualMass">The individual mass of the stock</param>
+        /// <param name="initialTotalBiomass">The initial total biomass of the stock</param>
+        public Stock(byte functionalGroupIndex, double individualMass, double initialTotalBiomass, string stockName)
+        {
+            _FunctionalGroupIndex = functionalGroupIndex;
+            _IndividualBodyMass = individualMass;
+            _TotalBiomass = initialTotalBiomass;
+            _StockName = stockName;
+        }
 
         public Stock(Stock s)
         {

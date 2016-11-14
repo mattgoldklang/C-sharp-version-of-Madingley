@@ -258,7 +258,7 @@ namespace Madingley
         public ModelGrid(float minLat, float minLon,float maxLat,float maxLon,float latCellSize,float lonCellSize, 
             SortedList<string,EnviroData> enviroStack,SortedList<string,EnviroDataTemporal> enviroStackTemporal , FunctionalGroupDefinitions cohortFunctionalGroups, FunctionalGroupDefinitions
             stockFunctionalGroups, SortedList<string, double> globalDiagnostics, Boolean tracking, Boolean DrawRandomly, 
-            Boolean specificLocations)
+            Boolean specificLocations, Boolean nsfPhyto)
         {
             // Add one to the counter of the number of grids. If there is more than one model grid, exit the program with a debug crash.
             NumGrids = NumGrids + 1;
@@ -337,7 +337,7 @@ namespace Madingley
                 for (int jj = 0; jj < _NumLonCells; jj+=GridCellRarefaction)
                 {
                     InternalGrid[ii, jj] = new GridCell(_Lats[ii], (uint)ii, _Lons[jj], (uint)jj, LatCellSize, LonCellSize, enviroStack, enviroStackTemporal,
-                        GlobalMissingValue, cohortFunctionalGroups, stockFunctionalGroups, globalDiagnostics, tracking, specificLocations);
+                        GlobalMissingValue, cohortFunctionalGroups, stockFunctionalGroups, globalDiagnostics, tracking, specificLocations, nsfPhyto);
                     CellsForDispersal[ii,jj] = new List<uint[]>();
                     CellsForDispersalDirection[ii, jj] = new List<uint>();
                     Console.Write("\rRow {0} of {1}", ii+1, NumLatCells/GridCellRarefaction);
@@ -385,7 +385,7 @@ namespace Madingley
         public ModelGrid(float minLat, float minLon, float maxLat, float maxLon, float latCellSize, float lonCellSize, List<uint[]> cellList,
             SortedList<string, EnviroData> enviroStack, SortedList<string, EnviroDataTemporal> enviroStackTemporal, FunctionalGroupDefinitions cohortFunctionalGroups,
             FunctionalGroupDefinitions stockFunctionalGroups, SortedList<string, double> globalDiagnostics, Boolean tracking, 
-            Boolean specificLocations, Boolean runInParallel)
+            Boolean specificLocations, Boolean runInParallel, Boolean nsfPhyto)
         { 
             // Add one to the counter of the number of grids. If there is more than one model grid, exit the program with a debug crash.
             NumGrids = NumGrids + 1;
@@ -460,7 +460,7 @@ namespace Madingley
                     // Create the grid cell at the specified position
                     InternalGrid[cellList[ii][0], cellList[ii][1]] = new GridCell(_Lats[cellList[ii][0]], cellList[ii][0],
                         _Lons[cellList[ii][1]], cellList[ii][1], latCellSize, lonCellSize, enviroStack, enviroStackTemporal, _GlobalMissingValue,
-                        cohortFunctionalGroups, stockFunctionalGroups, globalDiagnostics, tracking, specificLocations);
+                        cohortFunctionalGroups, stockFunctionalGroups, globalDiagnostics, tracking, specificLocations, nsfPhyto);
 
                     //Initialise in CellEnvironment the layers that are temporally varying
                     //foreach (var item in enviroStackTemporal)
@@ -494,7 +494,7 @@ namespace Madingley
                     // Create the grid cell at the specified position
                     InternalGrid[cellList[ii][0], cellList[ii][1]] = new GridCell(_Lats[cellList[ii][0]], cellList[ii][0],
                         _Lons[cellList[ii][1]], cellList[ii][1], latCellSize, lonCellSize, enviroStack, enviroStackTemporal, _GlobalMissingValue,
-                        cohortFunctionalGroups, stockFunctionalGroups, globalDiagnostics, tracking, specificLocations);
+                        cohortFunctionalGroups, stockFunctionalGroups, globalDiagnostics, tracking, specificLocations, nsfPhyto);
 
                     //Initialise in CellEnvironment the layers that are temporally varying
                     //foreach (var item in enviroStackTemporal)
@@ -516,7 +516,7 @@ namespace Madingley
             }
 
 
-            AssignGridCellTemporalData(enviroStackTemporal, cellList, 0);
+            AssignGridCellTemporalData(enviroStackTemporal, cellList, 0, nsfPhyto);
 
             if (!specificLocations)
             {
@@ -544,7 +544,7 @@ namespace Madingley
         }
 
 
-        public void AssignGridCellTemporalData(SortedList<string, EnviroDataTemporal> enviroStackTemporal, List<uint[]> cellList, uint TimeElapsed)
+        public void AssignGridCellTemporalData(SortedList<string, EnviroDataTemporal> enviroStackTemporal, List<uint[]> cellList, uint TimeElapsed, Boolean nsfPhyto)
         {
             //Seed the grid cells with temporally varying environment
             foreach (var item in enviroStackTemporal)

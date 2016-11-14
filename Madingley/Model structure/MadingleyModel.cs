@@ -442,7 +442,7 @@ namespace Madingley
 
                  if ((CurrentTimeStep % 12) == 0)
                  {
-                     EcosystemModelGrid.AssignGridCellTemporalData(EnviroStackTemporal, _CellList, CurrentTimeStep);
+                     EcosystemModelGrid.AssignGridCellTemporalData(EnviroStackTemporal, _CellList, CurrentTimeStep, initialisation.NSFPhyto);
                  }
 
                  // Initialise cross grid cell ecology
@@ -775,7 +775,7 @@ namespace Madingley
                 // Set up the model grid using these locations
                 EcosystemModelGrid = new ModelGrid(BottomLatitude, LeftmostLongitude, TopLatitude, RightmostLongitude,
                     CellSize, CellSize, _CellList, EnviroStack, EnviroStackTemporal, CohortFunctionalGroupDefinitions, StockFunctionalGroupDefinitions,
-                    GlobalDiagnosticVariables, initialisation.TrackProcesses, SpecificLocations,RunGridCellsInParallel);
+                    GlobalDiagnosticVariables, initialisation.TrackProcesses, SpecificLocations,RunGridCellsInParallel, initialisation.NSFPhyto);
 
             }
             else
@@ -811,7 +811,7 @@ namespace Madingley
                 // Set up the model grid using these locations
                 EcosystemModelGrid = new ModelGrid(BottomLatitude, LeftmostLongitude, TopLatitude, RightmostLongitude,
                     CellSize, CellSize, _CellList, EnviroStack,EnviroStackTemporal, CohortFunctionalGroupDefinitions, StockFunctionalGroupDefinitions,
-                    GlobalDiagnosticVariables, initialisation.TrackProcesses, SpecificLocations, RunGridCellsInParallel);
+                    GlobalDiagnosticVariables, initialisation.TrackProcesses, SpecificLocations, RunGridCellsInParallel, initialisation.NSFPhyto);
 
                 List<int> cellsToRemove = new List<int>();
                 if (initialisation.RunRealm == "terrestrial")
