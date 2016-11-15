@@ -1133,7 +1133,7 @@ namespace Madingley
                         latCellIndex, lonCellIndex), EnvironmentalDataUnits, _HumanNPPScenario, StockFunctionalGroupDefinitions,
                         CurrentTimeStep, NumBurninSteps, NumImpactSteps, initialisation.RecoveryTimeSteps, initialisation.InstantaneousTimeStep, initialisation.NumInstantaneousTimeStep, _GlobalModelTimeStepUnit, ProcessTrackers[cellIndex].TrackProcesses, ProcessTrackers[cellIndex],
                         TrackGlobalProcesses, CurrentMonth,
-                        InitialisationFileStrings["OutputDetail"],SpecificLocations,((initialisation.ImpactCellIndices.Contains((uint)cellIndex) || (initialisation.ImpactAll))));
+                        InitialisationFileStrings["OutputDetail"],SpecificLocations,((initialisation.ImpactCellIndices.Contains((uint)cellIndex) || (initialisation.ImpactAll))), initialisation.NSFPhyto);
 
                 }
             }
