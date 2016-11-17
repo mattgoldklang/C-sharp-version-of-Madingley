@@ -164,6 +164,9 @@ namespace Madingley
             
         }
 
+        // This keeps track of the functional groups of stocks that can be grazed by a cohort, and is particularly used when there are multiple FGs of stocks and specialized herbivores
+        private int[] FunctionalGroupsToEatRevised;
+
         /// <summary>
         /// Initialises herbivory implementation each time step
         /// </summary>
@@ -210,8 +213,10 @@ namespace Madingley
                 _PotentialBiomassesEaten[i] = new double[gridCellStocks[i].Count];
             }
 
+            FunctionalGroupsToEatRevised = _FunctionalGroupIndicesToEat;
+
             // Loop over functional groups that can be eaten
-            foreach (int FunctionalGroup in _FunctionalGroupIndicesToEat)
+            foreach (int FunctionalGroup in FunctionalGroupsToEatRevised)
             {
                 // Loop over stocks within the functional group
                 for (int i = 0; i < gridCellStocks[FunctionalGroup].Count; i++)
@@ -243,6 +248,79 @@ namespace Madingley
         /// <param name="madingleyStockDefinitions">The functional group definitions for stocks  in the model</param>
         public void GetEatingPotentialMarine(GridCellCohortHandler gridCellCohorts, GridCellStockHandler gridCellStocks, int[] actingCohort, SortedList<string, double[]> cellEnvironment, FunctionalGroupDefinitions madingleyCohortDefinitions, FunctionalGroupDefinitions madingleyStockDefinitions)
         {
+            int FunctionalGroupsToGrazeThisCohort = -1;
+
+            switch (madingleyCohortDefinitions.GetTraitNames("Diet", actingCohort[0]))
+            {
+
+                case "microphytoplankton":
+
+                    for (int ii = 0; ii < _FunctionalGroupIndicesToEat.Length; ii++)
+                    {
+                        if (gridCellStocks[_FunctionalGroupIndicesToEat[ii]].Count > 0)
+                        {
+                            if (gridCellStocks[ii][0].StockName == "microphytoplankton")
+                            {
+                                if (FunctionalGroupsToGrazeThisCohort == -1)
+                                {
+                                    FunctionalGroupsToGrazeThisCohort = ii;
+                                }
+                                else
+                                {
+                                    Debug.Fail("Cohort trying to eat from multiple stocks but only a single stock can be eaten from at present. Code needs modification");
+                                }
+                            }
+                        }   
+                    }
+                                       
+                    break;
+                case "nanophytoplankton":
+                    for (int ii = 0; ii < _FunctionalGroupIndicesToEat.Length; ii++)
+                    {
+                        if (gridCellStocks[_FunctionalGroupIndicesToEat[ii]].Count > 0)
+                        {
+                            if (gridCellStocks[ii][0].StockName == "nanophytoplankton")
+                            {
+                                if (FunctionalGroupsToGrazeThisCohort == -1)
+                                {
+                                    FunctionalGroupsToGrazeThisCohort = ii;
+                                }
+                                else
+                                {
+                                    Debug.Fail("Cohort trying to eat from multiple stocks but only a single stock can be eaten from at present. Code needs modification");
+                                }
+                            }
+                        }
+                    }
+
+                    break;
+                case "picophytoplankton":
+                    for (int ii = 0; ii < _FunctionalGroupIndicesToEat.Length; ii++)
+                    {
+                        if (gridCellStocks[_FunctionalGroupIndicesToEat[ii]].Count > 0)
+                        {
+                            if (gridCellStocks[ii][0].StockName == "picophytoplankton")
+                            {
+                                if (FunctionalGroupsToGrazeThisCohort == -1)
+                                {
+                                    FunctionalGroupsToGrazeThisCohort = ii;
+                                }
+                                else
+                                {
+                                    Debug.Fail("Cohort trying to eat from multiple stocks but only a single stock can be eaten from at present. Code needs modification");
+                                }
+                            }
+                        }
+                    }
+                    break;
+                default:
+                    if (_FunctionalGroupIndicesToEat.Length == 1)
+                        FunctionalGroupsToGrazeThisCohort = _FunctionalGroupIndicesToEat[0];
+                    else
+                        Debug.Fail("Non-specialized marine herbivore but multiple types of marine autotroph stocks");
+                    break;
+            }
+
             // Set the total biomass eaten by the acting cohort to zero
             _TotalBiomassEatenByCohort = 0.0;
 
@@ -263,8 +341,11 @@ namespace Madingley
                 _PotentialBiomassesEaten[i] = new double[gridCellStocks[i].Count];
             }
 
-            // Loop over functional groups that can be eaten
-            foreach (int FunctionalGroup in _FunctionalGroupIndicesToEat)
+            // Éxtract the functional group to graze upon into an array of length 1. Note that the code can currently only handle each cohort grazing on a single stock functional group
+            FunctionalGroupsToEatRevised = new int[] { _FunctionalGroupIndicesToEat.ElementAt(FunctionalGroupsToGrazeThisCohort) };
+
+            // Loop through functional groups to eat          
+            foreach (int FunctionalGroup in FunctionalGroupsToEatRevised)
             {
                 // Loop over stocks within the functional group
                 for (int i = 0; i < gridCellStocks[FunctionalGroup].Count; i++)
@@ -310,9 +391,11 @@ namespace Madingley
             if (cellEnvironment["Realm"][0] == 1.0) EdibleScaling = 0.1;
 
             // Loop over autotroph functional groups that can be eaten
-            foreach (int FunctionalGroup in _FunctionalGroupIndicesToEat)
+            foreach (int FunctionalGroup in FunctionalGroupsToEatRevised)
             {
+
                 // Loop over stocks within the functional groups
+                // This is a strange loop as i stays 0.. why is it a loop? Only the parent foreach loop is used.
                 for (int i = 0; i < gridCellStocks[FunctionalGroup].Count; i++)
                 {
                     // Get the mass from this stock that is available for eating (assumes only 10% is edible in the terrestrial realm)
