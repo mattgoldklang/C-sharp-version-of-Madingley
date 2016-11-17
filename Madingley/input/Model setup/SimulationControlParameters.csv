@@ -11,7 +11,7 @@ Rightmost Longitude,-24
 Grid Cell Size,1
 Read State,
 Specific Location File,specificlocations.csv
-Plankton size threshold,0.01
+Plankton size threshold,1
 Draw Randomly,yes
 Extinction Threshold,1
 Maximum Number Of Cohorts,1000
