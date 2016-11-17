@@ -154,17 +154,17 @@ namespace Madingley
         public void WriteOutParameterValues(StreamWriter sw)
         {
             // Write out parameters
-            sw.WriteLine("Herbivory\tTimeUnitImplementation\t" + Convert.ToString(_TimeUnitImplementation));
-            sw.WriteLine("Herbivory\tReferenceMass_g\t" + Convert.ToString(_ReferenceMass));
-            sw.WriteLine("Herbivory\tHandlingTimeScalarTerrestrial\t" + Convert.ToString(_HandlingTimeScalarTerrestrial));
-            sw.WriteLine("Herbivory\tHandlingTimeScalarMarine\t" + Convert.ToString(_HandlingTimeScalarMarine));
-            sw.WriteLine("Herbivory\tHandlingTimeExponentTerrestrial\t" + Convert.ToString(_HandlingTimeExponentTerrestrial));
-            sw.WriteLine("Herbivory\tHandlingTimeExponentMarine\t" + Convert.ToString(_HandlingTimeExponentMarine));
-            sw.WriteLine("Herbivory\tHerbivoryRateConstant\t" + Convert.ToString(_HerbivoryRateConstant));
+            sw.WriteLine("Herbivory\t_TimeUnitImplementation\t" + Convert.ToString(_TimeUnitImplementation));
+            sw.WriteLine("Herbivory\t_ReferenceMass_g\t" + Convert.ToString(_ReferenceMass));
+            sw.WriteLine("Herbivory\t_HandlingTimeScalarTerrestrial\t" + Convert.ToString(_HandlingTimeScalarTerrestrial));
+            sw.WriteLine("Herbivory\t_HandlingTimeScalarMarine\t" + Convert.ToString(_HandlingTimeScalarMarine));
+            sw.WriteLine("Herbivory\t_HandlingTimeExponentTerrestrial\t" + Convert.ToString(_HandlingTimeExponentTerrestrial));
+            sw.WriteLine("Herbivory\t_HandlingTimeExponentMarine\t" + Convert.ToString(_HandlingTimeExponentMarine));
+            sw.WriteLine("Herbivory\t_HerbivoryRateConstant\t" + Convert.ToString(_HerbivoryRateConstant));
 
-            sw.WriteLine("Herbivory\t_AttackRateExponentTerrestrial\t" + Convert.ToString(HerbivoryRateMassExponent));
-            sw.WriteLine("Herbivory\t_AttackRateExponentMarine\t" + Convert.ToString(HerbivoryRateMassExponent));
-            sw.WriteLine("Herbivory\tHerbivoryRateMassExponent\t" + Convert.ToString(HerbivoryRateMassExponent));
+            sw.WriteLine("Herbivory\t_AttackRateExponentTerrestrial\t" + Convert.ToString(_AttackRateExponentTerrestrial));
+            sw.WriteLine("Herbivory\t_AttackRateExponentMarine\t" + Convert.ToString(_AttackRateExponentMarine));
+            sw.WriteLine("Herbivory\t_HerbivoryRateMassExponent\t" + Convert.ToString(_HerbivoryRateMassExponent));
         }
 
 
@@ -195,7 +195,7 @@ namespace Madingley
         /// <returns>The potential biomass eaten by the herbivore cohort</returns>
         private double CalculatePotentialBiomassEatenMarine(double autotrophBiomass, double herbivoreIndividualMass)
         {
-            // Calculate the inidividual herbivory rate per unit autotroph mass-density per hectare
+            // Calculate the individual herbivory rate per unit autotroph mass-density per hectare
             double IndividualHerbivoryRate = CalculateIndividualHerbivoryRatePerHectare(herbivoreIndividualMass);
 
             // Calculate autotroph biomass density per hectare

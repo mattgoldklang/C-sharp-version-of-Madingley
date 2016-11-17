@@ -4,13 +4,13 @@ Length of simulation (years),100
 Burn-in (years),100
 Impact duration (years),0
 Recovery duration (years),0
-Top Latitude,10
+Top Latitude,1
 Bottom Latitude,0
-Leftmost Longitude,-10
-Rightmost Longitude,0
+Leftmost Longitude,-25
+Rightmost Longitude,-24
 Grid Cell Size,1
 Read State,
-Specific Location File,
+Specific Location File,specificlocations.csv
 Plankton size threshold,0.01
 Draw Randomly,yes
 Extinction Threshold,1

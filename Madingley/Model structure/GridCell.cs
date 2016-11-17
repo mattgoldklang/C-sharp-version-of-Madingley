@@ -781,7 +781,7 @@ namespace Madingley
                 // Loop over all functional groups in the model
                 for (int FunctionalGroup = 0; FunctionalGroup < functionalGroups.GetNumberOfFunctionalGroups(); FunctionalGroup++)
                 {
-
+                    Console.WriteLine("Seeding cohort functional group" + FunctionalGroup);
                     // Create a new list to hold the cohorts in the grid cell
                     _GridCellCohorts[FunctionalGroup] = new List<Cohort>();
 
@@ -802,7 +802,6 @@ namespace Madingley
                                 // Draw adult mass from a log-normal distribution with mean -6.9 and standard deviation 10.0,
                                 // within the bounds of the minimum and maximum body masses for the functional group
                                 CohortAdultMass = Math.Pow(10, (RandomNumberGenerator.GetUniform() * (Math.Log10(MassMaxima[FunctionalGroup]) - Math.Log10(50 * MassMinima[FunctionalGroup])) + Math.Log10(50 * MassMinima[FunctionalGroup])));
-
                                 // Terrestrial and marine organisms have different optimal prey/predator body mass ratios
                                 if (cellEnvironment["Realm"][0] == 1.0)
                                     // Optimal prey body size 10%
