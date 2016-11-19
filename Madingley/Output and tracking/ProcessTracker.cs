@@ -333,7 +333,7 @@ namespace Madingley
         public void WriteTimeStepFGFlows(uint currentTimeStep, uint numLats, uint numLons, MadingleyModelInitialisation initialisation,
             Boolean marineCell)
         {
-            _TrackEating.WriteFGFlows(currentTimeStep, numLats, numLons, initialisation, marineCell);
+            _TrackFGEating.WriteFGFlows(currentTimeStep, numLats, numLons, initialisation, marineCell);
         }
 
 
