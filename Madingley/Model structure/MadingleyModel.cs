@@ -518,7 +518,7 @@ namespace Madingley
                              _CellList, i, GlobalDiagnosticVariables, TimeStepTimer, NumTimeSteps, CurrentTimeStep, initialisation, CurrentMonth, EcosystemModelGrid.GetEnviroLayer("Realm", 0, _CellList[i][0], _CellList[i][1], out varExists) == 2.0);
                          
                          // Write out trophic flow data for this time step
-                         if(ProcessTrackers[i].TrackProcesses) ProcessTrackers[i].WriteTimeStepTrophicFlows(CurrentTimeStep, EcosystemModelGrid.NumLatCells, EcosystemModelGrid.NumLonCells, initialisation,
+                         if(ProcessTrackers[i].TrackProcesses && (initialisation.TimeStepToStartProcessTrackers >= hh)) ProcessTrackers[i].WriteTimeStepTrophicFlows(CurrentTimeStep, EcosystemModelGrid.NumLatCells, EcosystemModelGrid.NumLonCells, initialisation,
                              EcosystemModelGrid.GetEnviroLayer("Realm", 0, _CellList[i][0], _CellList[i][1], out varExists) == 2.0);
                  
                      }
@@ -534,7 +534,7 @@ namespace Madingley
                 for (int i = 0; i < _CellList.Count; i++)
                 {
                     // Write out trophic flow data for this time step
-                    if (ProcessTrackers[i].TrackProcesses) ProcessTrackers[i].WriteTimeStepFGFlows(CurrentTimeStep, EcosystemModelGrid.NumLatCells, EcosystemModelGrid.NumLonCells, initialisation,
+                    if (ProcessTrackers[i].TrackProcesses && (initialisation.TimeStepToStartProcessTrackers >= hh)) ProcessTrackers[i].WriteTimeStepFGFlows(CurrentTimeStep, EcosystemModelGrid.NumLatCells, EcosystemModelGrid.NumLonCells, initialisation,
                      EcosystemModelGrid.GetEnviroLayer("Realm", 0, _CellList[i][0], _CellList[i][1], out varExists) == 2.0);
                 }
 

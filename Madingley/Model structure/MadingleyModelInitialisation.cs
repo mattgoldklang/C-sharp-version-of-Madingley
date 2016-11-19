@@ -601,6 +601,23 @@ namespace Madingley
         }
 
 
+        private uint _NumYearsToRunProcessTrackers;
+
+        public uint NumYearsToRunProcessTrackers
+        {
+            get { return _NumYearsToRunProcessTrackers; }
+            set { _NumYearsToRunProcessTrackers = value; }
+        }
+
+        private uint _TimeStepToStartProcessTrackers;
+
+        public uint TimeStepToStartProcessTrackers
+        {
+            get { return _TimeStepToStartProcessTrackers; }
+            set { _TimeStepToStartProcessTrackers = value; }
+        }
+
+
         /// <summary>
         /// Reads the initalization file to get information for the set of simulations to be run
         /// </summary>
@@ -981,6 +998,15 @@ namespace Madingley
                         }
 
                         break;
+                    case "Num Final Years to Track Individual Flows":
+                        
+                        if (VarValues.GetValue(row).ToString() != "")
+                            NumYearsToRunProcessTrackers = (uint)Utilities.ConvertTimeUnits("year", _GlobalModelTimeStepUnit) * Convert.ToUInt32(VarValues.GetValue(row));
+                        else
+                            NumYearsToRunProcessTrackers = _NumTimeSteps;
+
+                        TimeStepToStartProcessTrackers = _NumTimeSteps - NumYearsToRunProcessTrackers;
+                            break;
                     default:
                         Debug.Fail("Cannot find string in output control parameter file");
                         break;

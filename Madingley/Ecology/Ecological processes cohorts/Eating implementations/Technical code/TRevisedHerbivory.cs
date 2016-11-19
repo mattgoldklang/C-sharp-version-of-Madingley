@@ -422,6 +422,7 @@ namespace Madingley
                             gridCellCohorts[actingCohort].FunctionalGroupIndex, FunctionalGroup, madingleyCohortDefinitions, madingleyStockDefinitions, _BiomassesEaten[FunctionalGroup][i], _BodyMassHerbivore, initialisation, cellEnvironment["Realm"][0] == 2.0);
 
                     }
+
                     if (specificLocations && trackProcesses.TrackProcesses)
                     {
                         trackProcesses.RecordHerbivoryMassFlow(currentTimestep, _BodyMassHerbivore, _BiomassesEaten[FunctionalGroup][i]);

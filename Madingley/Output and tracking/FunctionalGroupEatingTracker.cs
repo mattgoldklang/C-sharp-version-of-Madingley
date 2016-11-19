@@ -178,7 +178,7 @@ namespace Madingley
                         fromIndex = 3;
                         break;
                     default:
-                        Debug.Fail("Calling fuctional group eating tracker assuming multiple stock functional groups but none defined (or definitions not found)");
+                        Debug.Fail("Calling functional group eating tracker assuming multiple stock functional groups but none defined (or definitions not found)");
                         break;
 
                 }
