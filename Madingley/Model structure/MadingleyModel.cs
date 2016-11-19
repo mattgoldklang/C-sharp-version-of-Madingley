@@ -534,7 +534,7 @@ namespace Madingley
                 for (int i = 0; i < _CellList.Count; i++)
                 {
                     // Write out trophic flow data for this time step
-                    if (ProcessTrackers[i].TrackProcesses && (initialisation.TimeStepToStartProcessTrackers >= hh)) ProcessTrackers[i].WriteTimeStepFGFlows(CurrentTimeStep, EcosystemModelGrid.NumLatCells, EcosystemModelGrid.NumLonCells, initialisation,
+                    if (ProcessTrackers[i].TrackProcesses && (hh >= initialisation.TimeStepToStartProcessTrackers)) ProcessTrackers[i].WriteTimeStepFGFlows(CurrentTimeStep, EcosystemModelGrid.NumLatCells, EcosystemModelGrid.NumLonCells, initialisation,
                      EcosystemModelGrid.GetEnviroLayer("Realm", 0, _CellList[i][0], _CellList[i][1], out varExists) == 2.0);
                 }
 
