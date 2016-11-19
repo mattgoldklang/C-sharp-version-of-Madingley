@@ -444,10 +444,8 @@ namespace Madingley
                 TrophicMassFlows = new double[numLats, numLons, 7, 7];
             else
                 TrophicMassFlows = new double[numLats, numLons, 4, 4];
-
-
-            
         }
+
 
         /// <summary>
         /// Close the streams for writing eating data

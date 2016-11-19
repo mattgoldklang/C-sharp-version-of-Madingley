@@ -205,23 +205,25 @@ namespace Madingley
         }
 
         /// <summary>
-        /// Write flows of matter among trophic levels to the output file at the end of the time step
+        /// Write flows of matter among functional groups to the output file at the end of the time step
         /// </summary>
         /// <param name="currentTimeStep">The current time step</param>
         /// <param name="numLats">The latitudinal dimension of the model grid in number of cells</param>
         /// <param name="numLons">The longitudinal dimension of the model grid in number of cells</param>
         /// <param name="initialisation">The Madingley Model initialisation</param>
         /// <param name="MarineCell">Whether the current cell is a marine cell</param>
-        public void WriteTrophicFlows(uint currentTimeStep, uint numLats, uint numLons, MadingleyModelInitialisation initialisation,
+        public void WriteFGFlows(uint currentTimeStep, uint numLats, uint numLons, MadingleyModelInitialisation initialisation,
             Boolean MarineCell)
         {
+            int NumFGs = FGMassFlows.GetLength(2);
+
             for (int lat = 0; lat < numLats; lat++)
             {
                 for (int lon = 0; lon < numLons; lon++)
                 {
-                    for (int i = 0; i < FGMassFlows.GetLength(2); i++)
+                    for (int i = 0; i < NumFGs; i++)
                     {
-                        for (int j = 0; j < FGMassFlows.GetLength(3); j++)
+                        for (int j = 0; j < NumFGs; j++)
                         {
                             if (FGMassFlows[lat, lon, i, j] > 0)
                             {
@@ -235,12 +237,9 @@ namespace Madingley
 
             // Initialise array to hold mass flows among trophic levels
             if (initialisation.TrackMarineSpecifics && MarineCell)
-                FGMassFlows = new double[numLats, numLons, 7, 7];
+                FGMassFlows = new double[numLats, numLons, NumFGs, NumFGs];
             else
                 FGMassFlows = new double[numLats, numLons, 4, 4];
-
-
-
         }
 
         /// <summary>

@@ -323,6 +323,21 @@ namespace Madingley
         }
 
         /// <summary>
+        /// Write functional group flow data from the current time step to file 
+        /// </summary>
+        /// <param name="currentTimeStep">The current model time step</param>
+        /// <param name="numLats">The number of grid cells, latitudinally, in the simulation</param>
+        /// <param name="numLons">The number of grid cells, longitudinally, in the simulation</param>
+        /// <param name="initialisation">The Madingley Model initialisation</param>
+        /// <param name="marineCell">Whether the current cell is a marine cell</param>
+        public void WriteTimeStepFGFlows(uint currentTimeStep, uint numLats, uint numLons, MadingleyModelInitialisation initialisation,
+            Boolean marineCell)
+        {
+            _TrackEating.WriteFGFlows(currentTimeStep, numLats, numLons, initialisation, marineCell);
+        }
+
+
+        /// <summary>
         /// Track growth of individuals in a cohort using the growth tracker
         /// </summary>
         /// <param name="latIndex">The latitudinal index of the current grid cell</param>

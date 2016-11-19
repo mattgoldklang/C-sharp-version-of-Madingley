@@ -529,8 +529,15 @@ namespace Madingley
                          CurrentTimeStep, initialisation);
                  }
 
+                // Loop over grid cells and write (a) time step outputs, and (b) trophic flow data (if process tracking is on)
+                for (int i = 0; i < _CellList.Count; i++)
+                {
+                    // Write out trophic flow data for this time step
+                    if (ProcessTrackers[i].TrackProcesses) ProcessTrackers[i].WriteTimeStepFGFlows(CurrentTimeStep, EcosystemModelGrid.NumLatCells, EcosystemModelGrid.NumLonCells, initialisation,
+                     EcosystemModelGrid.GetEnviroLayer("Realm", 0, _CellList[i][0], _CellList[i][1], out varExists) == 2.0);
+                }
 
-                 OutputTimer.Stop();
+                OutputTimer.Stop();
                  Console.WriteLine("Cell/Grid Outputs took: {0}", OutputTimer.GetElapsedTimeSecs());
 
                  // Write the results of dispersal to the console
