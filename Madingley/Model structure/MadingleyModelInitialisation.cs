@@ -998,7 +998,7 @@ namespace Madingley
                         }
 
                         break;
-                    case "Num Final Years to Track Individual Flows":
+                    case "num final years to track individual flows":
                         
                         if (VarValues.GetValue(row).ToString() != "")
                             NumYearsToRunProcessTrackers = (uint)Utilities.ConvertTimeUnits("year", _GlobalModelTimeStepUnit) * Convert.ToUInt32(VarValues.GetValue(row));
