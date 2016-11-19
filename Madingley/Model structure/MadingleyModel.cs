@@ -351,6 +351,7 @@ namespace Madingley
                 initialisation.ProcessTrackingOutputs,
                 initialisation.TrackProcesses,
                 CohortFunctionalGroupDefinitions,
+                StockFunctionalGroupDefinitions,
                 EcosystemModelGrid.GlobalMissingValue,
                 outputFilesSuffix,
                 initialisation.OutputPath, initialisation.ModelMassBins,

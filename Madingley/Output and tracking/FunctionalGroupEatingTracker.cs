@@ -39,7 +39,7 @@ namespace Madingley
         /// <param name="MarineCell">Whether the current cell is a marine cell</param>
         /// <param name="fGDefinitions">Hold the functional group definitions</param>
         public FunctionalGroupEatingTracker(uint numLats, uint numLons, string fGFlowsFilename, string outputFilesSuffix, string outputPath,
-            int cellIndex, MadingleyModelInitialisation initialisation, Boolean MarineCell, FunctionalGroupDefinitions fGDefinitions)
+            int cellIndex, MadingleyModelInitialisation initialisation, Boolean MarineCell, FunctionalGroupDefinitions fGDefinitions, FunctionalGroupDefinitions stockFGDefinitions)
         {
             FGFlowsFilename = fGFlowsFilename;
 
@@ -51,7 +51,7 @@ namespace Madingley
             // Initialise array to hold mass flows among functional groups
             if (MarineCell)
             {
-                FGMassFlows = new double[numLats, numLons, fGDefinitions.GetFunctionalGroupIndex("realm", "marine", true).Length, fGDefinitions.GetFunctionalGroupIndex("realm", "marine", true).Length];
+                FGMassFlows = new double[numLats, numLons, fGDefinitions.GetFunctionalGroupIndex("realm", "marine", true).Length + stockFGDefinitions.GetFunctionalGroupIndex("realm", "marine", true).Length, fGDefinitions.GetFunctionalGroupIndex("realm", "marine", true).Length + stockFGDefinitions.GetFunctionalGroupIndex("realm", "marine", true).Length];
                 ;
             }
             else
@@ -79,19 +79,19 @@ namespace Madingley
                     switch (cohortFunctionalGroupDefinitions.GetTraitNames("diet", cohortFunctionalGroup))
                     {
                         case "picophytoplankton":
-                            TempFG = 1;
+                            TempFG = 4;
                             break;
                         case "nanophytoplankton":
-                            TempFG = 2;
+                            TempFG = 5;
                             break;
                         case "microphytoplankton":
-                            TempFG = 3;
+                            TempFG = 6;
                             break;
                         default:
                             if (bodyMass <= modelInitialisation.PlanktonDispersalThreshold)
-                                TempFG = 4;
+                                TempFG = 7;
                             else
-                                TempFG = 5;
+                                TempFG = 8;
                             break;
                     }
                     break;
@@ -99,10 +99,10 @@ namespace Madingley
                     switch (cohortFunctionalGroupDefinitions.GetTraitNames("diet", cohortFunctionalGroup))
                     {
                         case "allspecial":
-                            TempFG = 7;
+                            TempFG = 10;
                             break;
                         default:
-                            TempFG = 6;
+                            TempFG = 9;
                             break;
                     }
                     break;
@@ -169,13 +169,13 @@ namespace Madingley
                 switch (stockFunctionalGroupDefinitions.GetTraitNames("stock name", fromFunctionalGroup))
                 {
                     case "picophytoplankton":
-                        fromIndex = -3;
+                        fromIndex = 1;
                         break;
                     case "nanophytoplankton":
-                        fromIndex = -2;
+                        fromIndex = 2;
                         break;
-                    case "micophytoplankton":
-                        fromIndex = -1;
+                    case "microphytoplankton":
+                        fromIndex = 3;
                         break;
                     default:
                         Debug.Fail("Calling fuctional group eating tracker assuming multiple stock functional groups but none defined (or definitions not found)");

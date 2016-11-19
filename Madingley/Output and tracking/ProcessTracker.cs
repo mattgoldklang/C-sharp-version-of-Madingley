@@ -154,6 +154,7 @@ namespace Madingley
             SortedList<string,string> Filenames, 
             Boolean trackProcesses, 
             FunctionalGroupDefinitions cohortDefinitions, 
+            FunctionalGroupDefinitions stockDefinitions,
             double missingValue,
             string outputFileSuffix,
             string outputPath, MassBinsHandler trackerMassBins,
@@ -175,7 +176,7 @@ namespace Madingley
                 _TrackMortality = new MortalityTracker(numTimesteps, (uint)lats.Length, (uint)lons.Length, cellIndices, Filenames["MortalityOutput"], outputFileSuffix, outputPath, cellIndex);
                 _TrackExtinction = new ExtinctionTracker(Filenames["ExtinctionOutput"], outputPath, outputFileSuffix, cellIndex);
                 _TrackMetabolism = new MetabolismTracker(Filenames["MetabolismOutput"], outputPath, outputFileSuffix, cellIndex);
-                _TrackFGEating = new FunctionalGroupEatingTracker((uint)lats.Length, (uint)lons.Length, Filenames["FGFlowsOutput"], outputFileSuffix, outputPath, cellIndex, initialisation, marineCell, cohortDefinitions);
+                _TrackFGEating = new FunctionalGroupEatingTracker((uint)lats.Length, (uint)lons.Length, Filenames["FGFlowsOutput"], outputFileSuffix, outputPath, cellIndex, initialisation, marineCell, cohortDefinitions, stockDefinitions);
 
                 // Initialise the predation and herbivory trackers only for runs with specific locations
                 if (specificLocations == true)
@@ -292,7 +293,7 @@ namespace Madingley
             FunctionalGroupDefinitions cohortFunctionalGroupDefinitions, FunctionalGroupDefinitions stockFuctionalGroupDefinitions, double massEaten, double predatorBodyMass,
             MadingleyModelInitialisation initialisation, Boolean marineCell)
         {
-            _TrackEating.RecordHerbivoryTrophicFlow(latIndex, lonIndex, toFunctionalGroup, cohortFunctionalGroupDefinitions, massEaten, predatorBodyMass, initialisation, marineCell);
+            _TrackFGEating.RecordHerbivoryFGFlow(latIndex, lonIndex, toFunctionalGroup, fromFunctionalGroup, cohortFunctionalGroupDefinitions, stockFuctionalGroupDefinitions, massEaten, predatorBodyMass, initialisation, marineCell);
         }
 
 
@@ -467,6 +468,7 @@ namespace Madingley
             _TrackGrowth.CloseStreams();
             _TrackMetabolism.CloseStreams();
             //_TrackNPP.CloseStreams();
+            _TrackFGEating.CloseStreams();
             if (SpecificLocations == true)
             {
                 _TrackPredation.CloseStreams();
