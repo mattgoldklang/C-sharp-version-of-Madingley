@@ -1,12 +1,12 @@
 DEFINITION_Heterotroph/Autotroph,DEFINITION_Nutrition source,DEFINITION_Diet,DEFINITION_Realm,DEFINITION_Mobility,DEFINITION_Reproductive strategy,DEFINITION_Endo/Ectotherm,PROPERTY_Herbivory assimilation,PROPERTY_Carnivory assimilation,PROPERTY_Proportion suitable time active,PROPERTY_Minimum mass,PROPERTY_Maximum mass,PROPERTY_Initial number of GridCellCohorts,NOTES_group description
 Heterotroph,Carnivore,AllSpecial,Marine,Mobile,iteroparity,Endotherm,0,0.8,0.5,10000,150000000,125,Baleen whales
 Heterotroph,Carnivore,All,Marine,Mobile,iteroparity,Endotherm,0,0.8,0.5,100,50000000,125,Carnivorous endotherms
-Heterotroph,Carnivore,All,Marine,Mobile,iteroparity,Ectotherm,0,0.8,0.5,2.40E-04,2000000,125,Carnivorous ectotherms (inc eating zooplankton)
-Heterotroph,Carnivore,All,Marine,Mobile,semelparity,Ectotherm,0,0.8,0.5,2.40E-04,2000000,125,Carnivorous ectotherms (inc eating zooplankton)
+Heterotroph,Carnivore,All,Marine,Mobile,iteroparity,Ectotherm,0,0.8,0.5,2.40E-01,2000000,125,Carnivorous ectotherms (inc eating zooplankton)
+Heterotroph,Carnivore,All,Marine,Mobile,semelparity,Ectotherm,0,0.8,0.5,2.40E-01,2000000,125,Carnivorous ectotherms (inc eating zooplankton)
 Heterotroph,Omnivore,Microphytoplankton,Marine,Planktonic,iteroparity,Ectotherm,0.7,0.64,0.5,2.40E-04,2.40E-01,125,Mesozooplankton (obligate)
 Heterotroph,Omnivore,Microphytoplankton,Marine,Planktonic,semelparious,Ectotherm,0.7,0.64,0.5,2.40E-04,2.40E-01,125,Mesozooplankton (obligate)
 Heterotroph,Omnivore,Nanophytoplankton,Marine,Planktonic,iteroparity,Ectotherm,0.7,0.64,0.5,2.40E-07,2.40E-04,125,Microzooplankton
-Heterotroph,Herbivore,Picophytoplankton,Marine,Planktonic,iteroparity,Ectotherm,0.7,0,0.5,2.4E-10,2.40E-07,125,Nanozooplankton
+Heterotroph,Herbivore,Picophytoplankton,Marine,Planktonic,iteroparity,Ectotherm,0.7,0,0.5,2.40E-10,2.40E-07,125,Nanozooplankton
 Heterotroph,Herbivore,All,Terrestrial,Mobile,iteroparity,Endotherm,0.5,0,0.5,1.5,5000000,111,None
 Heterotroph,Carnivore,All,Terrestrial,Mobile,iteroparity,Endotherm,0,0.8,0.5,3,700000,111,None
 Heterotroph,Omnivore,All,Terrestrial,Mobile,iteroparity,Endotherm,0.4,0.64,0.5,3,1500000,111,None

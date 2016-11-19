@@ -113,7 +113,19 @@ namespace Madingley
             get { return _TrackMetabolism; }
             set { _TrackMetabolism = value; }
         }
-       
+
+        /// <summary>
+        /// An instance of the functional group eating tracker
+        /// </summary>
+        private FunctionalGroupEatingTracker _TrackFGEating;
+        /// <summary>
+        /// Get and set the instance of the functional group eating tracker
+        /// </summary>
+        public FunctionalGroupEatingTracker TrackFGEating
+        {
+            get { return _TrackFGEating; }
+            set { _TrackFGEating = value; }
+        }
 
 
         /// <summary>
@@ -163,6 +175,7 @@ namespace Madingley
                 _TrackMortality = new MortalityTracker(numTimesteps, (uint)lats.Length, (uint)lons.Length, cellIndices, Filenames["MortalityOutput"], outputFileSuffix, outputPath, cellIndex);
                 _TrackExtinction = new ExtinctionTracker(Filenames["ExtinctionOutput"], outputPath, outputFileSuffix, cellIndex);
                 _TrackMetabolism = new MetabolismTracker(Filenames["MetabolismOutput"], outputPath, outputFileSuffix, cellIndex);
+                _TrackFGEating = new FunctionalGroupEatingTracker((uint)lats.Length, (uint)lons.Length, Filenames["FGFlowsOutput"], outputFileSuffix, outputPath, cellIndex, initialisation, marineCell, cohortDefinitions);
 
                 // Initialise the predation and herbivory trackers only for runs with specific locations
                 if (specificLocations == true)
@@ -224,6 +237,26 @@ namespace Madingley
             MadingleyModelInitialisation initialisation, Boolean marineCell)
         {
             _TrackEating.RecordPredationTrophicFlow(latIndex, lonIndex, fromFunctionalGroup, toFunctionalGroup, cohortFunctionalGroupDefinitions, massEaten, predatorBodyMass, preyBodyMass, initialisation, marineCell);
+        }
+
+        /// <summary>
+        /// Track the flow of mass between functional groups during a predation event
+        /// </summary>
+        /// <param name="latIndex">The latitudinal index of the current grid cell</param>
+        /// <param name="lonIndex">The longitudinal index of the current grid cell</param>
+        /// <param name="fromFunctionalGroup">The index of the functional group being eaten</param>
+        /// <param name="toFunctionalGroup">The index of the functional group that the predator belongs to</param>
+        /// <param name="cohortFunctionalGroupDefinitions">The functional group definitions of cohorts in the model</param>
+        /// <param name="massEaten">The mass eaten during the predation event</param>
+        /// <param name="predatorBodyMass">The body mass of the predator doing the eating</param>
+        /// <param name="preyBodyMass">The body mass of the prey doing the eating</param>
+        /// <param name="initialisation">The Madingley Model initialisation</param>
+        /// <param name="marineCell">Whether the current cell is a marine cell</param>
+        public void TrackPredationFGFlow(uint latIndex, uint lonIndex, int fromFunctionalGroup, int toFunctionalGroup,
+            FunctionalGroupDefinitions cohortFunctionalGroupDefinitions, double massEaten, double predatorBodyMass, double preyBodyMass,
+            MadingleyModelInitialisation initialisation, Boolean marineCell)
+        {
+            _TrackFGEating.RecordPredationFGFlow(latIndex, lonIndex, fromFunctionalGroup, toFunctionalGroup, cohortFunctionalGroupDefinitions, massEaten, predatorBodyMass, preyBodyMass, initialisation, marineCell);
         }
 
         /// <summary>

@@ -1,7 +1,7 @@
 Parameter,Value
 Timestep Units,Month
-Length of simulation (years),100
-Burn-in (years),100
+Length of simulation (years),20
+Burn-in (years),0
 Impact duration (years),0
 Recovery duration (years),0
 Top Latitude,1
@@ -18,7 +18,7 @@ Maximum Number Of Cohorts,1000
 Run Cells In Parallel,no
 Run Simulations In Parallel,no
 Run Single Realm,marine
-Impact Cell Index,all
+Impact Cell Index,
 Dispersal only,no
 Dispersal only type,advection
 Multi size class phytoplankton,yes
