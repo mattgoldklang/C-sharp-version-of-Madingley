@@ -644,10 +644,11 @@ namespace Madingley
 
                     gridCellCohorts[actingCohort].TrophicIndex += (_BodyMassPrey + gridCellCohorts[FunctionalGroup][i].IndividualReproductivePotentialMass) * _AbundancesEaten[FunctionalGroup][i] * gridCellCohorts[FunctionalGroup][i].TrophicIndex;
 
-                    // If the process tracker is set and output detail is set to high and the prey cohort has never been merged,
-                    // then track its mortality owing to predation
+
                     if (trackProcesses.TrackProcesses)
                     {
+                        // If the process tracker is set and output detail is set to high and the prey cohort has never been merged,
+                        // then track its mortality owing to predation
                         if ((outputDetail == "high") && (gridCellCohorts[FunctionalGroup][i].CohortID.Count == 1)
                         && AbundancesEaten[FunctionalGroup][i] > 0)
                         {
@@ -657,18 +658,25 @@ namespace Madingley
                                 gridCellCohorts[FunctionalGroup][i].CohortID[0], AbundancesEaten[FunctionalGroup][i], "predation");
                         }
 
+                        trackProcesses.TrackPredationFGFlow((uint)cellEnvironment["LatIndex"][0], (uint)cellEnvironment["LonIndex"][0],
+                                    gridCellCohorts[FunctionalGroup][i].FunctionalGroupIndex, gridCellCohorts[actingCohort].FunctionalGroupIndex,
+                                    madingleyCohortDefinitions, (_AbundancesEaten[FunctionalGroup][i] * _BodyMassPrey), _BodyMassPredator, _BodyMassPrey,
+                                    initialisation, cellEnvironment["Realm"][0] == 2.0);
+
                         // If the model is being run for specific locations and if track processes has been specified, then track the mass flow between
                         // prey and predator
                         if (specificLocations)
                         {
                             trackProcesses.RecordPredationMassFlow(currentTimestep, _BodyMassPrey, _BodyMassPredator, _BodyMassPrey *
                                 _AbundancesEaten[FunctionalGroup][i]);
-                        
-                        if (outputDetail == "high")
-                            trackProcesses.TrackPredationTrophicFlow((uint)cellEnvironment["LatIndex"][0], (uint)cellEnvironment["LonIndex"][0],
-                                gridCellCohorts[FunctionalGroup][i].FunctionalGroupIndex, gridCellCohorts[actingCohort].FunctionalGroupIndex,
-                                madingleyCohortDefinitions, (_AbundancesEaten[FunctionalGroup][i] * _BodyMassPrey), _BodyMassPredator, _BodyMassPrey, 
-                                initialisation, cellEnvironment["Realm"][0] == 2.0);
+
+                            if (outputDetail == "high")
+                            {
+                                trackProcesses.TrackPredationTrophicFlow((uint)cellEnvironment["LatIndex"][0], (uint)cellEnvironment["LonIndex"][0],
+                                    gridCellCohorts[FunctionalGroup][i].FunctionalGroupIndex, gridCellCohorts[actingCohort].FunctionalGroupIndex,
+                                    madingleyCohortDefinitions, (_AbundancesEaten[FunctionalGroup][i] * _BodyMassPrey), _BodyMassPredator, _BodyMassPrey,
+                                    initialisation, cellEnvironment["Realm"][0] == 2.0);                            
+                            }
 
                         }
 

@@ -278,6 +278,26 @@ namespace Madingley
         }
 
         /// <summary>
+        /// Track the flow of mass between trophic levels during a herbivory event
+        /// </summary>
+        /// <param name="latIndex">The latitudinal index of the current grid cell</param>
+        /// <param name="lonIndex">The longitudinal index of the current grid cell</param>
+        /// <param name="toFunctionalGroup">The index of the functional group that the predator belongs to</param>
+        /// <param name="cohortFunctionalGroupDefinitions">The functional group definitions of cohorts in the model</param>
+        /// <param name="massEaten">The mass eaten during the herbivory event</param>
+        /// <param name="predatorBodyMass">The body mass of the predator doing the eating</param>
+        /// <param name="initialisation">The Madingley Model initialisation</param>
+        /// <param name="marineCell">Whether the current cell is a marine cell</param>
+        public void TrackHerbivoryFGFlow(uint latIndex, uint lonIndex, int toFunctionalGroup, int fromFunctionalGroup,
+            FunctionalGroupDefinitions cohortFunctionalGroupDefinitions, FunctionalGroupDefinitions stockFuctionalGroupDefinitions, double massEaten, double predatorBodyMass,
+            MadingleyModelInitialisation initialisation, Boolean marineCell)
+        {
+            _TrackEating.RecordHerbivoryTrophicFlow(latIndex, lonIndex, toFunctionalGroup, cohortFunctionalGroupDefinitions, massEaten, predatorBodyMass, initialisation, marineCell);
+        }
+
+
+
+        /// <summary>
         /// Track the flow of mass between trophic levels during primary production of autotrophs
         /// </summary>
         /// <param name="latIndex">The latitudinal index of the current grid cell</param>

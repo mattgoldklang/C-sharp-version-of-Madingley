@@ -381,6 +381,10 @@ namespace Madingley
         /// <param name="specificLocations">Whether the model is being run for specific locations</param>
         /// <param name="outputDetail">The level of output detail being used in this model run</param>
         /// <param name="initialisation">The Madingley Model initialisation</param>
+        /// 
+        /// <param name="specificLocations">Whether the model is being run for specific locations</param>
+        /// <param name="outputDetail">The level of output detail being used in this model run</param>
+        /// <param name="initialisation">The Madingley Model initialisation</param>
         public void RunEating(GridCellCohortHandler gridCellCohorts, GridCellStockHandler gridCellStocks, int[] actingCohort, SortedList<string, double[]>
             cellEnvironment, Dictionary<string, Dictionary<string, double>> deltas, FunctionalGroupDefinitions madingleyCohortDefinitions,
             FunctionalGroupDefinitions madingleyStockDefinitions, ProcessTracker trackProcesses, uint currentTimestep, Boolean specificLocations,
@@ -412,6 +416,12 @@ namespace Madingley
 
                     // If the model is being run for specific locations and if track processes has been specified, then track the mass flow between
                     // primary producer and herbivore
+                    if (trackProcesses.TrackProcesses)
+                    {
+                        trackProcesses.TrackHerbivoryFGFlow((uint)cellEnvironment["LatIndex"][0], (uint)cellEnvironment["LonIndex"][0],
+                            gridCellCohorts[actingCohort].FunctionalGroupIndex, FunctionalGroup, madingleyCohortDefinitions, madingleyStockDefinitions, _BiomassesEaten[FunctionalGroup][i], _BodyMassHerbivore, initialisation, cellEnvironment["Realm"][0] == 2.0);
+
+                    }
                     if (specificLocations && trackProcesses.TrackProcesses)
                     {
                         trackProcesses.RecordHerbivoryMassFlow(currentTimestep, _BodyMassHerbivore, _BiomassesEaten[FunctionalGroup][i]);
@@ -423,7 +433,7 @@ namespace Madingley
                     {
                         trackProcesses.TrackHerbivoryTrophicFlow((uint)cellEnvironment["LatIndex"][0], (uint)cellEnvironment["LonIndex"][0],
                             gridCellCohorts[actingCohort].FunctionalGroupIndex, madingleyCohortDefinitions, _BiomassesEaten[FunctionalGroup][i], _BodyMassHerbivore, initialisation, cellEnvironment["Realm"][0] == 2.0);
-
+                        
                     }
 
 
@@ -431,7 +441,7 @@ namespace Madingley
                     // Commented out for purposes of speed
                     //Debug.Assert(_BiomassesEaten[FunctionalGroup][i] >= 0,
                     //    "Herbivory negative for this herbivore cohort" + actingCohort);
-                    
+
                     // Add the biomass eaten and assimilated by an individual to the delta biomass for the acting cohort
                     deltas["biomass"]["herbivory"] += _BiomassesEaten[FunctionalGroup][i] * AssimilationEfficiency / gridCellCohorts[actingCohort].CohortAbundance;
 

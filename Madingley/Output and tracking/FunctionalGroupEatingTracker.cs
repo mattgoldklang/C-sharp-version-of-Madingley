@@ -60,6 +60,58 @@ namespace Madingley
             }
         }
 
+
+        /// <summary>
+        /// Determine the functional group of a cohort
+        /// </summary>
+        /// <param name="cohortFunctionalGroupDefinitions">Definitions of cohort functional groups</param>
+        /// <param name="cohortFunctionalGroup">Index of the functional group</param>
+        /// <param name="bodyMass">Body mass of the cohort</param>
+        /// <param name="modelInitialisation">Madingley model initialisation class </param>
+        /// <returns></returns>
+        private int DetermineFunctionalGroup(FunctionalGroupDefinitions cohortFunctionalGroupDefinitions, int cohortFunctionalGroup, double bodyMass, MadingleyModelInitialisation modelInitialisation)
+        {
+            int TempFG = 0;
+
+            switch (cohortFunctionalGroupDefinitions.GetTraitNames("endo/ectotherm", cohortFunctionalGroup))
+            {
+                case "ectotherm":
+                    switch (cohortFunctionalGroupDefinitions.GetTraitNames("diet", cohortFunctionalGroup))
+                    {
+                        case "picophytoplankton":
+                            TempFG = 1;
+                            break;
+                        case "nanophytoplankton":
+                            TempFG = 2;
+                            break;
+                        case "microphytoplankton":
+                            TempFG = 3;
+                            break;
+                        default:
+                            if (bodyMass <= modelInitialisation.PlanktonDispersalThreshold)
+                                TempFG = 4;
+                            else
+                                TempFG = 5;
+                            break;
+                    }
+                    break;
+                case "endotherm":
+                    switch (cohortFunctionalGroupDefinitions.GetTraitNames("diet", cohortFunctionalGroup))
+                    {
+                        case "allspecial":
+                            TempFG = 7;
+                            break;
+                        default:
+                            TempFG = 6;
+                            break;
+                    }
+                    break;
+                default:
+                    Debug.Fail("Thermic trait not found in the functional group definition file.");
+                    break;
+            }
+            return TempFG;
+        }
         /// <summary>
         /// Record the flow of biomass between functional groups during predation
         /// </summary>
@@ -81,291 +133,11 @@ namespace Madingley
             int toIndex = 0;
             if (initialisation.TrackMarineSpecifics && MarineCell)
             {
-                // Get the trophic level index of the functional group that mass is flowing from
-                switch (cohortFunctionalGroupDefinitions.GetTraitNames("nutrition source", fromFunctionalGroup))
-                {
-                    case "herbivore":
-                        switch (cohortFunctionalGroupDefinitions.GetTraitNames("endo/ectotherm", fromFunctionalGroup))
-                        {
-                            case "ectotherm":
-                                switch(cohortFunctionalGroupDefinitions.GetTraitNames("diet", fromFunctionalGroup))
-                                {
-                                    case "picophytoplankton":
-                                        fromIndex = 1;
-                                        break;
-                                    case "nanophytoplankton":
-                                        fromIndex = 2;
-                                        break;
-                                    case "microphytoplankton":
-                                        fromIndex = 3;
-                                        break;
-                                    default:
-                                        if (preyBodyMass <= initialisation.PlanktonDispersalThreshold)
-                                            fromIndex = 4;
-                                        else
-                                            fromIndex = 5;
-                                        break;
-                                }
-                                break;
-                            case "endotherm":
-                                switch(cohortFunctionalGroupDefinitions.GetTraitNames("diet", fromFunctionalGroup))
-                                {
-                                    case "allspecial":
-                                        fromIndex = 7;
-                                        break;
-                                    default:
-                                        fromIndex = 6;
-                                        break;
-                                }
-                                break;
-                            default:
-                                Debug.Fail("Thermic trait not found in the functional group definition file.");
-                                break;   
-                        }
-                        break;
-                    case "omnivore":
-                        switch (cohortFunctionalGroupDefinitions.GetTraitNames("endo/ectotherm", fromFunctionalGroup))
-                        {
-                            case "ectotherm":
-                                switch (cohortFunctionalGroupDefinitions.GetTraitNames("diet", fromFunctionalGroup))
-                                {
-                                    case "picophytoplankton":
-                                        fromIndex = 1;
-                                        break;
-                                    case "nanophytoplankton":
-                                        fromIndex = 2;
-                                        break;
-                                    case "microphytoplankton":
-                                        fromIndex = 3;
-                                        break;
-                                    default:
-                                        if (preyBodyMass <= initialisation.PlanktonDispersalThreshold)
-                                            fromIndex = 4;
-                                        else
-                                            fromIndex = 5;
-                                        break;
-                                }
-                                break;
-                            case "endotherm":
-                                switch (cohortFunctionalGroupDefinitions.GetTraitNames("diet", fromFunctionalGroup))
-                                {
-                                    case "allspecial":
-                                        fromIndex = 7;
-                                        break;
-                                    default:
-                                        fromIndex = 6;
-                                        break;
-                                }
-                                break;
-                            default:
-                                Debug.Fail("Thermic trait not found in the functional group definition file.");
-                                break;
-                        }
-                        break;
-                    case "carnivore":
-                        switch (cohortFunctionalGroupDefinitions.GetTraitNames("endo/ectotherm", fromFunctionalGroup))
-                        {
-                            case "ectotherm":
-                                switch (cohortFunctionalGroupDefinitions.GetTraitNames("diet", fromFunctionalGroup))
-                                {
-                                    case "picophytoplankton":
-                                        fromIndex = 1;
-                                        break;
-                                    case "nanophytoplankton":
-                                        fromIndex = 2;
-                                        break;
-                                    case "microphytoplankton":
-                                        fromIndex = 3;
-                                        break;
-                                    default:
-                                        if (preyBodyMass <= initialisation.PlanktonDispersalThreshold)
-                                            fromIndex = 4;
-                                        else
-                                            fromIndex = 5;
-                                        break;
-                                }
-                                break;
-                            case "endotherm":
-                                switch (cohortFunctionalGroupDefinitions.GetTraitNames("diet", fromFunctionalGroup))
-                                {
-                                    case "allspecial":
-                                        fromIndex = 7;
-                                        break;
-                                    default:
-                                        fromIndex = 6;
-                                        break;
-                                }
-                                break;
-                            default:
-                                Debug.Fail("Thermic trait not found in the functional group definition file.");
-                                break;
-                        }
-                        break;
-                    default:
-                        Debug.Fail("Nutrition source not found in the functional group definition file");
-                        break;
-                }
-                
-                // Get the trophic level index of the functional group that mass is flowing to
-                switch(cohortFunctionalGroupDefinitions.GetTraitNames("nutrition source", toFunctionalGroup))
-                {
-                    case "herbivore":
-                        switch (cohortFunctionalGroupDefinitions.GetTraitNames("endo/ectotherm", toFunctionalGroup))
-                        {
-                            case "ectotherm":
-                                switch (cohortFunctionalGroupDefinitions.GetTraitNames("diet", toFunctionalGroup))
-                                {
-                                    case "picophytoplankton":
-                                        toIndex = 1;
-                                        break;
-                                    case "nanophytoplankton":
-                                        toIndex = 2;
-                                        break;
-                                    case "microphytoplankton":
-                                        toIndex = 3;
-                                        break;
-                                    default:
-                                        if (preyBodyMass <= initialisation.PlanktonDispersalThreshold)
-                                            toIndex = 4;
-                                        else
-                                            toIndex = 5;
-                                        break;
-                                }
-                                break;
-                            case "endotherm":
-                                switch (cohortFunctionalGroupDefinitions.GetTraitNames("diet", toFunctionalGroup))
-                                {
-                                    case "allspecial":
-                                        toIndex = 7;
-                                        break;
-                                    default:
-                                        toIndex = 6;
-                                        break;
-                                }
-                                break;
-                            default:
-                                Debug.Fail("Thermic trait not found in the functional group definition file.");
-                                break;
-                        }
-                        break;
-                    case "omnivore":
-                        switch (cohortFunctionalGroupDefinitions.GetTraitNames("endo/ectotherm", toFunctionalGroup))
-                        {
-                            case "ectotherm":
-                                switch (cohortFunctionalGroupDefinitions.GetTraitNames("diet", toFunctionalGroup))
-                                {
-                                    case "picophytoplankton":
-                                        toIndex = 1;
-                                        break;
-                                    case "nanophytoplankton":
-                                        toIndex = 2;
-                                        break;
-                                    case "microphytoplankton":
-                                        toIndex = 3;
-                                        break;
-                                    default:
-                                        if (preyBodyMass <= initialisation.PlanktonDispersalThreshold)
-                                            toIndex = 4;
-                                        else
-                                            toIndex = 5;
-                                        break;
-                                }
-                                break;
-                            case "endotherm":
-                                switch (cohortFunctionalGroupDefinitions.GetTraitNames("diet", toFunctionalGroup))
-                                {
-                                    case "allspecial":
-                                        toIndex = 7;
-                                        break;
-                                    default:
-                                        toIndex = 6;
-                                        break;
-                                }
-                                break;
-                            default:
-                                Debug.Fail("Thermic trait not found in the functional group definition file.");
-                                break;
-                        }
-                        break;
-                    case "carnivore":
-                        switch (cohortFunctionalGroupDefinitions.GetTraitNames("endo/ectotherm", toFunctionalGroup))
-                        {
-                            case "ectotherm":
-                                switch (cohortFunctionalGroupDefinitions.GetTraitNames("diet", toFunctionalGroup))
-                                {
-                                    case "picophytoplankton":
-                                        toIndex = 1;
-                                        break;
-                                    case "nanophytoplankton":
-                                        toIndex = 2;
-                                        break;
-                                    case "microphytoplankton":
-                                        toIndex = 3;
-                                        break;
-                                    default:
-                                        if (preyBodyMass <= initialisation.PlanktonDispersalThreshold)
-                                            toIndex = 4;
-                                        else
-                                            toIndex = 5;
-                                        break;
-                                }
-                                break;
-                            case "endotherm":
-                                switch (cohortFunctionalGroupDefinitions.GetTraitNames("diet", toFunctionalGroup))
-                                {
-                                    case "allspecial":
-                                        toIndex = 7;
-                                        break;
-                                    default:
-                                        toIndex = 6;
-                                        break;
-                                }
-                                break;
-                            default:
-                                Debug.Fail("Thermic trait not found in the functional group definition file.");
-                                break;
-                        }
-                        break;
-                    default:
-                        Debug.Fail("Nutrition source not found in the functional group definition file");
-                        break;
-                }
-            }
-            else
-            {
-                // Get the trophic level index of the functional group that mass is flowing from
-                switch (cohortFunctionalGroupDefinitions.GetTraitNames("nutrition source", fromFunctionalGroup))
-                {
-                    case "herbivore":
-                        fromIndex = 1;
-                        break;
-                    case "omnivore":
-                        fromIndex = 2;
-                        break;
-                    case "carnivore":
-                        fromIndex = 3;
-                        break;
-                    default:
-                        Debug.Fail("Specified nutrition source is not supported");
-                        break;
-                }
+                // Get the functional group that the mass is flowing from
+                fromIndex = DetermineFunctionalGroup(cohortFunctionalGroupDefinitions, fromFunctionalGroup, preyBodyMass, initialisation);
 
-                // Get the trophic level index of the functional group that mass is flowing to
-                switch (cohortFunctionalGroupDefinitions.GetTraitNames("nutrition source", toFunctionalGroup))
-                {
-                    case "herbivore":
-                        toIndex = 1;
-                        break;
-                    case "omnivore":
-                        toIndex = 2;
-                        break;
-                    case "carnivore":
-                        toIndex = 3;
-                        break;
-                    default:
-                        Debug.Fail("Specified nutrition source is not supported");
-                        break;
-                }
+                // Get the functional group that the mass is flowing too
+                toIndex = DetermineFunctionalGroup(cohortFunctionalGroupDefinitions, toFunctionalGroup, predatorBodyMass, initialisation);
             }
 
             // Add the flow of matter to the matrix of functional group mass flows
@@ -383,9 +155,9 @@ namespace Madingley
         /// <param name="predatorBodyMass">The mass of the predator doing the eating</param>
         /// <param name="initialisation">The Madingley Model initialisation</param>
         /// <param name="MarineCell">Whether the current cell is a marine cell</param>
-        public void RecordHerbivoryTrophicFlow(uint latIndex, uint lonIndex, int toFunctionalGroup, FunctionalGroupDefinitions
-            cohortFunctionalGroupDefinitions, double massEaten, double predatorBodyMass, MadingleyModelInitialisation initialisation,
-            Boolean MarineCell )
+        public void RecordHerbivoryFGFlow(uint latIndex, uint lonIndex, int toFunctionalGroup, int fromFunctionalGroup, FunctionalGroupDefinitions
+            cohortFunctionalGroupDefinitions, FunctionalGroupDefinitions stockFunctionalGroupDefinitions, double massEaten, double predatorBodyMass, MadingleyModelInitialisation initialisation,
+            Boolean MarineCell)
         {
             // For herbivory the trophic level index that mass flows from is 0
             int fromIndex = 0;
@@ -394,92 +166,26 @@ namespace Madingley
 
             if (initialisation.TrackMarineSpecifics && MarineCell)
             {
-                // Get the trophic level index of the functional group that mass is flowing to
-                switch (cohortFunctionalGroupDefinitions.GetTraitNames("nutrition source", toFunctionalGroup))
+                switch (stockFunctionalGroupDefinitions.GetTraitNames("stock name", fromFunctionalGroup))
                 {
-                    case "herbivore":
-                        switch (cohortFunctionalGroupDefinitions.GetTraitNames("mobility", toFunctionalGroup))
-                        {
-                            case "planktonic":
-                                toIndex = 4;
-                                break;
-                            default:
-                                switch (cohortFunctionalGroupDefinitions.GetTraitNames("endo/ectotherm", toFunctionalGroup))
-                                {
-                                    case "endotherm":
-                                        switch (cohortFunctionalGroupDefinitions.GetTraitNames("diet", toFunctionalGroup))
-                                        {
-                                            case "allspecial":
-                                                toIndex = 6;
-                                                break;
-                                            default:
-                                                toIndex = 1;
-                                                break;
-                                        }
-                                        break;
-                                    default:
-                                        if (predatorBodyMass <= initialisation.PlanktonDispersalThreshold)
-                                            toIndex = 5;
-                                        else
-                                            toIndex = 1;
-                                        break;
-                                }
-                                break;
-                        }
+                    case "picophytoplankton":
+                        fromIndex = -3;
                         break;
-                    case "omnivore":
-                        switch (cohortFunctionalGroupDefinitions.GetTraitNames("mobility", toFunctionalGroup))
-                        {
-                            case "planktonic":
-                                toIndex = 4;
-                                break;
-                            default:
-                                switch (cohortFunctionalGroupDefinitions.GetTraitNames("endo/ectotherm", toFunctionalGroup))
-                                {
-                                    case "endotherm":
-                                        switch (cohortFunctionalGroupDefinitions.GetTraitNames("diet", toFunctionalGroup))
-                                        {
-                                            case "allspecial":
-                                                toIndex = 6;
-                                                break;
-                                            default:
-                                                toIndex = 2;
-                                                break;
-                                        }
-                                        break;
-                                    default:
-                                        if (predatorBodyMass <= initialisation.PlanktonDispersalThreshold)
-                                            toIndex = 5;
-                                        else
-                                            toIndex = 2;
-                                        break;
-                                }
-                                break;
-                        }
+                    case "nanophytoplankton":
+                        fromIndex = -2;
+                        break;
+                    case "micophytoplankton":
+                        fromIndex = -1;
                         break;
                     default:
-                        Debug.Fail("Specified nutrition source is not supported");
+                        Debug.Fail("Calling fuctional group eating tracker assuming multiple stock functional groups but none defined (or definitions not found)");
                         break;
+
                 }
-            }
-            else
-            {
-                // Get the trophic level index of the functional group that mass is flowing to
-                switch (cohortFunctionalGroupDefinitions.GetTraitNames("nutrition source", toFunctionalGroup))
-                {
-                    case "herbivore":
-                        toIndex = 1;
-                        break;
-                    case "omnivore":
-                        toIndex = 2;
-                        break;
-                    case "carnivore":
-                        toIndex = 3;
-                        break;
-                    default:
-                        Debug.Fail("Specified nutrition source is not supported");
-                        break;
-                }
+
+                // Get the functional group that the mass is flowing too
+                toIndex = DetermineFunctionalGroup(cohortFunctionalGroupDefinitions, toFunctionalGroup, predatorBodyMass, initialisation);
+
             }
 
             // Add the flow of matter to the matrix of mass flows
