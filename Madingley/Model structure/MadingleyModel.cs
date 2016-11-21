@@ -309,6 +309,8 @@ namespace Madingley
         // An instance of the direct harvesting impacts class
         Harvesting HarvestingSimulator;
 
+        private FunctionalGroupTracker FGTracker;
+
         /// <summary>
         /// Initializes the ecosystem model
         /// </summary>
@@ -339,6 +341,10 @@ namespace Madingley
             // Instance the array of process trackers
             ProcessTrackers = new ProcessTracker[_CellList.Count];
 
+            // Instantiate a new functional group tracker
+            FGTracker = new FunctionalGroupTracker(EcosystemModelGrid.Lats, EcosystemModelGrid.Lons, initialisation, CohortFunctionalGroupDefinitions,
+                StockFunctionalGroupDefinitions, outputFilesSuffix, initialisation.OutputPath, initialisation.ProcessTrackingOutputs["FGFlowsOutput"]);
+      
             // Temporary variables
             Boolean varExists;
 
@@ -520,8 +526,13 @@ namespace Madingley
                          // Write out trophic flow data for this time step
                          if(ProcessTrackers[i].TrackProcesses && (initialisation.TimeStepToStartProcessTrackers >= hh)) ProcessTrackers[i].WriteTimeStepTrophicFlows(CurrentTimeStep, EcosystemModelGrid.NumLatCells, EcosystemModelGrid.NumLonCells, initialisation,
                              EcosystemModelGrid.GetEnviroLayer("Realm", 0, _CellList[i][0], _CellList[i][1], out varExists) == 2.0);
-                 
-                     }
+
+                        if (initialisation.TimeStepToStartProcessTrackers == hh)
+                        {
+                            FGTracker.OpenTrackerFile();
+                            
+                        }
+                    }
                  }
                  else
                  {
@@ -577,6 +588,11 @@ namespace Madingley
              {
                  if (ProcessTrackers[i].TrackProcesses) ProcessTrackers[i].CloseStreams(SpecificLocations);
              }
+
+            if (initialisation.TrackProcesses)
+                FGTracker.CloseTrackerFile();
+
+
 
             // Write the final global outputs
             GlobalOutputs.FinalOutputs();
