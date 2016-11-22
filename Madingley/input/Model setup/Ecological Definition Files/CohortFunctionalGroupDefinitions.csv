@@ -1,16 +1,16 @@
-DEFINITION_Heterotroph/Autotroph,DEFINITION_Nutrition source,DEFINITION_Diet,DEFINITION_Realm,DEFINITION_Mobility,DEFINITION_Reproductive strategy,DEFINITION_Endo/Ectotherm,PROPERTY_Herbivory assimilation,PROPERTY_Carnivory assimilation,PROPERTY_Proportion suitable time active,PROPERTY_cohort adult mass ratio multiplier,PROPERTY_Minimum mass,PROPERTY_Maximum mass,PROPERTY_Initial number of GridCellCohorts,NOTES_group description
+DEFINITION_Heterotroph/Autotroph,DEFINITION_Nutrition source,DEFINITION_Diet,DEFINITION_Realm,DEFINITION_Mobility,DEFINITION_Reproductive strategy,DEFINITION_Endo/Ectotherm,PROPERTY_Herbivory assimilation,PROPERTY_Carnivory assimilation,PROPERTY_Proportion suitable time active,PROPERTY_cohort adult mass ratio multiplier,PROPERTY_Minimum mass,PROPERTY_Maximum mass,PROPERTY_Initial number of GridCellCohorts,DEFINITION_group description
 Heterotroph,Carnivore,AllSpecial,Marine,Mobile,iteroparity,Endotherm,0,0.8,0.5,10,1.00E+04,1.50E+08,100,Baleen whales
 Heterotroph,Carnivore,All,Marine,Mobile,iteroparity,Endotherm,0,0.8,0.5,10,1.00E+02,5.00E+07,100,Mobile endotherms
 Heterotroph,Carnivore,All,Marine,Mobile,iteroparity,Ectotherm,0,0.8,0.5,10,5.00E-04,2.00E+06,100,Mobile ectotherms
 Heterotroph,Carnivore,All,Marine,Planktonic,Semelparity,Ectotherm,0,0.8,0.5,10,5.00E-01,1.00E+03,100,Gelatinous zooplankton
 Heterotroph,Omnivore,Microphytoplankton,Marine,Planktonic,iteroparity,Ectotherm,0.7,0.64,0.5,10,5.00E-04,5.00E-01,200,Obligate multicellular zooplankton
 Heterotroph,Omnivore,Pico+nanophytoplankton,Marine,Planktonic,cell division,Ectotherm,0.7,0.64,0.5,0.1,5.00E-08,5.00E-04,400,Obligate unicellular zooplankton
-Heterotroph,Herbivore,All,Terrestrial,Mobile,iteroparity,Endotherm,0.5,0,0.5,1,1.5,5000000,111,None
-Heterotroph,Carnivore,All,Terrestrial,Mobile,iteroparity,Endotherm,0,0.8,0.5,1,3,700000,111,None
-Heterotroph,Omnivore,All,Terrestrial,Mobile,iteroparity,Endotherm,0.4,0.64,0.5,1,3,1500000,111,None
-Heterotroph,Herbivore,All,Terrestrial,Mobile,semelparity,Ectotherm,0.5,0,0.5,1,0.0004,1000,111,None
-Heterotroph,Carnivore,All,Terrestrial,Mobile,semelparity,Ectotherm,0,0.8,0.5,1,0.0008,2000,111,None
-Heterotroph,Omnivore,All,Terrestrial,Mobile,semelparity,Ectotherm,0.4,0.64,0.5,1,0.0004,2000,111,None
-Heterotroph,Herbivore,All,Terrestrial,Mobile,iteroparity,Ectotherm,0.5,0,0.5,1,1,300000,111,None
-Heterotroph,Carnivore,All,Terrestrial,Mobile,iteroparity,Ectotherm,0,0.8,0.5,1,1.5,2000000,111,None
-Heterotroph,Omnivore,All,Terrestrial,Mobile,iteroparity,Ectotherm,0.4,0.64,0.5,1,1.5,55000,111,None
+Heterotroph,Herbivore,All,Terrestrial,Mobile,iteroparity,Endotherm,0.5,0,0.5,1,1.5,5000000,111,ItHerbEndo
+Heterotroph,Carnivore,All,Terrestrial,Mobile,iteroparity,Endotherm,0,0.8,0.5,1,3,700000,111,ItCarnEndo
+Heterotroph,Omnivore,All,Terrestrial,Mobile,iteroparity,Endotherm,0.4,0.64,0.5,1,3,1500000,111,ItOmEndo
+Heterotroph,Herbivore,All,Terrestrial,Mobile,semelparity,Ectotherm,0.5,0,0.5,1,0.0004,1000,111,SemHerb
+Heterotroph,Carnivore,All,Terrestrial,Mobile,semelparity,Ectotherm,0,0.8,0.5,1,0.0008,2000,111,SemCarn
+Heterotroph,Omnivore,All,Terrestrial,Mobile,semelparity,Ectotherm,0.4,0.64,0.5,1,0.0004,2000,111,SemOmn
+Heterotroph,Herbivore,All,Terrestrial,Mobile,iteroparity,Ectotherm,0.5,0,0.5,1,1,300000,111,ItHerb
+Heterotroph,Carnivore,All,Terrestrial,Mobile,iteroparity,Ectotherm,0,0.8,0.5,1,1.5,2000000,111,ItCarn
+Heterotroph,Omnivore,All,Terrestrial,Mobile,iteroparity,Ectotherm,0.4,0.64,0.5,1,1.5,55000,111,ItOmn

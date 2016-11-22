@@ -71,7 +71,7 @@ namespace Madingley
             // These aren't strictly FGs as defined by the model, but are separated for output purposes
             MarineFGsForTracking.Add("meroplankton", TempMarine);
             TempMarine++;
-            MarineFGsForTracking.Add("Nanozooplankton", TempMarine);
+            MarineFGsForTracking.Add("nanozooplankton", TempMarine);
             TempMarine++;
             NumberMarineFGsForTracking = NumberMarineFGsForTracking + 2;
 
