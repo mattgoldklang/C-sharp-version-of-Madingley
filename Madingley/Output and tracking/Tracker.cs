@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Diagnostics;
 
 namespace Madingley
 {
@@ -9,7 +10,8 @@ namespace Madingley
     {
         abstract public void OpenTrackerFile();
 
-        abstract public void WriteToTrackerFile();
+        abstract public void WriteToTrackerFile(uint currentTimeStep, uint numLats, uint numLons, MadingleyModelInitialisation initialisation,
+            Boolean MarineCell);
 
         abstract public void CloseTrackerFile();
 
@@ -23,24 +25,68 @@ namespace Madingley
         /// Determine the functional group name. Also splits marine functional groups into planktonic and non-planktonic based on size.
         /// </summary>
         /// <param name="madingleyInitialisation">Madingley model initialisation file</param>
-        /// <param name="cohortToClassify">The cohort that you want to find out the functional group for</param>
-        /// <param name="fGDefinitions">Definitions of all functional groups</param>
+        /// <param name="cohortOrStockName">The name of the cohort that you want to find out the functional group for</param>
+        /// <param name="cohortOrStockBodyMass">The body mass of the cohrt</param>
         /// <param name="Marine">Whether this is a marine cell</param>
         /// <returns></returns>
-        public string DetermineFunctionalGroup(MadingleyModelInitialisation madingleyInitialisation, Cohort cohortToClassify, FunctionalGroupDefinitions fGDefinitions, Boolean Marine)
+        public int DetermineFunctionalGroup(MadingleyModelInitialisation madingleyInitialisation, FunctionalGroupDefinitions stockFunctionalGroupDefinitions, string cohortOrStockName, double cohortOrStockBodyMass, Boolean Marine)
         {
-            string TempString = fGDefinitions.GetTraitNames("group description", cohortToClassify.FunctionalGroupIndex);
-
+            // In the marine environment, all non-obligate zooplankton are put in the meroplankton group
             if (Marine)
             {
-                if (cohortToClassify.IndividualBodyMass < madingleyInitialisation.PlanktonDispersalThreshold)
-                    TempString = TempString + " planktonic";
+                // Put plankton in the right FG
+                if (cohortOrStockBodyMass < madingleyInitialisation.PlanktonDispersalThreshold)
+                {
+                    if (cohortOrStockName == "obligate unicellular zooplankton")
+                    {
+                        // If unicellular and below size threshold then nanoplankton
+                        if (cohortOrStockBodyMass < 5.00E-08)
+                        {
+                            cohortOrStockName = "nanozooplankton";
+                        }
+                        else
+                        {
+                            cohortOrStockName = "microzooplankton";
+                        }
+                    }
+                    else
+                    {
+                        if (cohortOrStockName != "obligate multicellular zooplankton")
+                            if (!stockFunctionalGroupDefinitions.GetUniqueTraitValues("stock name").Contains(cohortOrStockName))
+                                cohortOrStockName = cohortOrStockName + " planktonic";
+                    }
+
+                }
+
+                // Return the FG index
+                if (MarineFGsForTracking.ContainsKey(cohortOrStockName))
+                    return MarineFGsForTracking[cohortOrStockName];
+                else
+                {
+                    Debug.Fail("Error finding the name of a marine functional group in the tracker");
+                    return -1;
+                }
             }
-
-            return (TempString);
-
+            else
+            {
+                // Return the FG index
+                if (TerrestrialFGsForTracking.ContainsKey(cohortOrStockName))
+                    return TerrestrialFGsForTracking[cohortOrStockName];
+                else
+                {
+                    Debug.Fail("Error finding the name of a terrestrial functional group in the tracker");
+                    return -1;
+                }
+            }
         }
 
+        /// <summary>
+        /// Assign functional group numbers to functional groups (as specified by the tracker, not the model), and keep them in a dictionary indexed with a string
+        /// generally corresponding to the FG name
+        /// </summary>
+        /// <param name="madingleyInitialisation"></param>
+        /// <param name="fGDefinitions"></param>
+        /// <param name="stockDefinitions"></param>
         public void AssignFunctionalGroups(MadingleyModelInitialisation madingleyInitialisation, FunctionalGroupDefinitions fGDefinitions, FunctionalGroupDefinitions stockDefinitions)
         {
             MarineFGsForTracking = new Dictionary<string, int>();
@@ -57,7 +103,13 @@ namespace Madingley
                 if (fGDefinitions.GetTraitNames("realm", ii) == "marine")
                 {
                     NumberMarineFGsForTracking++;
-                    MarineFGsForTracking.Add(fGDefinitions.GetTraitNames("group description", ii), TempMarine);
+
+                    // We create two obligate unicellular zooplankton groups; microzooplankton (here) and nanozooplankton (later)
+                    if (fGDefinitions.GetTraitNames("group description", ii) == "obligate unicellular zooplankton")
+                        MarineFGsForTracking.Add("microzooplankton", TempMarine);
+                    else
+                        MarineFGsForTracking.Add(fGDefinitions.GetTraitNames("group description", ii), TempMarine);
+
                     TempMarine++;
                 }
                 else
@@ -92,6 +144,14 @@ namespace Madingley
                     TempTerrestrial++;
                 }
             }
+
+            // Now add in an FG for adding net autotroph production as an input, again for tracking purposes only
+            NumberMarineFGsForTracking++;
+            MarineFGsForTracking.Add("autotroph net production", TempMarine);
+            TempMarine++;
+            NumberTerrestrialFGsForTracking++;
+            TerrestrialFGsForTracking.Add("autotroph net production", TempTerrestrial);
+            TempTerrestrial++;
         }
     }
 }

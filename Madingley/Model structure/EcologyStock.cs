@@ -64,19 +64,20 @@ namespace Madingley
         ///<param name="outputDetail">The level of detail to use in outputs</param>
         ///<param name="specificLocations">Whether to run the model for specific locations</param>
         ///<param name="impactCell">Whether this cell should have human impacts applied</param>
-        public void RunWithinCellEcology(GridCellStockHandler gridCellStocks, int[] actingStock, SortedList<string, double[]> cellEnvironment,
-            SortedList<string, string> environmentalDataUnits, Tuple<string, double, double> humanNPPScenario, 
-            FunctionalGroupDefinitions madingleyStockDefinitions, 
-            uint currentTimeStep, uint burninSteps, uint impactSteps,uint recoverySteps, uint instantStep, uint numInstantSteps, string globalModelTimeStepUnit, Boolean trackProcesses, 
-            ProcessTracker tracker, 
+        public void RunWithinCellEcology(MadingleyModelInitialisation madingleyInitialisation, GridCellStockHandler gridCellStocks, int[] actingStock, SortedList<string, double[]> cellEnvironment,
+            SortedList<string, string> environmentalDataUnits, Tuple<string, double, double> humanNPPScenario, FunctionalGroupDefinitions madingleyCohortDefinitions, FunctionalGroupDefinitions madingleyStockDefinitions, 
+            uint currentTimeStep, uint burninSteps, uint impactSteps,uint recoverySteps, uint instantStep, uint numInstantSteps, string globalModelTimeStepUnit, 
+            Boolean trackProcesses, ProcessTracker tracker, FunctionalGroupTracker functionalTracker,
             GlobalProcessTracker globalTracker, uint currentMonth, 
             string outputDetail, bool specificLocations, Boolean impactCell, Boolean nsfPhyto)
         {
             if (madingleyStockDefinitions.GetTraitNames("Realm", actingStock[0]) == "marine")
             {
                 // Run the autotroph processor
-                MarineNPPtoAutotrophStock.ConvertNPPToAutotroph(cellEnvironment, gridCellStocks, actingStock, environmentalDataUnits["LandNPP"], 
-                    environmentalDataUnits["OceanNPP"], currentTimeStep,globalModelTimeStepUnit,tracker,globalTracker ,outputDetail,specificLocations,currentMonth, nsfPhyto);
+                MarineNPPtoAutotrophStock.ConvertNPPToAutotroph(madingleyInitialisation, madingleyCohortDefinitions, madingleyStockDefinitions, cellEnvironment, gridCellStocks, actingStock, environmentalDataUnits["LandNPP"], 
+                    environmentalDataUnits["OceanNPP"], currentTimeStep,globalModelTimeStepUnit,tracker, functionalTracker, globalTracker ,
+                    outputDetail,specificLocations,currentMonth, nsfPhyto);
+                
             }
             else if (madingleyStockDefinitions.GetTraitNames("Realm", actingStock[0]) == "terrestrial")
             {
@@ -91,10 +92,19 @@ namespace Madingley
 
                 // Apply human appropriation of NPP
                 gridCellStocks[actingStock].TotalBiomass += WetMatterNPP * (1.0 - fhanpp);
+
+                // Track addition of net NPP
                 if (globalTracker.TrackProcesses)
                 {
                     globalTracker.RecordHANPP((uint)cellEnvironment["LatIndex"][0], (uint)cellEnvironment["LonIndex"][0], (uint)actingStock[0],
                         fhanpp);
+                }
+
+                if (tracker.TrackProcesses)
+                {
+                    functionalTracker.RecordFGFlow((uint)cellEnvironment["LatIndex"][0], (uint)cellEnvironment["LonIndex"][0], madingleyInitialisation, madingleyStockDefinitions,
+                        madingleyStockDefinitions.GetTraitNames("stock name", actingStock[0]), gridCellStocks[actingStock].IndividualBodyMass,
+                        "autotroph net production", 1, WetMatterNPP * (1.0 - fhanpp), cellEnvironment["Realm"][0] == 2.0);
                 }
 
                 if (gridCellStocks[actingStock].TotalBiomass < 0.0) gridCellStocks[actingStock].TotalBiomass = 0.0;

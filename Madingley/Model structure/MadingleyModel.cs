@@ -409,7 +409,6 @@ namespace Madingley
             // Initialise the utility functions
             Utilities = new UtilityFunctions();
 
-
             // Initialise the climate change impacts class
             ClimateChangeSimulator = new ClimateChange();
 
@@ -430,9 +429,7 @@ namespace Madingley
             Console.WriteLine(" ");
 
             // Temporary variable
-            Boolean varExists;
-
-            
+            Boolean varExists;  
 
              // Run the model
              for (UInt32 hh = 0; hh < NumTimeSteps; hh += 1)
@@ -545,8 +542,14 @@ namespace Madingley
                 for (int i = 0; i < _CellList.Count; i++)
                 {
                     // Write out trophic flow data for this time step
-                    if (ProcessTrackers[i].TrackProcesses && (hh >= initialisation.TimeStepToStartProcessTrackers)) ProcessTrackers[i].WriteTimeStepFGFlows(CurrentTimeStep, EcosystemModelGrid.NumLatCells, EcosystemModelGrid.NumLonCells, initialisation,
+                    if (ProcessTrackers[i].TrackProcesses && (hh >= initialisation.TimeStepToStartProcessTrackers))
+                    {
+                        ProcessTrackers[i].WriteTimeStepFGFlows(CurrentTimeStep, EcosystemModelGrid.NumLatCells, EcosystemModelGrid.NumLonCells, initialisation,
                      EcosystemModelGrid.GetEnviroLayer("Realm", 0, _CellList[i][0], _CellList[i][1], out varExists) == 2.0);
+
+                        FGTracker.WriteToTrackerFile(CurrentTimeStep, EcosystemModelGrid.NumLatCells, EcosystemModelGrid.NumLonCells, initialisation,
+            EcosystemModelGrid.GetEnviroLayer("Realm", 0, _CellList[i][0], _CellList[i][1], out varExists) == 2.0);
+                    }
                 }
 
                 OutputTimer.Stop();
@@ -1153,11 +1156,12 @@ namespace Madingley
                     ActingStock[1] = ll;
 
                     // Run stock ecology
-                    MadingleyEcologyStock.RunWithinCellEcology(workingGridCellStocks, ActingStock, EcosystemModelGrid.GetCellEnvironment(
-                        latCellIndex, lonCellIndex), EnvironmentalDataUnits, _HumanNPPScenario, StockFunctionalGroupDefinitions,
-                        CurrentTimeStep, NumBurninSteps, NumImpactSteps, initialisation.RecoveryTimeSteps, initialisation.InstantaneousTimeStep, initialisation.NumInstantaneousTimeStep, _GlobalModelTimeStepUnit, ProcessTrackers[cellIndex].TrackProcesses, ProcessTrackers[cellIndex],
-                        TrackGlobalProcesses, CurrentMonth,
-                        InitialisationFileStrings["OutputDetail"],SpecificLocations,((initialisation.ImpactCellIndices.Contains((uint)cellIndex) || (initialisation.ImpactAll))), initialisation.NSFPhyto);
+                    MadingleyEcologyStock.RunWithinCellEcology(initialisation, workingGridCellStocks, ActingStock, EcosystemModelGrid.GetCellEnvironment(
+                        latCellIndex, lonCellIndex), EnvironmentalDataUnits, _HumanNPPScenario, CohortFunctionalGroupDefinitions, StockFunctionalGroupDefinitions,
+                        CurrentTimeStep, NumBurninSteps, NumImpactSteps, initialisation.RecoveryTimeSteps, initialisation.InstantaneousTimeStep, initialisation.NumInstantaneousTimeStep, _GlobalModelTimeStepUnit, 
+                        ProcessTrackers[cellIndex].TrackProcesses, ProcessTrackers[cellIndex], FGTracker, TrackGlobalProcesses, CurrentMonth,
+                        InitialisationFileStrings["OutputDetail"],SpecificLocations,
+                        ((initialisation.ImpactCellIndices.Contains((uint)cellIndex) || (initialisation.ImpactAll))), initialisation.NSFPhyto);
 
                 }
             }
@@ -1165,7 +1169,8 @@ namespace Madingley
         }
 
         private void RunWithinCellCohortEcology(uint latCellIndex, uint lonCellIndex, ThreadLockedParallelVariables partial, 
-            GridCellCohortHandler workingGridCellCohorts, GridCellStockHandler workingGridCellStocks,string outputDetail, int cellIndex, MadingleyModelInitialisation initialisation)
+            GridCellCohortHandler workingGridCellCohorts, GridCellStockHandler workingGridCellStocks,string outputDetail, int cellIndex, 
+            MadingleyModelInitialisation initialisation)
         {
 
 
@@ -1266,7 +1271,7 @@ namespace Madingley
                         ActingCohort, EcosystemModelGrid.GetCellEnvironment(latCellIndex, lonCellIndex),
                         EcosystemModelGrid.GetCellDeltas(latCellIndex, lonCellIndex),
                         CohortFunctionalGroupDefinitions, StockFunctionalGroupDefinitions, CurrentTimeStep,
-                        ProcessTrackers[cellIndex], ref partial, SpecificLocations,outputDetail, CurrentMonth, initialisation);
+                        ProcessTrackers[cellIndex], FGTracker, ref partial, SpecificLocations,outputDetail, CurrentMonth, initialisation);
 
                     // Update the properties of the acting cohort
                     MadingleyEcologyCohort.UpdateEcology(workingGridCellCohorts, workingGridCellStocks, ActingCohort,
