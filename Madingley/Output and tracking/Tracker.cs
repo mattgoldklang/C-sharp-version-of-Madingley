@@ -11,7 +11,13 @@ namespace Madingley
 
         abstract public void WriteToTrackerFile();
 
-        abstract public void CloseTrackerFile();      
+        abstract public void CloseTrackerFile();
+
+        protected int NumberMarineFGsForTracking;
+        protected int NumberTerrestrialFGsForTracking;
+
+        protected Dictionary<string, int> MarineFGsForTracking;
+        protected Dictionary<string, int> TerrestrialFGsForTracking;
 
         /// <summary>
         /// Determine the functional group name. Also splits marine functional groups into planktonic and non-planktonic based on size.
@@ -33,6 +39,59 @@ namespace Madingley
 
             return (TempString);
 
+        }
+
+        public void AssignFunctionalGroups(MadingleyModelInitialisation madingleyInitialisation, FunctionalGroupDefinitions fGDefinitions, FunctionalGroupDefinitions stockDefinitions)
+        {
+            MarineFGsForTracking = new Dictionary<string, int>();
+            TerrestrialFGsForTracking = new Dictionary<string, int>();
+
+            NumberMarineFGsForTracking = 0;
+            NumberTerrestrialFGsForTracking = 0;
+
+            int TempMarine = 0;
+            int TempTerrestrial = 0;
+
+            for (int ii = 0; ii < fGDefinitions.AllFunctionalGroupsIndex.Length; ii++)
+            {
+                if (fGDefinitions.GetTraitNames("realm", ii) == "marine")
+                {
+                    NumberMarineFGsForTracking++;
+                    MarineFGsForTracking.Add(fGDefinitions.GetTraitNames("group description", ii), TempMarine);
+                    TempMarine++;
+                }
+                else
+                {
+                    NumberTerrestrialFGsForTracking++;
+                    TerrestrialFGsForTracking.Add(fGDefinitions.GetTraitNames("group description", ii), TempTerrestrial);
+                    TempTerrestrial++;
+                }
+            }
+            // Add in two extra marine FGs: one for meroplankton, and another for separating the nanozooplankton and the microzooplankton, which are one FG in the model input file
+            // These aren't strictly FGs as defined by the model, but are separated for output purposes
+            MarineFGsForTracking.Add("meroplankton", TempMarine);
+            TempMarine++;
+            MarineFGsForTracking.Add("nanozooplankton", TempMarine);
+            TempMarine++;
+            NumberMarineFGsForTracking = NumberMarineFGsForTracking + 2;
+
+            // Now add the stocks
+
+            for (int ii = 0; ii < stockDefinitions.AllFunctionalGroupsIndex.Length; ii++)
+            {
+                if (stockDefinitions.GetTraitNames("realm", ii) == "marine")
+                {
+                    NumberMarineFGsForTracking++;
+                    MarineFGsForTracking.Add(stockDefinitions.GetTraitNames("stock name", ii), TempMarine);
+                    TempMarine++;
+                }
+                else
+                {
+                    NumberTerrestrialFGsForTracking++;
+                    TerrestrialFGsForTracking.Add(stockDefinitions.GetTraitNames("stock name", ii), TempTerrestrial);
+                    TempTerrestrial++;
+                }
+            }
         }
     }
 }

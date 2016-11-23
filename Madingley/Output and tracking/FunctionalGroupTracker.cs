@@ -12,9 +12,7 @@ namespace Madingley
         private StreamWriter FGFlowsWriter;
 
         private TextWriter SyncedFGFlowsWriter;
-
-        private int NumMarineFGsIncStocks;
-        private int NumTerrestrialFGsIncStocks;
+        
         private float[] Latitudes;
         private float[] Longitudes;
 
@@ -51,11 +49,11 @@ namespace Madingley
             OutputPath = outputPath;
             FileSuffix = outputFileSuffix;
 
-            NumMarineFGsIncStocks = fGDefinitions.GetFunctionalGroupIndex("realm", "marine", true).Length + stockFGDefinitions.GetFunctionalGroupIndex("realm", "marine", true).Length;
-            NumTerrestrialFGsIncStocks = fGDefinitions.GetFunctionalGroupIndex("realm", "terrestrial", true).Length + stockFGDefinitions.GetFunctionalGroupIndex("realm", "terrestrial", true).Length;
-
+            // Assign a number and name to each functional group (FG as defined by output, not by model)
+            AssignFunctionalGroups(initialisation, fGDefinitions, stockFGDefinitions);
+                      
             // Initialise array to hold mass flows among functional groups
-            MaxNumberFunctionalGroups = Math.Max(NumMarineFGsIncStocks, NumTerrestrialFGsIncStocks);
+            MaxNumberFunctionalGroups = Math.Max(NumberMarineFGsForTracking, NumberTerrestrialFGsForTracking);
             FGMassFlows = new double[latitudes.Length, longitudes.Length, MaxNumberFunctionalGroups, MaxNumberFunctionalGroups];
 
         }
@@ -63,8 +61,6 @@ namespace Madingley
         /// <summary>
         /// Open the tracking file for writing to
         /// </summary>
-        /// <param name="outputPath">The output directory</param>
-        /// <param name="outputFilesSuffix"></param>
         override public void OpenTrackerFile()
         {
             FGFlowsWriter = new StreamWriter(OutputPath + FileName + FileSuffix + ".txt");
@@ -74,8 +70,13 @@ namespace Madingley
         }
 
         override public void WriteToTrackerFile()
-        { }
+        {
+             
+        }
 
+        /// <summary>
+        /// Close the file that has been written to
+        /// </summary>
         override public void CloseTrackerFile()
         {
             FGFlowsWriter.Dispose();
