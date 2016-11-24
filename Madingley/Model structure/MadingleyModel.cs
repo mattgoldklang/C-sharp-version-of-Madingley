@@ -547,7 +547,7 @@ namespace Madingley
                         ProcessTrackers[i].WriteTimeStepFGFlows(CurrentTimeStep, EcosystemModelGrid.NumLatCells, EcosystemModelGrid.NumLonCells, initialisation,
                      EcosystemModelGrid.GetEnviroLayer("Realm", 0, _CellList[i][0], _CellList[i][1], out varExists) == 2.0);
 
-                        FGTracker.WriteToTrackerFile(CurrentTimeStep, EcosystemModelGrid.NumLatCells, EcosystemModelGrid.NumLonCells, initialisation,
+                        FGTracker.WriteToTrackerFile(CurrentTimeStep, EcosystemModelGrid, EcosystemModelGrid.NumLatCells, EcosystemModelGrid.NumLonCells, initialisation,
             EcosystemModelGrid.GetEnviroLayer("Realm", 0, _CellList[i][0], _CellList[i][1], out varExists) == 2.0);
                     }
                 }
