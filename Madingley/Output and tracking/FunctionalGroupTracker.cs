@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using System.Diagnostics;
 
 namespace Madingley
 {
@@ -68,11 +69,71 @@ namespace Madingley
             SyncedFGFlowsWriter.WriteLine("Latitude\tLongitude\ttime_step\tfromIndex\ttoIndex\tmass_eaten_g");
 
         }
-
-        override public void WriteToTrackerFile()
-        {
              
+
+        /// <summary>
+        /// Record a flow of biomass between two functional groups (as specified by the tracker)
+        /// </summary>
+        /// <param name="latIndex"></param>
+        /// <param name="lonIndex"></param>
+        /// <param name="madingleyInitialisation"></param>
+        /// <param name="predatorCohortOrStockName"></param>
+        /// <param name="predatorBodyMass"></param>
+        /// <param name="preyCohortOrStockName"></param>
+        /// <param name="preyBodyMass"></param>
+        /// <param name="massEaten"></param>
+        /// <param name="marineCell"></param>
+        public void RecordFGFlow(uint latIndex, uint lonIndex, MadingleyModelInitialisation madingleyInitialisation, FunctionalGroupDefinitions stockFunctionalGroupDefinitions, string predatorCohortOrStockName, double predatorBodyMass, string preyCohortOrStockName, double preyBodyMass, double massEaten, Boolean marineCell)
+        {
+            int fromIndex = 0;
+            int toIndex = 0;
+
+            // Get the functional group that the mass is flowing from
+            fromIndex = DetermineFunctionalGroup(madingleyInitialisation, stockFunctionalGroupDefinitions, predatorCohortOrStockName, predatorBodyMass, marineCell);
+
+            // Get the functional group that the mass is flowing too
+            toIndex = DetermineFunctionalGroup(madingleyInitialisation, stockFunctionalGroupDefinitions, preyCohortOrStockName, preyBodyMass, marineCell);
+            
+            // Add the flow of matter to the matrix of functional group mass flows
+            FGMassFlows[latIndex, lonIndex, fromIndex, toIndex] += massEaten;
         }
+
+
+        /// <summary>
+        /// Write flows of matter among functional groups to the output file at the end of the time step
+        /// </summary>
+        /// <param name="currentTimeStep">The current time step</param>
+        /// <param name="numLats">The latitudinal dimension of the model grid in number of cells</param>
+        /// <param name="numLons">The longitudinal dimension of the model grid in number of cells</param>
+        /// <param name="initialisation">The Madingley Model initialisation</param>
+        /// <param name="MarineCell">Whether the current cell is a marine cell</param>
+        override public void WriteToTrackerFile(uint currentTimeStep, uint numLats, uint numLons, MadingleyModelInitialisation initialisation,
+            Boolean MarineCell)
+        {
+            int NumFGs = FGMassFlows.GetLength(2);
+
+            for (int lat = 0; lat < numLats; lat++)
+            {
+                for (int lon = 0; lon < numLons; lon++)
+                {
+                    for (int i = 0; i < NumFGs; i++)
+                    {
+                        for (int j = 0; j < NumFGs; j++)
+                        {
+                            if (FGMassFlows[lat, lon, i, j] > 0)
+                            {
+                                SyncedFGFlowsWriter.WriteLine(Convert.ToString(lat) + '\t' + Convert.ToString(lon) + '\t' + Convert.ToString(currentTimeStep) +
+                                    '\t' + Convert.ToString(i) + '\t' + Convert.ToString(j) + '\t' + Convert.ToString(FGMassFlows[lat, lon, i, j]));
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Reset array to hold mass flows among trophic levels
+            FGMassFlows = new double[numLats, numLons, MaxNumberFunctionalGroups, MaxNumberFunctionalGroups];
+        }
+
 
         /// <summary>
         /// Close the file that has been written to

@@ -63,9 +63,11 @@ namespace Madingley
         /// <param name="outputDetail">The level of output detail to use for the outputs</param>
         /// <param name="specificLocations">Whether the model is being run for specific locations</param>
         /// <param name="currentMonth">The current month in the model run</param>
-        public void ConvertNPPToAutotroph(SortedList<string, double[]> cellEnvironment, GridCellStockHandler gridCellStockHandler, int[]
-            actingStock, string terrestrialNPPUnits, string oceanicNPPUnits, uint currentTimestep, string GlobalModelTimeStepUnit,
-            ProcessTracker trackProcesses, GlobalProcessTracker globalTracker, string outputDetail, bool specificLocations, uint currentMonth, Boolean nsfPhyto)
+        public void ConvertNPPToAutotroph(MadingleyModelInitialisation madingleyInitialisation, FunctionalGroupDefinitions cohortDefinitions, FunctionalGroupDefinitions
+            stockDefinitions, SortedList<string, double[]> cellEnvironment, 
+            GridCellStockHandler gridCellStockHandler, int[] actingStock, string terrestrialNPPUnits, string oceanicNPPUnits, uint currentTimestep, string GlobalModelTimeStepUnit,
+            ProcessTracker trackProcesses, FunctionalGroupTracker functionalTracker, GlobalProcessTracker globalTracker, string outputDetail, 
+            bool specificLocations, uint currentMonth, Boolean nsfPhyto)
         {
             double NPP = new double();
 
@@ -135,6 +137,13 @@ namespace Madingley
                     NPP *= Utilities.ConvertTimeUnits(GlobalModelTimeStepUnit, "day");
                     gridCellStockHandler[actingStock].TotalBiomass += NPP;
 
+                    if (trackProcesses.TrackProcesses)
+                    {
+                        functionalTracker.RecordFGFlow((uint)cellEnvironment["LatIndex"][0], (uint)cellEnvironment["LonIndex"][0], madingleyInitialisation, stockDefinitions,
+                            stockDefinitions.GetTraitNames("stock name", actingStock[0]), gridCellStockHandler[actingStock].IndividualBodyMass,
+                            "autotroph net production", 1, NPP, cellEnvironment["Realm"][0] == 2.0);
+                    }
+
                     // If the biomass of the autotroph stock has been made less than zero (i.e. because of negative NPP) then reset to zero
                     if (gridCellStockHandler[actingStock].TotalBiomass < 0.0)
                         gridCellStockHandler[actingStock].TotalBiomass = 0.0;
@@ -182,6 +191,13 @@ namespace Madingley
                                 NPP / cellEnvironment["Cell Area"][0]);
                     }
 
+                    if (trackProcesses.TrackProcesses)
+                    {
+                        functionalTracker.RecordFGFlow((uint)cellEnvironment["LatIndex"][0], (uint)cellEnvironment["LonIndex"][0], madingleyInitialisation, stockDefinitions, 
+                            stockDefinitions.GetTraitNames("stock name", actingStock[0]), gridCellStockHandler[actingStock].IndividualBodyMass,
+                            "autotroph net production", 1, NPP, cellEnvironment["Realm"][0] == 2.0);
+                    }
+
                     // If the biomass of the autotroph stock has been made less than zero (i.e. because of negative NPP) then reset to zero
                     if (gridCellStockHandler[actingStock].TotalBiomass < 0.0)
                         gridCellStockHandler[actingStock].TotalBiomass = 0.0;
@@ -190,7 +206,7 @@ namespace Madingley
             // Else if neither on land or in the ocean
             else
             {
-                Debug.Fail("This is not a marine cell!");
+                Debug.Fail("This is not a marine cell yet trying to process marine productivity!");
                 // Set the autotroph biomass to zero
                 gridCellStockHandler[actingStock].TotalBiomass = 0.0;
             }

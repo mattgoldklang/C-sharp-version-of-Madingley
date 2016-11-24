@@ -36,7 +36,7 @@ namespace Madingley
             FunctionalGroupDefinitions madingleyCohortHandler, 
             FunctionalGroupDefinitions madingleyStockHandler,
             uint currentTimestep,
-            ProcessTracker trackProcesses,
+            ProcessTracker trackProcesses, FunctionalGroupTracker functionalTracker, 
             ref ThreadLockedParallelVariables partial,
             Boolean specificLocations, string outputDetail, uint currentMonth, MadingleyModelInitialisation initialisation);
 

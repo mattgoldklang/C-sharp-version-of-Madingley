@@ -130,32 +130,32 @@ namespace Madingley
         /// <param name="initialisation">The Madingley Model initialisation</param>
         public void RunWithinCellEcology(GridCellCohortHandler gridCellCohorts, GridCellStockHandler gridCellStocks, int[] actingCohort, 
             SortedList<string, double[]> cellEnvironment, Dictionary<string, Dictionary<string, double>> deltas, FunctionalGroupDefinitions 
-            madingleyCohortDefinitions, FunctionalGroupDefinitions madingleyStockDefinitions, uint currentTimestep, ProcessTracker trackProcesses, 
+            madingleyCohortDefinitions, FunctionalGroupDefinitions madingleyStockDefinitions, uint currentTimestep, ProcessTracker trackProcesses, FunctionalGroupTracker functionalTracker, 
             ref ThreadLockedParallelVariables partial, Boolean specificLocations,string outputDetail, uint currentMonth, 
             MadingleyModelInitialisation initialisation)
         {
 
             // RUN EATING
             _EatingFormulations["Basic eating"].RunEcologicalProcess(gridCellCohorts, gridCellStocks, actingCohort, cellEnvironment,
-                deltas, madingleyCohortDefinitions, madingleyStockDefinitions, currentTimestep, trackProcesses, ref partial,
+                deltas, madingleyCohortDefinitions, madingleyStockDefinitions, currentTimestep, trackProcesses, functionalTracker, ref partial,
                 specificLocations, outputDetail, currentMonth, initialisation);
 
             
             // RUN METABOLISM - THIS TIME TAKE THE METABOLIC LOSS TAKING INTO ACCOUNT WHAT HAS BEEN INGESTED THROUGH EATING
             _MetabolismFormulations["Basic metabolism"].RunEcologicalProcess(gridCellCohorts, gridCellStocks, actingCohort,
-                cellEnvironment, deltas, madingleyCohortDefinitions, madingleyStockDefinitions, currentTimestep, trackProcesses, ref partial,
+                cellEnvironment, deltas, madingleyCohortDefinitions, madingleyStockDefinitions, currentTimestep, trackProcesses, functionalTracker, ref partial,
                 specificLocations, outputDetail, currentMonth, initialisation);
               
            
             // RUN REPRODUCTION - TAKING INTO ACCOUNT NET BIOMASS CHANGES RESULTING FROM EATING AND METABOLISING
             _ReproductionFormulations["Basic reproduction"].RunEcologicalProcess(gridCellCohorts, gridCellStocks, actingCohort,
-                cellEnvironment, deltas, madingleyCohortDefinitions, madingleyStockDefinitions, currentTimestep, trackProcesses, ref partial,
+                cellEnvironment, deltas, madingleyCohortDefinitions, madingleyStockDefinitions, currentTimestep, trackProcesses, functionalTracker, ref partial,
                 specificLocations, outputDetail, currentMonth, initialisation);
             
               
             // RUN MORTALITY - TAKING INTO ACCOUNT NET BIOMASS CHANGES RESULTING FROM EATING, METABOLISM AND REPRODUCTION
             _MortalityFormulations["Basic mortality"].RunEcologicalProcess(gridCellCohorts, gridCellStocks, actingCohort,
-                cellEnvironment, deltas, madingleyCohortDefinitions, madingleyStockDefinitions, currentTimestep, trackProcesses, ref partial,
+                cellEnvironment, deltas, madingleyCohortDefinitions, madingleyStockDefinitions, currentTimestep, trackProcesses, functionalTracker, ref partial,
                 specificLocations, outputDetail, currentMonth, initialisation);
         }
 

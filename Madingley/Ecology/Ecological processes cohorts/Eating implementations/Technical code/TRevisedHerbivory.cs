@@ -388,14 +388,10 @@ namespace Madingley
         /// <param name="specificLocations">Whether the model is being run for specific locations</param>
         /// <param name="outputDetail">The level of output detail being used in this model run</param>
         /// <param name="initialisation">The Madingley Model initialisation</param>
-        /// 
-        /// <param name="specificLocations">Whether the model is being run for specific locations</param>
-        /// <param name="outputDetail">The level of output detail being used in this model run</param>
-        /// <param name="initialisation">The Madingley Model initialisation</param>
         public void RunEating(GridCellCohortHandler gridCellCohorts, GridCellStockHandler gridCellStocks, int[] actingCohort, SortedList<string, double[]>
             cellEnvironment, Dictionary<string, Dictionary<string, double>> deltas, FunctionalGroupDefinitions madingleyCohortDefinitions,
-            FunctionalGroupDefinitions madingleyStockDefinitions, ProcessTracker trackProcesses, uint currentTimestep, Boolean specificLocations,
-            string outputDetail, MadingleyModelInitialisation initialisation)
+            FunctionalGroupDefinitions madingleyStockDefinitions, ProcessTracker trackProcesses, FunctionalGroupTracker functionalTracker, uint currentTimestep, 
+            Boolean specificLocations, string outputDetail, MadingleyModelInitialisation initialisation)
         {
 
             EdibleScaling = 1.0;
@@ -406,7 +402,6 @@ namespace Madingley
             {
 
                 // Loop over stocks within the functional groups
-                // This is a strange loop as i stays 0.. why is it a loop? Only the parent foreach loop is used.
                 for (int i = 0; i < gridCellStocks[FunctionalGroup].Count; i++)
                 {
                     // Get the mass from this stock that is available for eating (assumes only 10% is edible in the terrestrial realm)
@@ -425,9 +420,16 @@ namespace Madingley
                     // primary producer and herbivore
                     if (trackProcesses.TrackProcesses)
                     {
-                        trackProcesses.TrackHerbivoryFGFlow((uint)cellEnvironment["LatIndex"][0], (uint)cellEnvironment["LonIndex"][0],
-                            gridCellCohorts[actingCohort].FunctionalGroupIndex, FunctionalGroup, madingleyCohortDefinitions, madingleyStockDefinitions, _BiomassesEaten[FunctionalGroup][i], _BodyMassHerbivore, initialisation, cellEnvironment["Realm"][0] == 2.0);
 
+                        trackProcesses.TrackHerbivoryFGFlow((uint)cellEnvironment["LatIndex"][0], (uint)cellEnvironment["LonIndex"][0],
+                            gridCellCohorts[actingCohort].FunctionalGroupIndex, FunctionalGroup, madingleyCohortDefinitions, madingleyStockDefinitions, 
+                            _BiomassesEaten[FunctionalGroup][i], gridCellCohorts[actingCohort].IndividualBodyMass, initialisation, cellEnvironment["Realm"][0] == 2.0);
+
+                        // Track flows between functional groups
+                        functionalTracker.RecordFGFlow((uint)cellEnvironment["LatIndex"][0], (uint)cellEnvironment["LonIndex"][0], initialisation, madingleyStockDefinitions,
+                            madingleyCohortDefinitions.GetTraitNames("group description", gridCellCohorts[actingCohort].FunctionalGroupIndex),
+                            gridCellCohorts[actingCohort].IndividualBodyMass, madingleyStockDefinitions.GetTraitNames("stock name", FunctionalGroup),
+                            gridCellStocks[FunctionalGroup][i].IndividualBodyMass, _BiomassesEaten[FunctionalGroup][i], cellEnvironment["Realm"][0] == 2.0);
                     }
 
                     if (specificLocations && trackProcesses.TrackProcesses)

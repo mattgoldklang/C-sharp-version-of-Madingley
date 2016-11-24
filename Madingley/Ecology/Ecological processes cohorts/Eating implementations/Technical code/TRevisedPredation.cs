@@ -602,7 +602,7 @@ namespace Madingley
         /// <param name="initialisation">The Madingley Model initialisation</param>
         public void RunEating(GridCellCohortHandler gridCellCohorts, GridCellStockHandler gridCellStocks, int[] actingCohort, SortedList<string, double[]>
             cellEnvironment, Dictionary<string, Dictionary<string, double>> deltas, FunctionalGroupDefinitions madingleyCohortDefinitions,
-            FunctionalGroupDefinitions madingleyStockDefinitions, ProcessTracker trackProcesses, uint currentTimestep, Boolean specificLocations,
+            FunctionalGroupDefinitions madingleyStockDefinitions, ProcessTracker trackProcesses, FunctionalGroupTracker functionalTracker, uint currentTimestep, Boolean specificLocations,
             string outputDetail, MadingleyModelInitialisation initialisation)
         {
             if (trackProcesses.TrackProcesses)
@@ -657,6 +657,13 @@ namespace Madingley
                                 gridCellCohorts[FunctionalGroup][i].AdultMass, gridCellCohorts[FunctionalGroup][i].FunctionalGroupIndex,
                                 gridCellCohorts[FunctionalGroup][i].CohortID[0], AbundancesEaten[FunctionalGroup][i], "predation");
                         }
+
+                        // Track flows between functional groups
+                        functionalTracker.RecordFGFlow((uint)cellEnvironment["LatIndex"][0], (uint)cellEnvironment["LonIndex"][0], initialisation, madingleyStockDefinitions,
+                            madingleyCohortDefinitions.GetTraitNames("group description", gridCellCohorts[actingCohort].FunctionalGroupIndex),
+                            gridCellCohorts[actingCohort].IndividualBodyMass,madingleyCohortDefinitions.GetTraitNames("group description", FunctionalGroup), 
+                            gridCellCohorts[FunctionalGroup][i].IndividualBodyMass, (_AbundancesEaten[FunctionalGroup][i] * _BodyMassPrey),
+                            cellEnvironment["Realm"][0] == 2.0);
 
                         trackProcesses.TrackPredationFGFlow((uint)cellEnvironment["LatIndex"][0], (uint)cellEnvironment["LonIndex"][0],
                                     gridCellCohorts[FunctionalGroup][i].FunctionalGroupIndex, gridCellCohorts[actingCohort].FunctionalGroupIndex,
