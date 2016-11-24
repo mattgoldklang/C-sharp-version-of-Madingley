@@ -83,16 +83,18 @@ namespace Madingley
         /// <param name="preyBodyMass"></param>
         /// <param name="massEaten"></param>
         /// <param name="marineCell"></param>
-        public void RecordFGFlow(uint latIndex, uint lonIndex, MadingleyModelInitialisation madingleyInitialisation, FunctionalGroupDefinitions stockFunctionalGroupDefinitions, string predatorCohortOrStockName, double predatorBodyMass, string preyCohortOrStockName, double preyBodyMass, double massEaten, Boolean marineCell)
+        public void RecordFGFlow(uint latIndex, uint lonIndex, MadingleyModelInitialisation madingleyInitialisation, 
+            FunctionalGroupDefinitions stockFunctionalGroupDefinitions, string predatorCohortOrStockName, double predatorBodyMass, 
+            string preyCohortOrStockName, double preyBodyMass, double massEaten, Boolean marineCell)
         {
             int fromIndex = 0;
             int toIndex = 0;
 
-            // Get the functional group that the mass is flowing from
-            fromIndex = DetermineFunctionalGroup(madingleyInitialisation, stockFunctionalGroupDefinitions, predatorCohortOrStockName, predatorBodyMass, marineCell);
+            // Get the functional group that the mass is flowing to
+            toIndex = DetermineFunctionalGroup(madingleyInitialisation, stockFunctionalGroupDefinitions, predatorCohortOrStockName, predatorBodyMass, marineCell);
 
-            // Get the functional group that the mass is flowing too
-            toIndex = DetermineFunctionalGroup(madingleyInitialisation, stockFunctionalGroupDefinitions, preyCohortOrStockName, preyBodyMass, marineCell);
+            // Get the functional group that the mass is flowing from
+            fromIndex = DetermineFunctionalGroup(madingleyInitialisation, stockFunctionalGroupDefinitions, preyCohortOrStockName, preyBodyMass, marineCell);
             
             // Add the flow of matter to the matrix of functional group mass flows
             FGMassFlows[latIndex, lonIndex, fromIndex, toIndex] += massEaten;
@@ -124,10 +126,10 @@ namespace Madingley
                             {
                                 if (MarineCell)
                                 SyncedFGFlowsWriter.WriteLine(Convert.ToString(lat) + '\t' + Convert.ToString(lon) + '\t' + Convert.ToString(currentTimeStep) +
-                                    '\t' + MarineFGsForTracking.ElementAt(i) + '\t' + MarineFGsForTracking.ElementAt(j) + '\t' + Convert.ToString(FGMassFlows[lat, lon, i, j]));
+                                    '\t' + MarineFGsForTracking.Keys.ToArray()[i] + '\t' + MarineFGsForTracking.Keys.ToArray()[j] + '\t' + Convert.ToString(FGMassFlows[lat, lon, i, j]));
                                 else
                                     SyncedFGFlowsWriter.WriteLine(Convert.ToString(lat) + '\t' + Convert.ToString(lon) + '\t' + Convert.ToString(currentTimeStep) +
-                                     '\t' + TerrestrialFGsForTracking.ElementAt(i) + '\t' + TerrestrialFGsForTracking.ElementAt(j) + '\t' + Convert.ToString(FGMassFlows[lat, lon, i, j]));
+                                     '\t' + TerrestrialFGsForTracking.Keys.ToArray()[i] + '\t' + TerrestrialFGsForTracking.Keys.ToArray()[j] + '\t' + Convert.ToString(FGMassFlows[lat, lon, i, j]));
 
                             }
                         }
