@@ -331,11 +331,11 @@ namespace Madingley
         ///// <param name="numLons">The number of grid cells, longitudinally, in the simulation</param>
         ///// <param name="initialisation">The Madingley Model initialisation</param>
         ///// <param name="marineCell">Whether the current cell is a marine cell</param>
-        //public void WriteTimeStepFGFlows(uint currentTimeStep, uint numLats, uint numLons, MadingleyModelInitialisation initialisation,
-        //    Boolean marineCell)
-        //{
-        //    _TrackFGEating.WriteFGFlows(currentTimeStep, numLats, numLons, initialisation, marineCell);
-        //}
+        public void WriteTimeStepFGFlows(uint currentTimeStep, uint numLats, uint numLons, MadingleyModelInitialisation initialisation,
+            Boolean marineCell)
+        {
+            _TrackFGEating.WriteFGFlows(currentTimeStep, numLats, numLons, initialisation, marineCell);
+        }
 
 
         /// <summary>

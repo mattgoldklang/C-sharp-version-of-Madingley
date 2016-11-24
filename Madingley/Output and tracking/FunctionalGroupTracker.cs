@@ -122,8 +122,13 @@ namespace Madingley
                         {
                             if (FGMassFlows[lat, lon, i, j] > 0)
                             {
+                                if (MarineCell)
                                 SyncedFGFlowsWriter.WriteLine(Convert.ToString(lat) + '\t' + Convert.ToString(lon) + '\t' + Convert.ToString(currentTimeStep) +
-                                    '\t' + Convert.ToString(i) + '\t' + Convert.ToString(j) + '\t' + Convert.ToString(FGMassFlows[lat, lon, i, j]));
+                                    '\t' + MarineFGsForTracking.ElementAt(i) + '\t' + MarineFGsForTracking.ElementAt(j) + '\t' + Convert.ToString(FGMassFlows[lat, lon, i, j]));
+                                else
+                                    SyncedFGFlowsWriter.WriteLine(Convert.ToString(lat) + '\t' + Convert.ToString(lon) + '\t' + Convert.ToString(currentTimeStep) +
+                                     '\t' + TerrestrialFGsForTracking.ElementAt(i) + '\t' + TerrestrialFGsForTracking.ElementAt(j) + '\t' + Convert.ToString(FGMassFlows[lat, lon, i, j]));
+
                             }
                         }
                     }

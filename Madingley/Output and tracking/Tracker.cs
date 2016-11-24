@@ -51,9 +51,15 @@ namespace Madingley
                     }
                     else
                     {
-                        if (cohortOrStockName != "obligate multicellular zooplankton")
+                        if (cohortOrStockName == "obligate multicellular zooplankton")
+                        {
+                            ;
+                        }
+                        else
+                        {
                             if (!stockFunctionalGroupDefinitions.GetUniqueTraitValues("stock name").Contains(cohortOrStockName))
-                                cohortOrStockName = cohortOrStockName + " planktonic";
+                                cohortOrStockName = "meroplankton";
+                        }
                     }
 
                 }
