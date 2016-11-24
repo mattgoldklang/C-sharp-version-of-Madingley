@@ -109,14 +109,14 @@ namespace Madingley
         /// <param name="numLons">The longitudinal dimension of the model grid in number of cells</param>
         /// <param name="initialisation">The Madingley Model initialisation</param>
         /// <param name="MarineCell">Whether the current cell is a marine cell</param>
-        override public void WriteToTrackerFile(uint currentTimeStep, uint numLats, uint numLons, MadingleyModelInitialisation initialisation,
+        override public void WriteToTrackerFile(uint currentTimeStep, ModelGrid madingleyModelGrid, uint numLats, uint numLons, MadingleyModelInitialisation initialisation,
             Boolean MarineCell)
         {
             int NumFGs = FGMassFlows.GetLength(2);
 
-            for (int lat = 0; lat < numLats; lat++)
+            for (uint lat = 0; lat < numLats; lat++)
             {
-                for (int lon = 0; lon < numLons; lon++)
+                for (uint lon = 0; lon < numLons; lon++)
                 {
                     for (int i = 0; i < NumFGs; i++)
                     {
@@ -125,10 +125,12 @@ namespace Madingley
                             if (FGMassFlows[lat, lon, i, j] > 0)
                             {
                                 if (MarineCell)
-                                SyncedFGFlowsWriter.WriteLine(Convert.ToString(lat) + '\t' + Convert.ToString(lon) + '\t' + Convert.ToString(currentTimeStep) +
-                                    '\t' + MarineFGsForTracking.Keys.ToArray()[i] + '\t' + MarineFGsForTracking.Keys.ToArray()[j] + '\t' + Convert.ToString(FGMassFlows[lat, lon, i, j]));
+                                {
+                                    SyncedFGFlowsWriter.WriteLine(Convert.ToString(madingleyModelGrid.GetCellLatitude(lat)) + '\t' + Convert.ToString(madingleyModelGrid.GetCellLongitude(lon)) + '\t' + Convert.ToString(currentTimeStep) +
+                                        '\t' + MarineFGsForTracking.Keys.ToArray()[i] + '\t' + MarineFGsForTracking.Keys.ToArray()[j] + '\t' + Convert.ToString(FGMassFlows[lat, lon, i, j]));
+                                }
                                 else
-                                    SyncedFGFlowsWriter.WriteLine(Convert.ToString(lat) + '\t' + Convert.ToString(lon) + '\t' + Convert.ToString(currentTimeStep) +
+                                    SyncedFGFlowsWriter.WriteLine(Convert.ToString(madingleyModelGrid.GetCellLatitude(lat)) + '\t' + Convert.ToString(madingleyModelGrid.GetCellLongitude(lon)) + '\t' + Convert.ToString(currentTimeStep) +
                                      '\t' + TerrestrialFGsForTracking.Keys.ToArray()[i] + '\t' + TerrestrialFGsForTracking.Keys.ToArray()[j] + '\t' + Convert.ToString(FGMassFlows[lat, lon, i, j]));
 
                             }
