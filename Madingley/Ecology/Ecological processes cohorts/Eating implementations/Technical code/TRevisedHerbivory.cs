@@ -274,44 +274,51 @@ namespace Madingley
                     }
                                        
                     break;
-                case "nanophytoplankton":
-                    for (int ii = 0; ii < _FunctionalGroupIndicesToEat.Length; ii++)
+                case "pico+nanophytoplankton":
+                    if(gridCellCohorts[actingCohort].IndividualBodyMass <= 5.0E-6)
                     {
-                        if (gridCellStocks[_FunctionalGroupIndicesToEat[ii]].Count > 0)
+                        for (int ii = 0; ii < _FunctionalGroupIndicesToEat.Length; ii++)
                         {
-                            if (gridCellStocks[ii][0].StockName == "nanophytoplankton")
+                            if (gridCellStocks[_FunctionalGroupIndicesToEat[ii]].Count > 0)
                             {
-                                if (FunctionalGroupsToGrazeThisCohort == -1)
+                                if (gridCellStocks[ii][0].StockName == "picophytoplankton")
                                 {
-                                    FunctionalGroupsToGrazeThisCohort = ii;
+                                    if (FunctionalGroupsToGrazeThisCohort == -1)
+                                    {
+                                        FunctionalGroupsToGrazeThisCohort = ii;
+                                    }
+                                    else
+                                    {
+                                        Debug.Fail("Cohort trying to eat from multiple stocks but only a single stock can be eaten from at present. Code needs modification");
+                                    }
                                 }
-                                else
+                            }
+                        }
+                    }
+                    else
+                    {
+                        {
+                            for (int ii = 0; ii < _FunctionalGroupIndicesToEat.Length; ii++)
+                            {
+                                if (gridCellStocks[_FunctionalGroupIndicesToEat[ii]].Count > 0)
                                 {
-                                    Debug.Fail("Cohort trying to eat from multiple stocks but only a single stock can be eaten from at present. Code needs modification");
+                                    if (gridCellStocks[ii][0].StockName == "nanophytoplankton")
+                                    {
+                                        if (FunctionalGroupsToGrazeThisCohort == -1)
+                                        {
+                                            FunctionalGroupsToGrazeThisCohort = ii;
+                                        }
+                                        else
+                                        {
+                                            Debug.Fail("Cohort trying to eat from multiple stocks but only a single stock can be eaten from at present. Code needs modification");
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
 
-                    break;
-                case "picophytoplankton":
-                    for (int ii = 0; ii < _FunctionalGroupIndicesToEat.Length; ii++)
-                    {
-                        if (gridCellStocks[_FunctionalGroupIndicesToEat[ii]].Count > 0)
-                        {
-                            if (gridCellStocks[ii][0].StockName == "picophytoplankton")
-                            {
-                                if (FunctionalGroupsToGrazeThisCohort == -1)
-                                {
-                                    FunctionalGroupsToGrazeThisCohort = ii;
-                                }
-                                else
-                                {
-                                    Debug.Fail("Cohort trying to eat from multiple stocks but only a single stock can be eaten from at present. Code needs modification");
-                                }
-                            }
-                        }
-                    }
+                    
                     break;
                 default:
                     if (_FunctionalGroupIndicesToEat.Length == 1)

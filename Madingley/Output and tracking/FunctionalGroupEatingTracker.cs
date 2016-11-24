@@ -141,7 +141,7 @@ namespace Madingley
             }
 
             // Add the flow of matter to the matrix of functional group mass flows
-            FGMassFlows[latIndex, lonIndex, fromIndex, toIndex] += massEaten;
+            // FGMassFlows[latIndex, lonIndex, fromIndex, toIndex] += massEaten;
         }
 
         /// <summary>

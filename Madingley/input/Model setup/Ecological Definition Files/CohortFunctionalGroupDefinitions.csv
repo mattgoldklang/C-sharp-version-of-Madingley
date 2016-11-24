@@ -3,7 +3,7 @@ Heterotroph,Carnivore,AllSpecial,Marine,Mobile,iteroparity,Endotherm,scaled,0,0.
 Heterotroph,Carnivore,All,Marine,Mobile,iteroparity,Endotherm,scaled,0,0.8,0.5,10,1.00E+02,1.50E+07,100,Marine mammals
 Heterotroph,Carnivore,All,Marine,Mobile,iteroparity,Ectotherm,scaled,0,0.8,0.5,1.00E+02,5.00E-06,1.50E+06,100,Other mobile ectotherms
 Heterotroph,Carnivore,All,Marine,Mobile,iteroparity,Ectotherm,fixed,0,0.8,0.5,1.00E-06,5.00E-06,1.00E+05,100,Teleosts
-Heterotroph,Carnivore,All,Marine,Planktonic,Semelparity,Ectotherm,fixed,0,0.8,0.5,1.00E-07,5.00E-07,1.00E+04,100,Gelatinous zooplankton
+Heterotroph,Carnivore,Passive,Marine,Planktonic,Semelparity,Ectotherm,fixed,0,0.8,0.5,1.00E-07,5.00E-07,1.00E+04,100,Gelatinous zooplankton
 Heterotroph,Omnivore,Microphytoplankton,Marine,Planktonic,iteroparity,Ectotherm,scaled,0.7,0.64,0.5,1.00E+02,5.00E-06,1.00E-01,200,Obligate multicellular zooplankton
 Heterotroph,Omnivore,Pico+nanophytoplankton,Marine,Planktonic,cell division,Ectotherm,scaled,0.7,0.64,0.5,2,5.00E-10,5.00E-06,400,Obligate unicellular zooplankton
 Heterotroph,Herbivore,All,Terrestrial,Mobile,iteroparity,Endotherm,scaled,0.5,0,0.5,1,1.5,5000000,111,ItHerbEndo

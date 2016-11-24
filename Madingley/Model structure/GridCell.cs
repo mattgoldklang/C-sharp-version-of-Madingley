@@ -758,7 +758,9 @@ namespace Madingley
 
             //Variable for altering the juvenile to adult mass ratio for marine cells when handling certain functional groups eg baleen whales
             double Scaling = 0.0;
-            
+            double CohortAdultMassRatioScaler = 0.0;
+
+
             Int64 CohortIDIncrementer = nextCohortID;
 
             // Check which realm the cell is in
@@ -799,29 +801,33 @@ namespace Madingley
                             // Check whether the model is set to randomly draw the body masses of new cohorts
                             if (DrawRandomly)
                             {
-                                // Draw adult mass from a log-normal distribution with mean -6.9 and standard deviation 10.0,
-                                // within the bounds of the minimum and maximum body masses for the functional group
-                                CohortAdultMass = Math.Pow(10, (RandomNumberGenerator.GetUniform() * (Math.Log10(MassMaxima[FunctionalGroup]) - Math.Log10(50 * MassMinima[FunctionalGroup])) + Math.Log10(50 * MassMinima[FunctionalGroup])));
+                                
                                 // Terrestrial and marine organisms have different optimal prey/predator body mass ratios
                                 if (cellEnvironment["Realm"][0] == 1.0)
                                     // Optimal prey body size 10%
                                     OptimalPreyBodySizeRatio = Math.Max(0.01, RandomNumberGenerator.GetNormal(0.1, 0.02));
                                 else
                                 {
-                                    if (functionalGroups.GetTraitNames("Diet", FunctionalGroup) == "allspecial")
+                                    switch (functionalGroups.GetTraitNames("Diet", FunctionalGroup))
                                     {
-                                        // Note that for this group
-                                        // it is actually (despite the name) not an optimal prey body size ratio, but an actual body size.
-                                        // This is because it is invariant as the predator (filter-feeding baleen whale) grows.
-                                        // See also the predation classes.
-                                        OptimalPreyBodySizeRatio = Math.Max(0.00001, RandomNumberGenerator.GetNormal(0.0001, 0.1));
-                                    }
-                                    else
-                                    {
-                                        // Optimal prey body size or marine organisms is 10%
-                                        OptimalPreyBodySizeRatio = Math.Max(0.01, RandomNumberGenerator.GetNormal(0.1, 0.02));
-                                    }
+                                        case "allspecial":
+                                            // Note that for this group it is actually (despite the name) not an optimal prey body size ratio, but an actual body size.
+                                            // This is because it is invariant as the predator (filter-feeding baleen whale) grows.
 
+                                            // Note Erik: I don't understand this - does this draw an actual body size? What does a body size of ca. 0.0001 mean?
+                                            OptimalPreyBodySizeRatio = Math.Max(0.00001, RandomNumberGenerator.GetNormal(0.0001, 0.00001));
+                                            break;
+                                        case "passive":
+                                            // Optimal prey body size of gelatinous zooplankton is set to 5 % (should maybe be lower, e.g. between 1 and 5 %?)
+                                            // Note that this size is capped so that when adult reach 20 times the size of obligate mesozooplankton they will 
+                                            // continue to prefer prey with the size of mesozooplankton
+                                            OptimalPreyBodySizeRatio = Math.Max(0.005, RandomNumberGenerator.GetNormal(0.05, 0.005));
+                                            break;
+                                        default:
+                                            // Optimal prey body size or marine organisms is set to 10%
+                                            OptimalPreyBodySizeRatio = Math.Max(0.01, RandomNumberGenerator.GetNormal(0.1, 0.02));
+                                            break;
+                                    }
                                 }
 
 
@@ -830,6 +836,9 @@ namespace Madingley
                                 // bounds of the minimum and maximum body masses for this functional group
                                 if (cellEnvironment["Realm"][0] == 1.0)
                                 {
+                                    // Draw adult mass within the bounds of the minimum and maximum body masses for the functional group
+                                    // Todo: check scaling - this is the original code and has been changed for the marine realm below
+                                    CohortAdultMass = Math.Pow(10, (RandomNumberGenerator.GetUniform() * (Math.Log10(MassMaxima[FunctionalGroup]) - Math.Log10(50 * MassMinima[FunctionalGroup])) + Math.Log10(50 * MassMinima[FunctionalGroup])));
                                     do
                                     {
                                         ExpectedLnAdultMassRatio = 2.24 + 0.13 * Math.Log(CohortAdultMass);
@@ -838,24 +847,39 @@ namespace Madingley
                                     } while (CohortAdultMass <= CohortJuvenileMass || CohortJuvenileMass < MassMinima[FunctionalGroup]);
                                 }
                                 // In the marine realm, have a greater difference between the adult and juvenile body masses, on average
+
+                                // In marine realm, set difference between adult and juvenile body masses to depend on reproductive strategy
+                                // For "cell division" the difference will be 2:1, on average (half the size of the adult).
+                                // For other strategies, the difference will be 100:1, on average (Andersen et al., 2015, Annu. Rev. Mar. Sci.). 
+                                // Note that this ratio may underestimate the difference for fish and jellyfish (Andersen et al., 2015).
                                 else
                                 {
-                                    uint Counter = 0;
-                                    Scaling = 0.2;
-                                    // Use the scaling to deal with baleen whales not having such a great difference
-                                    do
-                                    {
+                                    // Get Adult/juvenile size ratio relationship for the cohort from the functional group definition
+                                    CohortAdultMassRatioScaler = functionalGroups.GetBiologicalPropertyOneFunctionalGroup("adult/juvenile ratio", FunctionalGroup);
 
-                                        ExpectedLnAdultMassRatio = 2.5 + Scaling * Math.Log(CohortAdultMass);
-                                        CohortAdultMassRatio = 1.0 + 10 * RandomNumberGenerator.GetLogNormal(ExpectedLnAdultMassRatio, 0.5);
-                                        CohortJuvenileMass = CohortAdultMass * 1.0 / CohortAdultMassRatio;
-                                        Counter++;
-                                        if (Counter > 10)
+
+                                    if (functionalGroups.GetTraitNames("adult/juvenile ratio mode", FunctionalGroup) == "fixed")
+                                    {
+                                        CohortAdultMass = Math.Pow(10, (RandomNumberGenerator.GetUniform() * (Math.Log10(MassMaxima[FunctionalGroup]) - Math.Log10(CohortAdultMassRatioScaler * MassMinima[FunctionalGroup])) + Math.Log10(CohortAdultMassRatioScaler * MassMinima[FunctionalGroup])));
+                                        CohortJuvenileMass = functionalGroups.GetBiologicalPropertyOneFunctionalGroup("adult/juvenile ratio", FunctionalGroup);
+                                        CohortAdultMassRatio = CohortAdultMass / CohortJuvenileMass;
+                                    }
+                                    else
+                                    {
+                                        int TempRep = 0;
+                                        do
                                         {
-                                            Scaling -= 0.01;
-                                            Counter = 0;
+                                            // Draw adult mass within the bounds of the minimum and maximum body masses for the functional group
+                                            //if (CohortAdultMassRatioScaler >= MassMaxima[FunctionalGroup])
+                                            //    Debug.Fail("Adult/Juvenile ratio is too high - please check ratios");
+                                            CohortAdultMass = Math.Pow(10, (RandomNumberGenerator.GetUniform() * (Math.Log10(MassMaxima[FunctionalGroup]) - Math.Log10(CohortAdultMassRatioScaler * MassMinima[FunctionalGroup])) + Math.Log10(CohortAdultMassRatioScaler * MassMinima[FunctionalGroup])));
+                                            CohortJuvenileMass = CohortAdultMass / (CohortAdultMassRatioScaler * RandomNumberGenerator.GetNormal(1, 0.1));
+                                            CohortAdultMassRatio = CohortAdultMass / CohortJuvenileMass;
                                         }
-                                    } while (CohortAdultMass <= CohortJuvenileMass || CohortJuvenileMass < MassMinima[FunctionalGroup]);
+                                        // Note Erik: Loop gets stuck in the do-while but I cannot figure out why.
+
+                                        while ((CohortAdultMass <= CohortJuvenileMass) || (CohortJuvenileMass < MassMinima[FunctionalGroup]));
+                                    }
                                 }
                             }
                             else
