@@ -815,7 +815,7 @@ namespace Madingley
                                             // This is because it is invariant as the predator (filter-feeding baleen whale) grows.
 
                                             // Note Erik: I don't understand this - does this draw an actual body size? What does a body size of ca. 0.0001 mean?
-                                            OptimalPreyBodySizeRatio = Math.Max(0.00001, RandomNumberGenerator.GetNormal(0.0001, 0.00001));
+                                            OptimalPreyBodySizeRatio = Math.Max(0.0001, RandomNumberGenerator.GetNormal(0.001, 0.0001));
                                             break;
                                         case "passive":
                                             // Optimal prey body size of gelatinous zooplankton is set to 5 % (should maybe be lower, e.g. between 1 and 5 %?)
@@ -866,7 +866,6 @@ namespace Madingley
                                     }
                                     else
                                     {
-                                        int TempRep = 0;
                                         do
                                         {
                                             // Draw adult mass within the bounds of the minimum and maximum body masses for the functional group
@@ -876,9 +875,7 @@ namespace Madingley
                                             CohortJuvenileMass = CohortAdultMass / (CohortAdultMassRatioScaler * RandomNumberGenerator.GetNormal(1, 0.1));
                                             CohortAdultMassRatio = CohortAdultMass / CohortJuvenileMass;
                                         }
-                                        // Note Erik: Loop gets stuck in the do-while but I cannot figure out why.
-
-                                        while ((CohortAdultMass <= CohortJuvenileMass) || (CohortJuvenileMass < MassMinima[FunctionalGroup]));
+                                        while (CohortAdultMass <= CohortJuvenileMass || CohortJuvenileMass < MassMinima[FunctionalGroup]);
                                     }
                                 }
                             }

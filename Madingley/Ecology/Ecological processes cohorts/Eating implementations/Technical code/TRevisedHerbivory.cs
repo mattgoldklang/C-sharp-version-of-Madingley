@@ -275,8 +275,9 @@ namespace Madingley
                                        
                     break;
                 case "pico+nanophytoplankton":
-                    if(gridCellCohorts[actingCohort].IndividualBodyMass <= 5.0E-6)
+                    if(gridCellCohorts[actingCohort].IndividualBodyMass <= 5.0E-8)
                     {
+                        double indiBodyMass = gridCellCohorts[actingCohort].IndividualBodyMass;
                         for (int ii = 0; ii < _FunctionalGroupIndicesToEat.Length; ii++)
                         {
                             if (gridCellStocks[_FunctionalGroupIndicesToEat[ii]].Count > 0)
@@ -348,7 +349,8 @@ namespace Madingley
                 _PotentialBiomassesEaten[i] = new double[gridCellStocks[i].Count];
             }
 
-            // Éxtract the functional group to graze upon into an array of length 1. Note that the code can currently only handle each cohort grazing on a single stock functional group
+            // Éxtract the functional group to graze upon into an array of length 1. 
+            // Note that the code can currently only handle each cohort grazing on a single stock functional group
             FunctionalGroupsToEatRevised = new int[] { _FunctionalGroupIndicesToEat.ElementAt(FunctionalGroupsToGrazeThisCohort) };
 
             // Loop through functional groups to eat          
