@@ -38,7 +38,7 @@ namespace Madingley
 
 
         // Field to hold minimum latitude of the grid
-        private float _MinLatitude;    
+        private float _MinLatitude;
         /// <summary>
         /// Get the lower latitude of the lowest cell of the grid
         /// </summary>
@@ -56,7 +56,7 @@ namespace Madingley
         {
             get { return _MinLongitude; }
         }
-        
+
         // Field to hold maximum latitude of the grid
         private float _MaxLatitude;
         /// <summary>
@@ -66,7 +66,7 @@ namespace Madingley
         {
             get { return _MaxLatitude; }
         }
-        
+
         // Field to hold maximum longitude of the grid
         private float _MaxLongitude;
         /// <summary>
@@ -76,7 +76,7 @@ namespace Madingley
         {
             get { return _MaxLongitude; }
         }
-        
+
         // Field to hold latitude resolution of each grid cell
         private float _LatCellSize;
         /// <summary>
@@ -86,7 +86,7 @@ namespace Madingley
         {
             get { return _LatCellSize; }
         }
-        
+
         // Field to hold longitude resolution of each grid cell
         private float _LonCellSize;
         /// <summary>
@@ -106,7 +106,7 @@ namespace Madingley
         /// </summary>
         public int GridCellRarefaction
         { get { return _GridCellRarefaction; } }
-        
+
         /// <summary>
         /// The number of latitudinal cells in the model grid
         /// </summary>
@@ -118,7 +118,7 @@ namespace Madingley
         {
             get { return _NumLatCells; }
         }
-        
+
         /// <summary>
         /// The number of longitudinal cells in the model grid
         /// </summary>
@@ -130,7 +130,7 @@ namespace Madingley
         {
             get { return _NumLonCells; }
         }
-        
+
         /// <summary>
         /// The bottom (southern-most) latitude of each row of grid cells
         /// </summary>
@@ -142,7 +142,7 @@ namespace Madingley
         {
             get { return _Lats; }
         }
-        
+
         /// <summary>
         /// The left (western-most) longitude of each column of grid cells
         /// </summary>
@@ -255,9 +255,9 @@ namespace Madingley
         /// <param name="tracking">Whether process-tracking is enabled</param>
         /// <param name="DrawRandomly">Whether the model is set to use a random draw</param>
         /// <param name="specificLocations">Whether the model is to be run for specific locations</param>
-        public ModelGrid(float minLat, float minLon,float maxLat,float maxLon,float latCellSize,float lonCellSize, 
-            SortedList<string,EnviroData> enviroStack,SortedList<string,EnviroDataTemporal> enviroStackTemporal , FunctionalGroupDefinitions cohortFunctionalGroups, FunctionalGroupDefinitions
-            stockFunctionalGroups, SortedList<string, double> globalDiagnostics, Boolean tracking, Boolean DrawRandomly, 
+        public ModelGrid(float minLat, float minLon, float maxLat, float maxLon, float latCellSize, float lonCellSize,
+            SortedList<string, EnviroData> enviroStack, SortedList<string, EnviroDataTemporal> enviroStackTemporal, FunctionalGroupDefinitions cohortFunctionalGroups, FunctionalGroupDefinitions
+            stockFunctionalGroups, SortedList<string, double> globalDiagnostics, Boolean tracking, Boolean DrawRandomly,
             Boolean specificLocations, Boolean nsfPhyto)
         {
             // Add one to the counter of the number of grids. If there is more than one model grid, exit the program with a debug crash.
@@ -290,7 +290,7 @@ namespace Madingley
             // Check to see if the number of grid cells is an integer
             Debug.Assert((((_MaxLatitude - _MinLatitude) % _LatCellSize) == 0), "Error: number of grid cells is non-integer: check cell size");
 
-            
+
             _NumLatCells = (UInt32)((_MaxLatitude - _MinLatitude) / _LatCellSize);
             _NumLonCells = (UInt32)((_MaxLongitude - _MinLongitude) / _LonCellSize);
             _Lats = new float[_NumLatCells];
@@ -305,7 +305,7 @@ namespace Madingley
             {
                 _Lons[jj] = _MinLongitude + jj * _LonCellSize;
             }
-            
+
 
             // Instantiate a grid of grid cells
             InternalGrid = new GridCell[_NumLatCells, _NumLonCells];
@@ -320,7 +320,7 @@ namespace Madingley
             // Instantiate the arrays of cell entry and exit directions
             DeltaCellExitDirection = new List<uint>[_NumLatCells, _NumLonCells];
             DeltaCellEntryDirection = new List<uint>[_NumLatCells, _NumLonCells];
-            
+
             // An array of lists of cells to which organisms in each cell can disperse to; includes all cells which contribute to the 
             // perimeter list, plus diagonal cells if they are in the same realm
             CellsForDispersal = new List<uint[]>[_NumLatCells, _NumLonCells];
@@ -332,15 +332,15 @@ namespace Madingley
 
 
             // Loop through to set up model grid
-            for (int ii = 0; ii < _NumLatCells; ii+=GridCellRarefaction)
+            for (int ii = 0; ii < _NumLatCells; ii += GridCellRarefaction)
             {
-                for (int jj = 0; jj < _NumLonCells; jj+=GridCellRarefaction)
+                for (int jj = 0; jj < _NumLonCells; jj += GridCellRarefaction)
                 {
                     InternalGrid[ii, jj] = new GridCell(_Lats[ii], (uint)ii, _Lons[jj], (uint)jj, LatCellSize, LonCellSize, enviroStack, enviroStackTemporal,
                         GlobalMissingValue, cohortFunctionalGroups, stockFunctionalGroups, globalDiagnostics, tracking, specificLocations, nsfPhyto);
-                    CellsForDispersal[ii,jj] = new List<uint[]>();
+                    CellsForDispersal[ii, jj] = new List<uint[]>();
                     CellsForDispersalDirection[ii, jj] = new List<uint>();
-                    Console.Write("\rRow {0} of {1}", ii+1, NumLatCells/GridCellRarefaction);
+                    Console.Write("\rRow {0} of {1}", ii + 1, NumLatCells / GridCellRarefaction);
                 }
             }
             Console.WriteLine("");
@@ -360,8 +360,8 @@ namespace Madingley
             // Assume that we are at the midpoint of each cell when calculating lengths
             for (int ii = 0; ii < _Lats.Length; ii++)
             {
-                 CellHeightsKm[ii] = Utilities.CalculateLengthOfDegreeLatitude(_Lats[ii] + _LatCellSize / 2) * _LatCellSize;
-                 CellWidthsKm[ii] = Utilities.CalculateLengthOfDegreeLongitude(_Lats[ii] + _LatCellSize / 2) * _LonCellSize;
+                CellHeightsKm[ii] = Utilities.CalculateLengthOfDegreeLatitude(_Lats[ii] + _LatCellSize / 2) * _LatCellSize;
+                CellWidthsKm[ii] = Utilities.CalculateLengthOfDegreeLongitude(_Lats[ii] + _LatCellSize / 2) * _LonCellSize;
             }
         }
 
@@ -384,9 +384,9 @@ namespace Madingley
         /// <param name="runInParallel">Whether model grid cells will be run in parallel</param>
         public ModelGrid(float minLat, float minLon, float maxLat, float maxLon, float latCellSize, float lonCellSize, List<uint[]> cellList,
             SortedList<string, EnviroData> enviroStack, SortedList<string, EnviroDataTemporal> enviroStackTemporal, FunctionalGroupDefinitions cohortFunctionalGroups,
-            FunctionalGroupDefinitions stockFunctionalGroups, SortedList<string, double> globalDiagnostics, Boolean tracking, 
+            FunctionalGroupDefinitions stockFunctionalGroups, SortedList<string, double> globalDiagnostics, Boolean tracking,
             Boolean specificLocations, Boolean runInParallel, Boolean nsfPhyto)
-        { 
+        {
             // Add one to the counter of the number of grids. If there is more than one model grid, exit the program with a debug crash.
             NumGrids = NumGrids + 1;
             //Debug.Assert(NumGrids < 2, "You have initialised more than one grid on which to apply models. At present, this is not supported");
@@ -451,7 +451,7 @@ namespace Madingley
 
             int NCells = cellList.Count;
 
-            
+
             if (!runInParallel)
             {
                 // Loop over cells to set up the model grid
@@ -467,7 +467,7 @@ namespace Madingley
                     //{
                     //    InternalGrid[cellList[ii][0], cellList[ii][1]].CellEnvironment.Add(item.Key, new double[1]);
                     //}
-                    
+
 
                     if (!specificLocations)
                     {
@@ -549,7 +549,7 @@ namespace Madingley
             //Seed the grid cells with temporally varying environment
             foreach (var item in enviroStackTemporal)
             {
-                item.Value.GetTemporalEnvironmentListofCells(InternalGrid, cellList,item.Key,TimeElapsed,LatCellSize,LonCellSize);
+                item.Value.GetTemporalEnvironmentListofCells(InternalGrid, cellList, item.Key, TimeElapsed, LatCellSize, LonCellSize);
             }
             InterpolateMissingValues();
 
@@ -580,7 +580,7 @@ namespace Madingley
                     {
                         //If NPP doesn't exist the interpolate from surrounding values (of the same realm)
                         WorkingCellEnvironment["NPP"] = GetInterpolatedValues(ii, jj, GetCellLatitude(ii), GetCellLongitude(jj), "NPP", WorkingCellEnvironment["Realm"][0]);
-                        
+
                         //Calculate NPP seasonality - for use in converting annual NPP estimates to monthly
                         WorkingCellEnvironment["Seasonality"] = InternalGrid[ii, jj].CalculateNPPSeasonality(WorkingCellEnvironment["NPP"], WorkingCellEnvironment["Missing Value"][0]);
                         Changed = true;
@@ -626,8 +626,8 @@ namespace Madingley
                     {
                         WorkingCellEnvironment["vVel"] = InternalGrid[ii, jj].ConvertMissingValuesToZero(WorkingCellEnvironment["vVel"], WorkingCellEnvironment["Missing Value"][0]);
                     }
-                    
-                    if(Changed) InternalGrid[ii, jj].CellEnvironment = WorkingCellEnvironment;
+
+                    if (Changed) InternalGrid[ii, jj].CellEnvironment = WorkingCellEnvironment;
                 }
             }
         }
@@ -795,7 +795,7 @@ namespace Madingley
             //Check to see if the correct number of functional groups exist in the definitions file and in the input state
 
             if (cohortFunctionalGroupDefinitions.GetNumberOfFunctionalGroups() != inputModelState.GridCellCohorts[
-                cellIndices[0][0],cellIndices[0][1]].Count)
+                cellIndices[0][0], cellIndices[0][1]].Count)
             {
                 Console.WriteLine("Mismatch in the number of functional groups defined in CohortFunctionalGroupDefinitions.csv set-up file and the Model State being read in");
                 Environment.Exit(0);
@@ -1159,16 +1159,16 @@ namespace Madingley
                     }
                     Console.Write("\rGrid Cell: {0} of {1}", Count, cellIndices.Count);
                 }
-                
-            }
-                Console.WriteLine("");
-                Console.WriteLine("");
 
-                if (InternalGrid[cellIndices[cellIndices.Count - 1][0], cellIndices[cellIndices.Count - 1][1]].CellEnvironment["Realm"][0] == 1)
-                    nextCohortID = StartingCohortsID[cellIndices.Count - 1] + TotalTerrestrialCellCohorts;
-                else
-                    nextCohortID = StartingCohortsID[cellIndices.Count - 1] + TotalMarineCellCohorts;
             }
+            Console.WriteLine("");
+            Console.WriteLine("");
+
+            if (InternalGrid[cellIndices[cellIndices.Count - 1][0], cellIndices[cellIndices.Count - 1][1]].CellEnvironment["Realm"][0] == 1)
+                nextCohortID = StartingCohortsID[cellIndices.Count - 1] + TotalTerrestrialCellCohorts;
+            else
+                nextCohortID = StartingCohortsID[cellIndices.Count - 1] + TotalMarineCellCohorts;
+        }
 
 
         /// <summary>
@@ -1240,28 +1240,28 @@ namespace Madingley
         /// <remarks>This is inefficient and needs double-checking for errors</remarks>
         public void DeleteGridCellIndividualCohorts(uint latIndex, uint lonIndex, List<uint> cohortFGsToDelete, List<uint> cohortNumbersToDelete)
         {
-            
+
             // Get the unique functional groups that have cohorts to be removed
             uint[] TempList = cohortFGsToDelete.Distinct().ToArray();
 
             // Loop over these unique functional  groups
             for (int ii = 0; ii < TempList.Length; ii++)
-			{
+            {
                 // Get the functional group index of the current functional group
                 int FG = (int)TempList[ii];
 
                 // Create a local list to hold the positions of the cohorts to delete from this functional group
-			    List<uint> CohortIndexList = new List<uint>();
+                List<uint> CohortIndexList = new List<uint>();
                 // Loop over all cohorts to be deleted
                 for (int jj = 0; jj < cohortFGsToDelete.Count; jj++)
-			    {
+                {
                     // Check whether the functional group correpsonds with the functional group currently being processed 
                     if (cohortFGsToDelete.ElementAt((int)jj) == FG)
                     {
                         // Add the cohort to the list of cohorts to delete
                         CohortIndexList.Add(cohortNumbersToDelete[jj]);
                     }
-			    }
+                }
 
                 // Sort the list of positions of the cohorts to delete in this functional group
                 CohortIndexList.Sort();
@@ -1270,12 +1270,12 @@ namespace Madingley
 
                 // Loop over cohorts and delete in turn, starting with cohorts in the highest positions
                 for (int kk = 0; kk < CohortIndexList.Count; kk++)
-			    {
-			        InternalGrid[latIndex, lonIndex].GridCellCohorts[FG].RemoveAt((int)CohortIndexList[kk]);                  
-			    }
+                {
+                    InternalGrid[latIndex, lonIndex].GridCellCohorts[FG].RemoveAt((int)CohortIndexList[kk]);
+                }
 
-	        }
-            
+            }
+
         }
 
         /// <summary>
@@ -1313,7 +1313,7 @@ namespace Madingley
         /// <returns>The value of the environmental layer, or a missing value if the environmental layer does not exist</returns>
         public double GetEnviroLayer(string variableName, uint timeInterval, uint latCellIndex, uint lonCellIndex, out bool variableExists)
         {
-            return InternalGrid[latCellIndex, lonCellIndex].GetEnviroLayer(variableName,timeInterval, out variableExists);
+            return InternalGrid[latCellIndex, lonCellIndex].GetEnviroLayer(variableName, timeInterval, out variableExists);
         }
 
         /// <summary>
@@ -1328,10 +1328,10 @@ namespace Madingley
         /// <returns>True if the value is set successfully, false otherwise</returns>
         public bool SetEnviroLayer(string variableName, uint timeInterval, double setValue, uint latCellIndex, uint lonCellIndex)
         {
-            return InternalGrid[latCellIndex, lonCellIndex].SetEnviroLayer(variableName,timeInterval, setValue);
+            return InternalGrid[latCellIndex, lonCellIndex].SetEnviroLayer(variableName, timeInterval, setValue);
         }
 
-        
+
         /// <summary>
         /// Set the value of a given delta type for the specified ecological process within the specified grid cell
         /// </summary>
@@ -1345,7 +1345,7 @@ namespace Madingley
         {
             return InternalGrid[latCellIndex, lonCellIndex].SetDelta(deltaType, ecologicalProcess, setValue);
         }
-        
+
         /// <summary>
         /// Get the total of a state variable for specific cells
         /// </summary>
@@ -1357,7 +1357,7 @@ namespace Madingley
         /// <param name="initialisation">The Madingley Model intialisation</param>
         /// <returns>Summed value of variable over whole grid</returns>
         /// <todo>Overload to work with vector and array state variables</todo>
-        public double StateVariableGridTotal(string variableName, string traitValue, int[] functionalGroups, List<uint[]> cellIndices, 
+        public double StateVariableGridTotal(string variableName, string traitValue, int[] functionalGroups, List<uint[]> cellIndices,
             string stateVariableType, MadingleyModelInitialisation initialisation)
         {
 
@@ -1385,7 +1385,7 @@ namespace Madingley
         /// <param name="stateVariableType">The type of entity to return the state variable for: 'stock' or 'cohort'</param>
         /// <param name="modelInitialisation">The Madingley Model initialisation</param>
         /// <returns>The state variable for specified functional groups of specified entity types in a specified grid cell</returns>
-        public double GetStateVariable(string variableName, string traitValue, int[] functionalGroups, uint latCellIndex, uint lonCellIndex, 
+        public double GetStateVariable(string variableName, string traitValue, int[] functionalGroups, uint latCellIndex, uint lonCellIndex,
             string stateVariableType, MadingleyModelInitialisation modelInitialisation)
         {
 
@@ -1394,7 +1394,7 @@ namespace Madingley
             switch (stateVariableType.ToLower())
             {
                 case "cohort":
-                    
+
                     GridCellCohortHandler TempCohorts = InternalGrid[latCellIndex, lonCellIndex].GridCellCohorts;
 
                     switch (variableName.ToLower())
@@ -1417,7 +1417,7 @@ namespace Madingley
                                     foreach (var item in TempCohorts[f])
                                     {
                                         if (item.IndividualBodyMass <= modelInitialisation.PlanktonDispersalThreshold)
-                                        returnValue += ((item.IndividualBodyMass + item.IndividualReproductivePotentialMass) * item.CohortAbundance);
+                                            returnValue += ((item.IndividualBodyMass + item.IndividualReproductivePotentialMass) * item.CohortAbundance);
                                     }
                                 }
                             }
@@ -1441,7 +1441,7 @@ namespace Madingley
                                     foreach (var item in TempCohorts[f])
                                     {
                                         if (item.IndividualBodyMass <= modelInitialisation.PlanktonDispersalThreshold)
-                                        returnValue += item.CohortAbundance;
+                                            returnValue += item.CohortAbundance;
                                     }
                                 }
                             }
@@ -1479,7 +1479,7 @@ namespace Madingley
 
             }
 
-            
+
 
 
 
@@ -1487,6 +1487,49 @@ namespace Madingley
 
             return returnValue;
         }
+
+
+        /// <summary>
+        /// Gets a state variable density for specified groups of specified entity types in a specified grid cell
+        /// </summary>
+        /// <param name="variableName">The name of the variable to get: 'biomass' or 'abundance'</param>
+        /// <param name="traitValue">The functional group trait value to get data for</param>
+        /// <param name="functionalGroups">The functional group indices to get the state variable for</param>
+        /// <param name="latCellIndex">The latitudinal index of the cell</param>
+        /// <param name="lonCellIndex">The longitudinal index of the cell</param>
+        /// <param name="stateVariableType">The type of entity to return the state variable for: 'stock' or 'cohort'</param>
+        /// <param name="modelInitialisation">The Madingley Model initialisation</param>
+        /// <returns>The state variable density for specified functional groups of specified entity types in a specified grid cell</returns>
+        public double GetStateVariableDensity(OutputCell outputCell, string variableName, int cohortFG, FunctionalGroupDefinitions cohortFunctionalGroups,
+            FunctionalGroupDefinitions stockFunctionalGroups, uint latCellIndex, uint lonCellIndex, MadingleyModelInitialisation madingleyInitialisation, Boolean marineCell)
+        {
+
+            double returnValue = 0.0;
+
+            GridCellCohortHandler TempCohorts = InternalGrid[latCellIndex, lonCellIndex].GridCellCohorts;
+
+            switch (variableName.ToLower())
+            {
+                case "biomass":
+                    foreach (int f in cohortFunctionalGroups.AllFunctionalGroupsIndex)
+                    {
+                        foreach (var item in TempCohorts[f])
+                        {
+                            if (outputCell.DetermineFunctionalGroup(madingleyInitialisation, stockFunctionalGroups, cohortFunctionalGroups.GetTraitNames("group description",
+                                item.FunctionalGroupIndex), item.IndividualBodyMass, marineCell) == cohortFG)
+                                returnValue += ((item.IndividualBodyMass + item.IndividualReproductivePotentialMass) * item.CohortAbundance);
+                        }
+                    }
+                    break;
+                default:
+                    Debug.Fail("For cohorts, state variable name must be either 'biomass' or 'abundance'. Note 'abundance' not currently implemented");
+                    break;
+            }
+
+            return returnValue / (InternalGrid[latCellIndex, lonCellIndex].CellEnvironment["Cell Area"][0]);
+        }
+
+
 
         /// <summary>
         /// Gets a state variable density for specified functional groups of specified entity types in a specified grid cell
@@ -1499,7 +1542,7 @@ namespace Madingley
         /// <param name="stateVariableType">The type of entity to return the state variable for: 'stock' or 'cohort'</param>
         /// <param name="modelInitialisation">The Madingley Model initialisation</param>
         /// <returns>The state variable density for specified functional groups of specified entity types in a specified grid cell</returns>
-        public double GetStateVariableDensity(string variableName, string traitValue, int[] functionalGroups, uint latCellIndex, 
+        public double GetStateVariableDensity(string variableName, string traitValue, int[] functionalGroups, uint latCellIndex,
             uint lonCellIndex, string stateVariableType, MadingleyModelInitialisation modelInitialisation)
         {
 
@@ -1607,7 +1650,7 @@ namespace Madingley
         /// <param name="stateVariableType">A string indicating the type of state variable; 'cohort' or 'stock'</param>
         /// <param name="initialisation">The Madingley Model initialisation</param>
         /// <returns>Mean density of variable over whole grid</returns>
-        public double StateVariableGridMeanDensity(string variableName, string traitValue, int[] functionalGroups, List<uint[]> cellIndices, 
+        public double StateVariableGridMeanDensity(string variableName, string traitValue, int[] functionalGroups, List<uint[]> cellIndices,
             string stateVariableType, MadingleyModelInitialisation initialisation)
         {
 
@@ -1635,7 +1678,7 @@ namespace Madingley
         /// <param name="stateVariableType">A string indicating the type of state variable; 'cohort' or 'stock'</param>
         /// <param name="initialisation">The Madingley Model initialisation</param>
         /// <returns>Array of state variable values for each grid cell</returns>
-        public double[,] GetStateVariableGrid(string variableName, string traitValue, int[] functionalGroups, List<uint[]> cellIndices, 
+        public double[,] GetStateVariableGrid(string variableName, string traitValue, int[] functionalGroups, List<uint[]> cellIndices,
             string stateVariableType, MadingleyModelInitialisation initialisation)
         {
             double[,] TempStateVariable = new double[this.NumLatCells, this.NumLonCells];
@@ -1659,7 +1702,7 @@ namespace Madingley
                                         {
                                             foreach (Cohort item in InternalGrid[cellIndices[ii][0], cellIndices[ii][1]].GridCellCohorts[functionalGroups[nn]].ToArray())
                                             {
-                                                    TempStateVariable[cellIndices[ii][0], cellIndices[ii][1]] += ((item.IndividualBodyMass + item.IndividualReproductivePotentialMass) * item.CohortAbundance);
+                                                TempStateVariable[cellIndices[ii][0], cellIndices[ii][1]] += ((item.IndividualBodyMass + item.IndividualReproductivePotentialMass) * item.CohortAbundance);
                                             }
                                         }
                                     }
@@ -1707,7 +1750,7 @@ namespace Madingley
                         {
                             Debug.Fail("Variable 'state variable type' must be either 'stock' 'or 'cohort'");
                         }
-                        
+
                     }
                     break;
                 case "abundance":
@@ -1766,7 +1809,7 @@ namespace Madingley
             return TempStateVariable;
 
         }
-        
+
         /// <summary>
         /// Return an array of values for a single state variable over specific cells, given in densities per km^2
         /// </summary>
@@ -1777,7 +1820,7 @@ namespace Madingley
         /// <param name="stateVariableType">A string indicating the type of state variable; 'cohort' or 'stock'</param>
         /// <param name="initialisation">The Madingley Model initialisation</param>
         /// <returns>Array of state variable values for each grid cell</returns>
-        public double[,] GetStateVariableGridDensityPerSqKm(string variableName, string traitValue, int[] functionalGroups, 
+        public double[,] GetStateVariableGridDensityPerSqKm(string variableName, string traitValue, int[] functionalGroups,
             List<uint[]> cellIndices, string stateVariableType, MadingleyModelInitialisation initialisation)
         {
             double[,] TempStateVariable = new double[this.NumLatCells, this.NumLonCells];
@@ -1805,17 +1848,17 @@ namespace Madingley
         /// <param name="stateVariableType">A string indicating the type of state variable; 'cohort' or 'stock'</param>
         /// <param name="initialisation">The Madingley Model initialisation</param>
         /// <returns>Array of log(state variable values +1 ) for each grid cell</returns>
-        public double[,] GetStateVariableGridLog(string variableName, string traitValue, int[] functionalGroups, List<uint[]> cellIndices, 
+        public double[,] GetStateVariableGridLog(string variableName, string traitValue, int[] functionalGroups, List<uint[]> cellIndices,
             string stateVariableType, MadingleyModelInitialisation initialisation)
         {
 
             double[,] TempStateVariable = new double[this.NumLatCells, this.NumLonCells];
 
             TempStateVariable = this.GetStateVariableGrid(variableName, traitValue, functionalGroups, cellIndices, stateVariableType, initialisation);
-            
+
             for (int ii = 0; ii < cellIndices.Count; ii++)
             {
-                TempStateVariable[cellIndices[ii][0], cellIndices[ii][1]] = Math.Log(TempStateVariable[cellIndices[ii][0], cellIndices[ii][1]]+1);
+                TempStateVariable[cellIndices[ii][0], cellIndices[ii][1]] = Math.Log(TempStateVariable[cellIndices[ii][0], cellIndices[ii][1]] + 1);
             }
 
             return TempStateVariable;
@@ -1832,7 +1875,7 @@ namespace Madingley
         /// <param name="stateVariableType">A string indicating the type of state variable; 'cohort' or 'stock'</param>
         /// <param name="initialisation">The Madingley Model intialisation</param>
         /// <returns>Array of log(state variable values +1 ) for each grid cell</returns>
-        public double[,] GetStateVariableGridLogDensityPerSqKm(string variableName, string traitValue, int[] functionalGroups, 
+        public double[,] GetStateVariableGridLogDensityPerSqKm(string variableName, string traitValue, int[] functionalGroups,
             List<uint[]> cellIndices, string stateVariableType, MadingleyModelInitialisation initialisation)
         {
 
@@ -1845,7 +1888,7 @@ namespace Madingley
             {
                 CellArea = GetCellEnvironment(cellIndices[ii][0], cellIndices[ii][1])["Cell Area"][0];
                 TempStateVariable[cellIndices[ii][0], cellIndices[ii][1]] /= CellArea;
-                TempStateVariable[cellIndices[ii][0], cellIndices[ii][1]] = Math.Log(TempStateVariable[cellIndices[ii][0], cellIndices[ii][1]]+1);
+                TempStateVariable[cellIndices[ii][0], cellIndices[ii][1]] = Math.Log(TempStateVariable[cellIndices[ii][0], cellIndices[ii][1]] + 1);
             }
 
             return TempStateVariable;
@@ -1899,7 +1942,7 @@ namespace Madingley
 
             double TempLatitude = double.MaxValue;
 
-            for (int jj = 0; jj < _NumLonCells ; jj++)
+            for (int jj = 0; jj < _NumLonCells; jj++)
             {
                 if (InternalGrid[cellLatIndex, jj] != null)
                 {
@@ -1964,7 +2007,7 @@ namespace Madingley
             return InternalGrid[cellLatIndex, cellLonIndex].Deltas;
         }
 
-        
+
         /// <summary>
         /// Get a grid of values for an environmental data layer
         /// </summary>
@@ -1972,23 +2015,23 @@ namespace Madingley
         /// <param name="timeInterval">The desired time interval within the environmental variable (i.e. 0 if it is a yearly variable
         /// or the month index - 0=Jan, 1=Feb etc. - for monthly variables)</param>
         /// <returns>The values in each grid cell</returns>
-        public double[,] GetEnviroGrid(string enviroVariable,uint timeInterval)
+        public double[,] GetEnviroGrid(string enviroVariable, uint timeInterval)
         {
             // Check to see if environmental variable exists
             for (int ii = 0; ii < _NumLatCells; ii++)
             {
                 for (int jj = 0; jj < _NumLonCells; jj++)
                 {
-                    if(InternalGrid[ii,jj] != null)
+                    if (InternalGrid[ii, jj] != null)
                         Debug.Assert(InternalGrid[ii, jj].CellEnvironment.ContainsKey(enviroVariable), "Environmental variable not found when running GetEnviroGrid");
                 }
             }
 
             double[,] outputData = new double[_NumLatCells, _NumLonCells];
 
-            for (int ii = 0; ii < _NumLatCells; ii+=GridCellRarefaction)
+            for (int ii = 0; ii < _NumLatCells; ii += GridCellRarefaction)
             {
-                for (int jj = 0; jj < _NumLonCells; jj+=GridCellRarefaction)
+                for (int jj = 0; jj < _NumLonCells; jj += GridCellRarefaction)
                 {
                     outputData[ii, jj] = InternalGrid[ii, jj].CellEnvironment[enviroVariable][timeInterval];
                 }
@@ -2011,9 +2054,9 @@ namespace Madingley
             for (int ii = 0; ii < cellIndices.Count; ii++)
             {
                 if (InternalGrid[cellIndices[ii][0], cellIndices[ii][1]] != null)
-                        Debug.Assert(InternalGrid[cellIndices[ii][0], cellIndices[ii][1]].CellEnvironment.ContainsKey(enviroVariable), 
-                            "Environmental variable not found when running GetEnviroGrid");
-                
+                    Debug.Assert(InternalGrid[cellIndices[ii][0], cellIndices[ii][1]].CellEnvironment.ContainsKey(enviroVariable),
+                        "Environmental variable not found when running GetEnviroGrid");
+
             }
 
             // Create grid to hold the data to return
@@ -2037,12 +2080,12 @@ namespace Madingley
         /// <returns>The total of the variable over the whole grid</returns>
         public double GetEnviroGridTotal(string enviroVariable, uint timeInterval)
         {
-            double[,] enviroGrid = GetEnviroGrid(enviroVariable,timeInterval);
+            double[,] enviroGrid = GetEnviroGrid(enviroVariable, timeInterval);
             double enviroTotal = 0.0;
 
-            for (int ii = 0; ii < _NumLatCells; ii+=GridCellRarefaction)
+            for (int ii = 0; ii < _NumLatCells; ii += GridCellRarefaction)
             {
-                for (int jj = 0; jj < _NumLonCells; jj+=GridCellRarefaction)
+                for (int jj = 0; jj < _NumLonCells; jj += GridCellRarefaction)
                 {
                     enviroTotal += enviroGrid[ii, jj];
                 }
@@ -2061,7 +2104,7 @@ namespace Madingley
         /// <returns>The total of the variable over the whole grid</returns>
         public double GetEnviroGridTotal(string enviroVariable, uint timeInterval, List<uint[]> cellIndices)
         {
-            double[,] enviroGrid = GetEnviroGrid(enviroVariable,timeInterval, cellIndices);
+            double[,] enviroGrid = GetEnviroGrid(enviroVariable, timeInterval, cellIndices);
             double enviroTotal = 0.0;
 
             for (int ii = 0; ii < cellIndices.Count; ii++)
@@ -2106,7 +2149,7 @@ namespace Madingley
             {
                 // Add the cell above to the list of cells that are dispersable to
                 CellsForDispersal[latCell, lonCell].Add(new uint[2] { (latCell + 1), (lonCellToGoTo) });
-                
+
                 // Also add it to the directional list
                 CellsForDispersalDirection[latCell, lonCell].Add(2);
             }
@@ -2148,7 +2191,7 @@ namespace Madingley
             {
                 // Add the cell above to the list of cells that are dispersable to
                 CellsForDispersal[latCell, lonCell].Add(new uint[2] { (latCell - 1), (lonCellToGoTo) });
-                
+
                 // Also add it to the directional list
                 CellsForDispersalDirection[latCell, lonCell].Add(4);
             }
@@ -2171,7 +2214,7 @@ namespace Madingley
 
                 // Also add it to the directional list
                 CellsForDispersalDirection[latCell, lonCell].Add(5);
-            
+
             }
         }
 
@@ -2190,7 +2233,7 @@ namespace Madingley
             {
                 // Add the cell above to the list of cells that are dispersable to
                 CellsForDispersal[latCell, lonCell].Add(new uint[2] { (latCell - 1), (lonCellToGoTo) });
-                
+
                 // Also add it to the directional list
                 CellsForDispersalDirection[latCell, lonCell].Add(6);
 
@@ -2240,7 +2283,7 @@ namespace Madingley
 
             }
         }
- 
+
         // Currently assumes that the grid does not run from -90 to 90 (in which case there would be transfer at top and bottom latitude)
         // Also needs checking to see if it works with a sub-grid
         /// <summary>
@@ -2251,24 +2294,24 @@ namespace Madingley
             int counter = 1;
             // Loop through grid cells
             for (uint ii = 0; ii < _NumLatCells; ii++)
-			{
+            {
                 // Bottom of the grid
-			    if (ii == 0)
+                if (ii == 0)
                 {
                     // Loop through the longitude indices of each cell
                     for (uint jj = 0; jj < _NumLonCells; jj++)
-			        {
+                    {
                         // Get the realm of the cell (i.e. whether it is land or sea)
-                        double GridCellRealm = InternalGrid[ii,jj].CellEnvironment["Realm"][0];
+                        double GridCellRealm = InternalGrid[ii, jj].CellEnvironment["Realm"][0];
                         if ((GridCellRealm != 1.0) && (GridCellRealm != 2.0))
                         {
-                            Console.Write("\r{0} cells classified as neither land nor sea",counter);
+                            Console.Write("\r{0} cells classified as neither land nor sea", counter);
                             counter++;
                             break;
                         }
 
                         // Check to see if we are at the left-most edge
-			            if (jj == 0)
+                        if (jj == 0)
                         {
                             // Are we on a grid that spans the globe?
                             if ((_MaxLongitude - _MinLongitude) > 359.9)
@@ -2278,7 +2321,7 @@ namespace Madingley
 
                                 // Check to see if the top right perimeter is dispersable
                                 CheckTopRightPerimeterTraversable(ii, jj, jj + 1, GridCellRealm);
-                                
+
                                 // Check to see if the right perimeter is dispersable
                                 CheckRightPerimeterTraversable(ii, jj, jj + 1, GridCellRealm);
 
@@ -2286,7 +2329,7 @@ namespace Madingley
                                 CheckLeftPerimeterTraversable(ii, jj, _NumLonCells - 1, GridCellRealm);
 
                                 // Check to see if the top left perimeter is dispersable
-                                CheckTopLeftPerimeterTraversable(ii, jj, _NumLonCells - 1, GridCellRealm);                  
+                                CheckTopLeftPerimeterTraversable(ii, jj, _NumLonCells - 1, GridCellRealm);
                             }
 
                             // Otherwise, we are simply on a non-wrappable boundary. 
@@ -2295,10 +2338,10 @@ namespace Madingley
                             {
                                 // Check to see if the top perimeter is traversable
                                 CheckTopPerimeterTraversable(ii, jj, GridCellRealm);
-                                
+
                                 // Check to see if the top right perimeter is dispersable
                                 CheckTopRightPerimeterTraversable(ii, jj, jj + 1, GridCellRealm);
-                                
+
                                 // Check to see if the right perimeter is dispersable
                                 CheckRightPerimeterTraversable(ii, jj, jj + 1, GridCellRealm);
                             }
@@ -2314,7 +2357,7 @@ namespace Madingley
 
                                 // Check to see if the top right perimeter is dispersable
                                 CheckTopRightPerimeterTraversable(ii, jj, 0, GridCellRealm);
-                                
+
                                 // Check to see if the right perimeter is dispersable
                                 CheckRightPerimeterTraversable(ii, jj, 0, GridCellRealm);
 
@@ -2347,7 +2390,7 @@ namespace Madingley
 
                             // Check to see if the top right perimeter is dispersable
                             CheckTopRightPerimeterTraversable(ii, jj, jj + 1, GridCellRealm);
-                                
+
                             // Check to see if the right perimeter is dispersable
                             CheckRightPerimeterTraversable(ii, jj, jj + 1, GridCellRealm);
 
@@ -2357,58 +2400,58 @@ namespace Madingley
                             // Check to see if the top left perimeter is dispersable
                             CheckTopLeftPerimeterTraversable(ii, jj, jj - 1, GridCellRealm);
                         }
-			        }
+                    }
                 }
 
                 // Top of the grid
-                else if (ii == (_NumLatCells -1))
+                else if (ii == (_NumLatCells - 1))
                 {
                     // Loop through the longitude indices of each cell
                     for (uint jj = 0; jj < _NumLonCells; jj++)
-			        {
+                    {
                         // Get the realm of the cell (i.e. whether it is land or sea)
-                        double GridCellRealm = InternalGrid[ii,jj].CellEnvironment["Realm"][0];
+                        double GridCellRealm = InternalGrid[ii, jj].CellEnvironment["Realm"][0];
                         if ((GridCellRealm != 1.0) && (GridCellRealm != 2.0))
                         {
                             Console.Write("\r{0} cells classified as neither land nor sea", counter);
                             counter++;
                             break;
                         }
-                    
+
                         // Check to see if we are at the left-most edge
                         if (jj == 0)
                         {
-                              // Are we on a grid that spans the globe?
-                                if ((_MaxLongitude - _MinLongitude) > 359.9)
-                                {
-                                    // Check to see if the right perimeter is dispersable
-                                    CheckRightPerimeterTraversable(ii, jj, jj + 1, GridCellRealm);
+                            // Are we on a grid that spans the globe?
+                            if ((_MaxLongitude - _MinLongitude) > 359.9)
+                            {
+                                // Check to see if the right perimeter is dispersable
+                                CheckRightPerimeterTraversable(ii, jj, jj + 1, GridCellRealm);
 
-                                    // Check to see if the bottom right perimeter is dispersable
-                                    CheckBottomRightPerimeterTraversable(ii, jj, jj + 1, GridCellRealm);
-                                
-                                    // Check to see if the bottom perimeter is dispersable
-                                    CheckBottomPerimeterTraversable(ii, jj, GridCellRealm);
+                                // Check to see if the bottom right perimeter is dispersable
+                                CheckBottomRightPerimeterTraversable(ii, jj, jj + 1, GridCellRealm);
 
-                                    // Check to see if the bottom left perimeter is dispersable
-                                    CheckBottomLeftPerimeterTraversable(ii, jj, _NumLonCells - 1, GridCellRealm);
+                                // Check to see if the bottom perimeter is dispersable
+                                CheckBottomPerimeterTraversable(ii, jj, GridCellRealm);
 
-                                    // Check to see if the left perimeter is dispersable
-                                    CheckLeftPerimeterTraversable(ii, jj, _NumLonCells - 1, GridCellRealm);
-                                }
-                                // Otherwise, we are simply on a non-wrappable boundary. 
-                                // Assumes that we have a closed system on this boundary and that organisms cannot disperse through it
-                                else
-                                {
-                                    // Check to see if the right perimeter is dispersable
-                                    CheckRightPerimeterTraversable(ii, jj, jj + 1, GridCellRealm);
-                                    
-                                    // Check to see if the bottom right perimeter is dispersable
-                                    CheckBottomRightPerimeterTraversable(ii, jj, jj + 1, GridCellRealm);
+                                // Check to see if the bottom left perimeter is dispersable
+                                CheckBottomLeftPerimeterTraversable(ii, jj, _NumLonCells - 1, GridCellRealm);
 
-                                    // Check to see if the bottom perimeter is dispersable
-                                    CheckBottomPerimeterTraversable(ii, jj, GridCellRealm);
-                                }
+                                // Check to see if the left perimeter is dispersable
+                                CheckLeftPerimeterTraversable(ii, jj, _NumLonCells - 1, GridCellRealm);
+                            }
+                            // Otherwise, we are simply on a non-wrappable boundary. 
+                            // Assumes that we have a closed system on this boundary and that organisms cannot disperse through it
+                            else
+                            {
+                                // Check to see if the right perimeter is dispersable
+                                CheckRightPerimeterTraversable(ii, jj, jj + 1, GridCellRealm);
+
+                                // Check to see if the bottom right perimeter is dispersable
+                                CheckBottomRightPerimeterTraversable(ii, jj, jj + 1, GridCellRealm);
+
+                                // Check to see if the bottom perimeter is dispersable
+                                CheckBottomPerimeterTraversable(ii, jj, GridCellRealm);
+                            }
                         }
                         // Check to see if we are at the right-most edge
                         else if (jj == (_NumLonCells - 1))
@@ -2418,13 +2461,13 @@ namespace Madingley
                             {
                                 // Check to see if the right perimeter is dispersable
                                 CheckRightPerimeterTraversable(ii, jj, 0, GridCellRealm);
-                                
+
                                 // Check to see if the bottom right perimeter is dispersable
                                 CheckBottomRightPerimeterTraversable(ii, jj, 0, GridCellRealm);
 
                                 // Check to see if the bottom perimeter is dispersable
                                 CheckBottomPerimeterTraversable(ii, jj, GridCellRealm);
-                                
+
                                 // Check to see if the bottom left perimeter is dispersable
                                 CheckBottomLeftPerimeterTraversable(ii, jj, jj - 1, GridCellRealm);
 
@@ -2503,7 +2546,7 @@ namespace Madingley
 
                                 // Check to see if the bottom perimeter is dispersable
                                 CheckBottomPerimeterTraversable(ii, jj, GridCellRealm);
-                                
+
                                 // Check to see if the bottom left perimeter is dispersable
                                 CheckBottomLeftPerimeterTraversable(ii, jj, _NumLonCells - 1, GridCellRealm);
 
@@ -2525,7 +2568,7 @@ namespace Madingley
 
                                 // Check to see if the right perimeter is dispersable
                                 CheckRightPerimeterTraversable(ii, jj, jj + 1, GridCellRealm);
-                                
+
                                 // Check to see if the bottom right perimeter is dispersable
                                 CheckBottomRightPerimeterTraversable(ii, jj, jj + 1, GridCellRealm);
 
@@ -2541,25 +2584,25 @@ namespace Madingley
                             {
                                 // Check to see if the top perimeter is dispersable
                                 CheckTopPerimeterTraversable(ii, jj, GridCellRealm);
-                                
+
                                 // Check to see if the top right perimeter is dispersable
                                 CheckTopRightPerimeterTraversable(ii, jj, 0, GridCellRealm);
 
                                 // Check to see if the right perimeter is dispersable
                                 CheckRightPerimeterTraversable(ii, jj, 0, GridCellRealm);
-                                
+
                                 // Check to see if the bottom right perimeter is dispersable
                                 CheckBottomRightPerimeterTraversable(ii, jj, 0, GridCellRealm);
 
                                 // Check to see if the bottom perimeter is dispersable
                                 CheckBottomPerimeterTraversable(ii, jj, GridCellRealm);
-                                
+
                                 // Check to see if the bottom left perimeter is dispersable
                                 CheckBottomLeftPerimeterTraversable(ii, jj, jj - 1, GridCellRealm);
 
                                 // Check to see if the left perimeter is dispersable
                                 CheckLeftPerimeterTraversable(ii, jj, jj - 1, GridCellRealm);
-                                
+
                                 // Check to see if the top left perimeter is dispersable
                                 CheckTopLeftPerimeterTraversable(ii, jj, jj - 1, GridCellRealm);
                             }
@@ -2609,8 +2652,8 @@ namespace Madingley
                             CheckTopLeftPerimeterTraversable(ii, jj, jj - 1, GridCellRealm);
                         }
                     }
-                 }
-			}
+                }
+            }
             Console.WriteLine("\n");
 
         }
@@ -2661,7 +2704,7 @@ namespace Madingley
         /// <returns>The longitudinal and latitudinal cell indices of the cell that lies to the east of the focal grid cell</returns>
         public uint[] CheckDispersalEast(uint fromCellLatIndex, uint fromCellLonIndex)
         {
-            uint[] EastCell = new uint[2] {9999999,9999999};
+            uint[] EastCell = new uint[2] { 9999999, 9999999 };
 
             for (int ii = 0; ii < CellsForDispersalDirection[fromCellLatIndex, fromCellLonIndex].Count; ii++)
             {

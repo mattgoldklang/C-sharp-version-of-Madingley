@@ -759,7 +759,7 @@ namespace Madingley
 
                 for (int i = 0; i < _CellList.Count; i++)
                 {
-                    CellOutputs[i] = new OutputCell(InitialisationFileStrings["OutputDetail"], initialisation, i);
+                    CellOutputs[i] = new OutputCell(InitialisationFileStrings["OutputDetail"], initialisation, i, CohortFunctionalGroupDefinitions, StockFunctionalGroupDefinitions);
                 }
 
                 // Spawn a dataset viewer instance for each cell to display live model results

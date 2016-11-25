@@ -1,19 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Diagnostics;
+using System.Linq;
 
 namespace Madingley
 {
-    public abstract class Tracker
+    public abstract class Output
     {
-        abstract public void OpenTrackerFile();
-
-        abstract public void WriteToTrackerFile(uint currentTimeStep, ModelGrid madingleyModelGrid, uint numLats, uint numLons, MadingleyModelInitialisation initialisation,
-            Boolean MarineCell);
-
-        abstract public void CloseTrackerFile();
-
         protected int NumberMarineFGsForTracking;
         protected int NumberTerrestrialFGsForTracking;
 
