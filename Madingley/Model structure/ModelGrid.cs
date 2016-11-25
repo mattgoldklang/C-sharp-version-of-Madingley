@@ -1507,6 +1507,7 @@ namespace Madingley
             double returnValue = 0.0;
 
             GridCellCohortHandler TempCohorts = InternalGrid[latCellIndex, lonCellIndex].GridCellCohorts;
+            GridCellStockHandler TempStocks = InternalGrid[latCellIndex, lonCellIndex].GridCellStocks;
 
             switch (variableName.ToLower())
             {
@@ -1518,6 +1519,16 @@ namespace Madingley
                             if (outputCell.DetermineFunctionalGroup(madingleyInitialisation, stockFunctionalGroups, cohortFunctionalGroups.GetTraitNames("group description",
                                 item.FunctionalGroupIndex), item.IndividualBodyMass, marineCell) == cohortFG)
                                 returnValue += ((item.IndividualBodyMass + item.IndividualReproductivePotentialMass) * item.CohortAbundance);
+                        }
+                    }
+
+                    foreach (int g in stockFunctionalGroups.AllFunctionalGroupsIndex)
+                    {
+                        foreach (var item in TempStocks[g])
+                        {
+                            if (outputCell.DetermineFunctionalGroup(madingleyInitialisation, stockFunctionalGroups, stockFunctionalGroups.GetTraitNames("stock name",
+                                item.FunctionalGroupIndex), 1, marineCell) == cohortFG)
+                                returnValue += item.TotalBiomass;
                         }
                     }
                     break;
