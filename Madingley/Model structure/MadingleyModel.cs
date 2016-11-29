@@ -311,6 +311,8 @@ namespace Madingley
 
         private FunctionalGroupTracker FGTracker;
 
+        private CohortTracker ACohortTracker;
+
         /// <summary>
         /// Initializes the ecosystem model
         /// </summary>
@@ -344,7 +346,12 @@ namespace Madingley
             // Instantiate a new functional group tracker
             FGTracker = new FunctionalGroupTracker(EcosystemModelGrid.Lats, EcosystemModelGrid.Lons, initialisation, CohortFunctionalGroupDefinitions,
                 StockFunctionalGroupDefinitions, outputFilesSuffix, initialisation.OutputPath, initialisation.ProcessTrackingOutputs["FGFlowsOutput"]);
+
+            // Instantiate a new cohort tracker
+            ACohortTracker = new CohortTracker(EcosystemModelGrid.Lats, EcosystemModelGrid.Lons, initialisation, CohortFunctionalGroupDefinitions,
+                StockFunctionalGroupDefinitions, outputFilesSuffix, initialisation.OutputPath, initialisation.ProcessTrackingOutputs["CohortFlowsOutput"]);
       
+
             // Temporary variables
             Boolean varExists;
 
@@ -527,7 +534,9 @@ namespace Madingley
                         if (initialisation.TimeStepToStartProcessTrackers == hh)
                         {
                             FGTracker.OpenTrackerFile();
-                            
+                            ACohortTracker.OpenTrackerFile();
+
+
                         }
                     }
                  }
@@ -549,6 +558,9 @@ namespace Madingley
 
                         FGTracker.WriteToTrackerFile(CurrentTimeStep, EcosystemModelGrid, EcosystemModelGrid.NumLatCells, EcosystemModelGrid.NumLonCells, initialisation,
             EcosystemModelGrid.GetEnviroLayer("Realm", 0, _CellList[i][0], _CellList[i][1], out varExists) == 2.0);
+
+                        ACohortTracker.WriteToTrackerFile(CurrentTimeStep, EcosystemModelGrid, EcosystemModelGrid.NumLatCells, EcosystemModelGrid.NumLonCells
+                            ,initialisation, EcosystemModelGrid.GetEnviroLayer("Realm", 0, _CellList[i][0], _CellList[i][1], out varExists) == 2.0);
                     }
                 }
 
@@ -648,7 +660,6 @@ namespace Madingley
             RunWithinCellStockEcology(_CellList[cellIndex][0], _CellList[cellIndex][1], WorkingGridCellStocks, cellIndex,
                 initialisation);
 
-            // Run within cell ecology if we are not doing dispersal only
             if (dispersalOnly)
             {
                 // Run cohort ecology
@@ -1168,7 +1179,7 @@ namespace Madingley
 
         }
 
-        private void RunWithinCellCohortEcology(uint latCellIndex, uint lonCellIndex, ThreadLockedParallelVariables partial, 
+        private void RunWithinCellCohortEcology(uint latCellIndex, uint lonCellIndex,            ThreadLockedParallelVariables partial, 
             GridCellCohortHandler workingGridCellCohorts, GridCellStockHandler workingGridCellStocks,string outputDetail, int cellIndex, 
             MadingleyModelInitialisation initialisation)
         {
@@ -1266,18 +1277,27 @@ namespace Madingley
 
                     CohortActivity.AssignProportionTimeActive(workingGridCellCohorts[ActingCohort], EcosystemModelGrid.GetCellEnvironment(latCellIndex, lonCellIndex), CohortFunctionalGroupDefinitions, CurrentTimeStep, CurrentMonth);
 
+                    // Record information on cohort abundance and biomass prior to changes.
+                    if (ProcessTrackers[0].TrackProcesses)
+                    {
+                        ACohortTracker.RecordGeneralCohortInformation(_CellList[cellIndex][0], _CellList[cellIndex][1], workingGridCellCohorts[ActingCohort], initialisation,
+                            StockFunctionalGroupDefinitions,
+                            CohortFunctionalGroupDefinitions.GetTraitNames("group description", workingGridCellCohorts[ActingCohort].FunctionalGroupIndex), workingGridCellCohorts[ActingCohort].IndividualBodyMass,
+                            EcosystemModelGrid.GetCellEnvironment(_CellList[cellIndex][0], _CellList[cellIndex][1])["Realm"][0] == 2.0);
+                    }
+
                     // Run ecology
                     MadingleyEcologyCohort.RunWithinCellEcology(workingGridCellCohorts, workingGridCellStocks,
                         ActingCohort, EcosystemModelGrid.GetCellEnvironment(latCellIndex, lonCellIndex),
                         EcosystemModelGrid.GetCellDeltas(latCellIndex, lonCellIndex),
                         CohortFunctionalGroupDefinitions, StockFunctionalGroupDefinitions, CurrentTimeStep,
-                        ProcessTrackers[cellIndex], FGTracker, ref partial, SpecificLocations,outputDetail, CurrentMonth, initialisation);
+                        ProcessTrackers[cellIndex], ACohortTracker, FGTracker, ref partial, SpecificLocations,outputDetail, CurrentMonth, initialisation);
 
                     // Update the properties of the acting cohort
                     MadingleyEcologyCohort.UpdateEcology(workingGridCellCohorts, workingGridCellStocks, ActingCohort,
                         EcosystemModelGrid.GetCellEnvironment(latCellIndex, lonCellIndex), EcosystemModelGrid.GetCellDeltas(
                         latCellIndex, lonCellIndex), CohortFunctionalGroupDefinitions, StockFunctionalGroupDefinitions, CurrentTimeStep,
-                        ProcessTrackers[cellIndex]);
+                        ProcessTrackers[cellIndex], ACohortTracker);
 
                     // Add newly produced cohorts to the tracking variable
                     EcosystemModelParallelTempval2 += workingGridCellCohorts[ActingCohort[0]].Count - EcosystemModelParallelTempval1;
