@@ -526,15 +526,18 @@ namespace Madingley
 
                         if (initialisation.TimeStepToStartProcessTrackers == hh)
                         {
-                            FGTracker.OpenTrackerFile();
-                            
+                            FGTracker.OpenTrackerFile();                      
                         }
                     }
                  }
                  else
                  {
-                     // Write out grid outputs for this time step
-                     GridOutputs.TimeStepOutputs(EcosystemModelGrid, CohortFunctionalGroupDefinitions, StockFunctionalGroupDefinitions, _CellList,
+                    if (initialisation.TimeStepToStartProcessTrackers == hh)
+                    {
+                        FGTracker.OpenTrackerFile();
+                    }
+                    // Write out grid outputs for this time step
+                    GridOutputs.TimeStepOutputs(EcosystemModelGrid, CohortFunctionalGroupDefinitions, StockFunctionalGroupDefinitions, _CellList,
                          CurrentTimeStep, initialisation);
                  }
 

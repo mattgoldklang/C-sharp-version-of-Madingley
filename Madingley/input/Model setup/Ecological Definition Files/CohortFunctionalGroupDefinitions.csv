@@ -1,14 +1,11 @@
 DEFINITION_Heterotroph/Autotroph,DEFINITION_Nutrition source,DEFINITION_Diet,DEFINITION_Realm,DEFINITION_Mobility,DEFINITION_Reproductive strategy,DEFINITION_Endo/Ectotherm,DEFINITION_Adult/juvenile ratio mode,PROPERTY_Herbivory assimilation,PROPERTY_Carnivory assimilation,PROPERTY_Proportion suitable time active,PROPERTY_Adult/juvenile ratio,PROPERTY_Minimum mass,PROPERTY_Maximum mass,PROPERTY_Initial number of GridCellCohorts,DEFINITION_group description
-Heterotroph,Carnivore,AllSpecial,Marine,Mobile,iteroparity,Endotherm,scaled,0,0.8,0.5,100,10000,150000000,100,Baleen whales
-Heterotroph,Carnivore,All,Marine,Mobile,iteroparity,Endotherm,scaled,0,0.8,0.5,100,100,50000000,100,Carnivorous endotherms
+Heterotroph,Carnivore,AllSpecial,Marine,Mobile,iteroparity,Endotherm,scaled,0,0.8,0.5,10,10000,150000000,100,Baleen whales
+Heterotroph,Carnivore,All,Marine,Mobile,iteroparity,Endotherm,scaled,0,0.8,0.5,10,100,50000000,100,Carnivorous endotherms
 Heterotroph,Carnivore,All,Marine,Mobile,iteroparity,Ectotherm,scaled,0,0.8,0.5,100,0.0001,2000000,100,Carnivorous ectotherms iteroparity
 Heterotroph,Carnivore,All,Marine,Mobile,semelparity,Ectotherm,scaled,0,0.8,0.5,100,0.0001,2000000,100,Carnivorous ectotherms semelparity
-Heterotroph,Herbivore,Microphytoplankton,Marine,Mobile,iteroparity,Ectotherm,scaled,0.7,0,0.5,100,0.0001,10000,100,Herbivorous ectos iteroparity
-Heterotroph,Herbivore,Microphytoplankton,Marine,Mobile,semelparity,Ectotherm,scaled,0.7,0,0.5,100,0.0001,10000,100,Herbivorous ectos semelparity
 Heterotroph,Omnivore,Microphytoplankton,Marine,Mobile,iteroparity,Ectotherm,scaled,0.6,0.64,0.5,100,0.0001,100000,100,Omnivorous ectos iteroparity
 Heterotroph,Omnivore,Microphytoplankton,Marine,Mobile,semelparity,Ectotherm,scaled,0.6,0.64,0.5,100,0.0001,100000,100,Omnivorous ectos semelparity
-Heterotroph,Herbivore,Microphytoplankton,Marine,Planktonic,iteroparity,Ectotherm,scaled,0.7,0,0.5,100,0.0001,1,100,Obligate zooplankton iteroparity
-Heterotroph,Herbivore,Microphytoplankton,Marine,Planktonic,semelparity,Ectotherm,scaled,0.7,0,0.5,100,0.0001,1,100,Obligate zooplankton semelparity
+Heterotroph,Herbivore,Microphytoplankton,Marine,Planktonic,iteroparity,Ectotherm,scaled,0.7,0,0.5,100,0.00001,10,400,Obligate multicellular zooplankton
 Heterotroph,Herbivore,All,Terrestrial,Mobile,iteroparity,Endotherm,scaled,0.5,0,0.5,1,1.5,5000000,111,ItHerbEndo
 Heterotroph,Carnivore,All,Terrestrial,Mobile,iteroparity,Endotherm,scaled,0,0.8,0.5,1,3,700000,111,ItCarnEndo
 Heterotroph,Omnivore,All,Terrestrial,Mobile,iteroparity,Endotherm,scaled,0.4,0.64,0.5,1,3,1500000,111,ItOmEndo

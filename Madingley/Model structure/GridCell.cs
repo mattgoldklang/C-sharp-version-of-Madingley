@@ -876,7 +876,7 @@ namespace Madingley
                                             CohortAdultMassRatio = CohortAdultMass / CohortJuvenileMass;
                                         }
                                         while (CohortAdultMass <= CohortJuvenileMass || CohortJuvenileMass < MassMinima[FunctionalGroup]);
-                                    }
+                                        }
                                 }
                             }
                             else
@@ -922,9 +922,15 @@ namespace Madingley
                             // * 100 to give g km-2
                             // * cell area to give g grid cell
                             //*3300/NumCohortsThisCell scales total initial biomass in the cell to some approximately reasonable mass
-                            double NewBiomass = (3300 / NumCohortsThisCell) * 100 * 3000 * 
-                                Math.Pow(0.6, (Math.Log10(CohortJuvenileMass))) * (_CellEnvironment["Cell Area"][0]);
+
+                                                        
+                            //double NewBiomass = (3300 / NumCohortsThisCell) * 100 * 3000 * 
+                            //    Math.Pow(0.6, (Math.Log10(CohortJuvenileMass))) * (_CellEnvironment["Cell Area"][0]);
+
+                            double NewBiomass = (3300 / NumCohortsThisCell) * 100 * 3000 * Math.Pow(0.6, CohortJuvenileMass) * (_CellEnvironment["Cell Area"][0]);
+
                             TotalNewBiomass += NewBiomass;
+
                             double NewAbund = 0.0;
                             if (!ZeroAbundance)
                             {
