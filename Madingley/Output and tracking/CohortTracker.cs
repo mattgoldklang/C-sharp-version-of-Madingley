@@ -133,12 +133,13 @@ namespace Madingley
            
                     for (int i = 0; i < NumCohortsToWrite; i++)
                     {
+                Console.WriteLine("Num cohorts to write" + i);
                         SyncedCohortFlowsWriter.WriteLine(Convert.ToString(madingleyModelGrid.GetCellLatitude(CohortIdentifiers.ElementAt(i)[0])) + '\t' +
                             Convert.ToString(madingleyModelGrid.GetCellLongitude(CohortIdentifiers.ElementAt(i)[1])) + '\t' + Convert.ToString(currentTimeStep) +
                             '\t' + CohortIdentifierStrings.ElementAt(i)[0] + '\t' + CohortIdentifiers.ElementAt(i)[2] + '\t' +
                             FixedCohortProperties.ElementAt(i)[0] + '\t' + FixedCohortProperties.ElementAt(i)[1] + '\t' +
                             PredationEaten.ElementAt(i) + '\t' + HerbivoryEaten.ElementAt(i) + '\t' +
-                            FixedCohortProperties.ElementAt(i)[0] + '\t' + FixedCohortProperties.ElementAt(i)[1]);
+                            MetabolicCosts[i] + '\t' + GrowthRates[i]);
                     }
 
 

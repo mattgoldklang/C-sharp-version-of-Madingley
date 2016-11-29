@@ -645,12 +645,12 @@ namespace Madingley
                     gridCellCohorts[actingCohort].TrophicIndex += (_BodyMassPrey + gridCellCohorts[FunctionalGroup][i].IndividualReproductivePotentialMass) * _AbundancesEaten[FunctionalGroup][i] * gridCellCohorts[FunctionalGroup][i].TrophicIndex;
 
 
-                    if (trackProcesses.TrackProcesses)
+                    if (trackProcesses.TrackProcesses  && (currentTimestep >= initialisation.TimeStepToStartProcessTrackers))
                     {
                         // If the process tracker is set and output detail is set to high and the prey cohort has never been merged,
                         // then track its mortality owing to predation
                         if ((outputDetail == "high") && (gridCellCohorts[FunctionalGroup][i].CohortID.Count == 1)
-                        && AbundancesEaten[FunctionalGroup][i] > 0)
+                        && (AbundancesEaten[FunctionalGroup][i] > 0))
                         {
                             trackProcesses.RecordMortality((uint)cellEnvironment["LatIndex"][0], (uint)cellEnvironment["LonIndex"][0], gridCellCohorts
                                 [FunctionalGroup][i].BirthTimeStep, currentTimestep, gridCellCohorts[FunctionalGroup][i].IndividualBodyMass,
@@ -673,7 +673,7 @@ namespace Madingley
                         
                         // If the model is being run for specific locations and if track processes has been specified, then track the mass flow between
                         // prey and predator
-                        if (specificLocations)
+                        if (specificLocations && (currentTimestep >= initialisation.TimeStepToStartProcessTrackers))
                         {
                             trackProcesses.RecordPredationMassFlow(currentTimestep, _BodyMassPrey, _BodyMassPredator, _BodyMassPrey *
                                 _AbundancesEaten[FunctionalGroup][i]);

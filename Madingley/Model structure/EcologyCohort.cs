@@ -173,10 +173,11 @@ namespace Madingley
         /// <param name="tracker">A process tracker</param>
         public void UpdateEcology(GridCellCohortHandler gridCellCohorts, GridCellStockHandler gridCellStocks, int[] actingCohort, 
             SortedList<string, double[]> cellEnvironment, Dictionary<string, Dictionary<string, double>> deltas, FunctionalGroupDefinitions 
-            madingleyCohortDefinitions, FunctionalGroupDefinitions madingleyStockDefinitions, uint currentTimestep, ProcessTracker tracker, CohortTracker cohortTracker)
+            madingleyCohortDefinitions, FunctionalGroupDefinitions madingleyStockDefinitions, uint currentTimestep, ProcessTracker tracker, CohortTracker cohortTracker,
+            MadingleyModelInitialisation initialisation)
         {
             // Apply the results of within-cell ecological processes
-            ApplyEcologicalProcessResults.UpdateAllEcology(gridCellCohorts, actingCohort, cellEnvironment, deltas, currentTimestep, tracker, cohortTracker);
+            ApplyEcologicalProcessResults.UpdateAllEcology(gridCellCohorts, actingCohort, cellEnvironment, deltas, currentTimestep, tracker, cohortTracker, initialisation);
 
 
         }
