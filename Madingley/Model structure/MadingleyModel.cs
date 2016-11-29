@@ -528,6 +528,7 @@ namespace Madingley
                             _CellList, i, GlobalDiagnosticVariables, TimeStepTimer, NumTimeSteps, CurrentTimeStep, initialisation, CurrentMonth, EcosystemModelGrid.GetEnviroLayer("Realm", 0, _CellList[i][0], _CellList[i][1], out varExists) == 2.0);
 
                         // Write out trophic flow data for this time step
+                        if (ProcessTrackers[i].TrackProcesses && (hh >= initialisation.TimeStepToStartProcessTrackers)) ProcessTrackers[i].WriteTimeStepTrophicFlows(CurrentTimeStep, EcosystemModelGrid.NumLatCells, EcosystemModelGrid.NumLonCells, initialisation,
                              EcosystemModelGrid.GetEnviroLayer("Realm", 0, _CellList[i][0], _CellList[i][1], out varExists) == 2.0);
 
                         if (initialisation.TimeStepToStartProcessTrackers == hh)
