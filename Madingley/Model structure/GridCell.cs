@@ -927,7 +927,7 @@ namespace Madingley
                             //double NewBiomass = (3300 / NumCohortsThisCell) * 100 * 3000 * 
                             //    Math.Pow(0.6, (Math.Log10(CohortJuvenileMass))) * (_CellEnvironment["Cell Area"][0]);
 
-                            double NewBiomass = (3300 / NumCohortsThisCell) * 100 * 3000 * Math.Pow(0.6, CohortJuvenileMass) * (_CellEnvironment["Cell Area"][0]);
+                            double NewBiomass = (3300 / NumCohortsThisCell) * 100 * 3000 * Math.Pow(0.95, CohortJuvenileMass) * (_CellEnvironment["Cell Area"][0]);
 
                             TotalNewBiomass += NewBiomass;
 

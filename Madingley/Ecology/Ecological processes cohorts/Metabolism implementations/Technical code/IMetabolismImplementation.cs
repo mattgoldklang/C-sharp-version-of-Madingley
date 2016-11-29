@@ -33,9 +33,9 @@ namespace Madingley
         /// <param name="madingleyStockDefinitions">The definitions for stock functional groups in the model</param>
         /// <param name="currentTimestep">The current model time step</param>
         /// <param name="currentMonth">The current month in the model</param>
-        void RunMetabolism(GridCellCohortHandler gridCellCohorts, GridCellStockHandler gridCellStocks, int[] actingCohort, 
-            SortedList<string, double[]> cellEnvironment, Dictionary<string, Dictionary<string, double>> deltas, 
-            FunctionalGroupDefinitions madingleyCohortDefinitions, FunctionalGroupDefinitions madingleyStockDefinitions, 
+        void RunMetabolism(GridCellCohortHandler gridCellCohorts, GridCellStockHandler gridCellStocks,
+            int[] actingCohort, SortedList<string, double[]> cellEnvironment, Dictionary<string, Dictionary<string, double>>
+            deltas, FunctionalGroupDefinitions madingleyCohortDefinitions, FunctionalGroupDefinitions madingleyStockDefinitions, ProcessTracker trackProcesses, CohortTracker cohortTracker,
             uint currentTimestep, uint currentMonth);
     }
 }

@@ -67,7 +67,7 @@ namespace Madingley
         public void RunEcologicalProcess(GridCellCohortHandler gridCellCohorts, GridCellStockHandler gridCellStocks, 
             int[] actingCohort, SortedList<string, double[]> cellEnvironment, Dictionary<string, Dictionary<string, double>> deltas, 
             FunctionalGroupDefinitions madingleyCohortDefinitions, FunctionalGroupDefinitions madingleyStockDefinitions, 
-            uint currentTimestep, ProcessTracker trackProcesses, FunctionalGroupTracker functionalTracker, ref ThreadLockedParallelVariables partial,
+            uint currentTimestep, ProcessTracker trackProcesses, CohortTracker cohortTracker, FunctionalGroupTracker functionalTracker, ref ThreadLockedParallelVariables partial,
             Boolean specificLocations, string outputDetail, uint currentMonth, MadingleyModelInitialisation initialisation)
         {
             double Realm = cellEnvironment["Realm"][0];
@@ -76,11 +76,11 @@ namespace Madingley
                 if (madingleyCohortDefinitions.GetTraitNames("Endo/Ectotherm", gridCellCohorts[actingCohort].FunctionalGroupIndex) == "endotherm")
                 {
 
-                        Implementations["basic endotherm"].RunMetabolism(gridCellCohorts, gridCellStocks, actingCohort, cellEnvironment, deltas, madingleyCohortDefinitions, madingleyStockDefinitions, currentTimestep, currentMonth);
+                        Implementations["basic endotherm"].RunMetabolism(gridCellCohorts, gridCellStocks, actingCohort, cellEnvironment, deltas, madingleyCohortDefinitions, madingleyStockDefinitions, trackProcesses, cohortTracker, currentTimestep, currentMonth);
                 }
                 else
                 {
-                        Implementations["basic ectotherm"].RunMetabolism(gridCellCohorts, gridCellStocks, actingCohort, cellEnvironment, deltas, madingleyCohortDefinitions, madingleyStockDefinitions, currentTimestep, currentMonth);
+                        Implementations["basic ectotherm"].RunMetabolism(gridCellCohorts, gridCellStocks, actingCohort, cellEnvironment, deltas, madingleyCohortDefinitions, madingleyStockDefinitions, trackProcesses, cohortTracker, currentTimestep, currentMonth);
 
                 }
 

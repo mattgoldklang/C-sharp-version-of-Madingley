@@ -64,7 +64,7 @@ namespace Madingley
         /// <param name="currentMonth">The current model month</param>
         public void RunMetabolism(GridCellCohortHandler gridCellCohorts, GridCellStockHandler gridCellStocks, 
             int[] actingCohort, SortedList<string, double[]> cellEnvironment, Dictionary<string, Dictionary<string, double>> 
-            deltas, FunctionalGroupDefinitions madingleyCohortDefinitions, FunctionalGroupDefinitions madingleyStockDefinitions, 
+            deltas, FunctionalGroupDefinitions madingleyCohortDefinitions, FunctionalGroupDefinitions madingleyStockDefinitions, ProcessTracker trackProcesses, CohortTracker cohortTracker,
             uint currentTimestep, uint currentMonth)
         {
             // Calculate metabolic loss for an individual and add the value to the delta biomass for metabolism
@@ -76,7 +76,6 @@ namespace Madingley
 
             // Add total metabolic loss for all individuals in the cohort to delta biomass for metabolism in the respiratory CO2 pool
             deltas["respiratoryCO2pool"]["metabolism"] = -deltas["biomass"]["metabolism"] * gridCellCohorts[actingCohort].CohortAbundance;
-
         }
 
     }

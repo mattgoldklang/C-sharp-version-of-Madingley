@@ -144,12 +144,12 @@ namespace Madingley
             }
 
             // Now add in an FG for adding net autotroph production as an input, again for tracking purposes only
-            NumberMarineFGsForTracking++;
-            MarineFGsForTracking.Add("autotroph net production", TempMarine);
-            TempMarine++;
-            NumberTerrestrialFGsForTracking++;
-            TerrestrialFGsForTracking.Add("autotroph net production", TempTerrestrial);
-            TempTerrestrial++;
+       //     NumberMarineFGsForTracking++;
+         //   MarineFGsForTracking.Add("autotroph net production", TempMarine);
+           // TempMarine++;
+          //  NumberTerrestrialFGsForTracking++;
+            //TerrestrialFGsForTracking.Add("autotroph net production", TempTerrestrial);
+            //TempTerrestrial++;
         }
     }
 }

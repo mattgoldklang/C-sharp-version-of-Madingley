@@ -602,7 +602,7 @@ namespace Madingley
         /// <param name="initialisation">The Madingley Model initialisation</param>
         public void RunEating(GridCellCohortHandler gridCellCohorts, GridCellStockHandler gridCellStocks, int[] actingCohort, SortedList<string, double[]>
             cellEnvironment, Dictionary<string, Dictionary<string, double>> deltas, FunctionalGroupDefinitions madingleyCohortDefinitions,
-            FunctionalGroupDefinitions madingleyStockDefinitions, ProcessTracker trackProcesses, FunctionalGroupTracker functionalTracker, uint currentTimestep, Boolean specificLocations,
+            FunctionalGroupDefinitions madingleyStockDefinitions, ProcessTracker trackProcesses, CohortTracker cohortTracker, FunctionalGroupTracker functionalTracker, uint currentTimestep, Boolean specificLocations,
             string outputDetail, MadingleyModelInitialisation initialisation)
         {
             if (trackProcesses.TrackProcesses)
@@ -670,6 +670,7 @@ namespace Madingley
                                     madingleyCohortDefinitions, (_AbundancesEaten[FunctionalGroup][i] * _BodyMassPrey), _BodyMassPredator, _BodyMassPrey,
                                     initialisation, cellEnvironment["Realm"][0] == 2.0);
 
+                        
                         // If the model is being run for specific locations and if track processes has been specified, then track the mass flow between
                         // prey and predator
                         if (specificLocations)
@@ -703,8 +704,6 @@ namespace Madingley
 
                 }
             }
-
-            
 
             // Add the biomass eaten and assimilated by an individual to the delta biomass for the acting (predator) cohort
             deltas["biomass"]["predation"] = TempDouble * _PredatorAssimilationEfficiency;
