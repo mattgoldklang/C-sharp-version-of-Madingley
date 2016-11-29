@@ -414,7 +414,7 @@ namespace Madingley
         /// <param name="initialisation">The Madingley Model initialisation</param>
         public void RunEating(GridCellCohortHandler gridCellCohorts, GridCellStockHandler gridCellStocks, int[] actingCohort, SortedList<string, double[]>
             cellEnvironment, Dictionary<string, Dictionary<string, double>> deltas, FunctionalGroupDefinitions madingleyCohortDefinitions,
-            FunctionalGroupDefinitions madingleyStockDefinitions, ProcessTracker trackProcesses, FunctionalGroupTracker functionalTracker, uint currentTimestep, 
+            FunctionalGroupDefinitions madingleyStockDefinitions, ProcessTracker trackProcesses, CohortTracker cohortTracker, FunctionalGroupTracker functionalTracker, uint currentTimestep, 
             Boolean specificLocations, string outputDetail, MadingleyModelInitialisation initialisation)
         {
 
@@ -454,6 +454,10 @@ namespace Madingley
                             madingleyCohortDefinitions.GetTraitNames("group description", gridCellCohorts[actingCohort].FunctionalGroupIndex),
                             gridCellCohorts[actingCohort].IndividualBodyMass, madingleyStockDefinitions.GetTraitNames("stock name", FunctionalGroup),
                             gridCellStocks[FunctionalGroup][i].IndividualBodyMass, _BiomassesEaten[FunctionalGroup][i], cellEnvironment["Realm"][0] == 2.0);
+
+                        // Track eating event between cohorts
+                        cohortTracker.RecordPredationFlow((uint)cellEnvironment["LatIndex"][0], (uint)cellEnvironment["LonIndex"][0], gridCellCohorts[actingCohort], (_BiomassesEaten[FunctionalGroup][i] / gridCellCohorts[actingCohort].CohortAbundance),
+                            true, cellEnvironment["Realm"][0] == 2.0);
                     }
 
                     if (specificLocations && trackProcesses.TrackProcesses)

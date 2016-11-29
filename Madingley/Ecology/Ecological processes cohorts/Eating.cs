@@ -90,7 +90,7 @@ namespace Madingley
             Dictionary<string, Dictionary<string, double>> deltas, 
             FunctionalGroupDefinitions madingleyCohortDefinitions, 
             FunctionalGroupDefinitions madingleyStockDefinitions, 
-            uint currentTimestep, ProcessTracker trackProcesses, FunctionalGroupTracker functionalTracker,
+            uint currentTimestep, ProcessTracker trackProcesses, CohortTracker cohortTracker, FunctionalGroupTracker functionalTracker,
             ref ThreadLockedParallelVariables partial, Boolean specificLocations,
             string outputDetail, uint currentMonth, MadingleyModelInitialisation initialisation)
         {
@@ -130,7 +130,7 @@ namespace Madingley
                     Implementations["revised herbivory"].RunEating
                         (gridCellCohorts, gridCellStocks, actingCohort, 
                         cellEnvironment, deltas, madingleyCohortDefinitions, 
-                        madingleyStockDefinitions, trackProcesses, functionalTracker, 
+                        madingleyStockDefinitions, trackProcesses, cohortTracker, functionalTracker, 
                         currentTimestep, specificLocations,outputDetail, initialisation);
 
                     break;
@@ -156,7 +156,7 @@ namespace Madingley
                     // Run predation to apply changes in prey biomass from predation and add biomass eaten to the delta arrays
                     Implementations["revised predation"].RunEating
                         (gridCellCohorts, gridCellStocks, actingCohort, cellEnvironment, deltas, 
-                        madingleyCohortDefinitions, madingleyStockDefinitions, trackProcesses, functionalTracker, 
+                        madingleyCohortDefinitions, madingleyStockDefinitions, trackProcesses, cohortTracker, functionalTracker, 
                         currentTimestep, specificLocations,outputDetail, initialisation);
 
 
@@ -216,14 +216,14 @@ namespace Madingley
                     Implementations["revised predation"].RunEating
                         (gridCellCohorts, gridCellStocks, actingCohort, 
                         cellEnvironment, deltas, madingleyCohortDefinitions, 
-                        madingleyStockDefinitions, trackProcesses, functionalTracker,
+                        madingleyStockDefinitions, trackProcesses, cohortTracker, functionalTracker,
                         currentTimestep, specificLocations,outputDetail, initialisation);
 
                     // Run herbivory to update autotroph biomass and delta biomasses for the acting cohort
                     Implementations["revised herbivory"].RunEating
                         (gridCellCohorts, gridCellStocks, actingCohort, 
                         cellEnvironment, deltas, madingleyCohortDefinitions, 
-                        madingleyStockDefinitions, trackProcesses, functionalTracker, 
+                        madingleyStockDefinitions, trackProcesses, cohortTracker, functionalTracker, 
                         currentTimestep, specificLocations,outputDetail, initialisation);
 
                     break;
@@ -241,6 +241,8 @@ namespace Madingley
             Debug.Assert(!double.IsNaN(deltas["biomass"]["predation"]), "BiomassFromEating is NaN");
             Debug.Assert(!double.IsNaN(deltas["biomass"]["herbivory"]), "BiomassFromEating is NaN");
 
+
+            // The code below just appears to be used for calculating trophic level
             double biomassEaten = 0.0;
             if (madingleyCohortDefinitions.GetBiologicalPropertyOneFunctionalGroup("carnivory assimilation",
                 gridCellCohorts[actingCohort].FunctionalGroupIndex) > 0)

@@ -954,6 +954,9 @@ namespace Madingley
                     case "extinction filename":
                         _ProcessTrackingOutputs.Add("ExtinctionOutput", VarValues.GetValue(row).ToString());
                         break;
+                    case "cohort flows filename":
+                        _ProcessTrackingOutputs.Add("CohortFlowsOutput", VarValues.GetValue(row).ToString());
+                        break;
                     case "functional group flows filename":
                         _ProcessTrackingOutputs.Add("FGFlowsOutput", VarValues.GetValue(row).ToString());
                         break;

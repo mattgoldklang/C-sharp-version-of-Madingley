@@ -12,6 +12,7 @@ Maturity Filename,Maturity
 Predation Flows Filename,PredationFlows
 Herbivory Flows Filename,HerbivoryFlows
 Biomasses Eaten Filename,BiomassesEaten
+Cohort Flows Filename,CohortFlows
 Trophic Flows Filename,TrophicFlows
 Mortality Filename,Mortality
 Extinction Filename,Extinction

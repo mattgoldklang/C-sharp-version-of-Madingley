@@ -21,13 +21,14 @@ namespace Madingley
         /// <param name="deltas">The sorted list to track changes in biomass and abundance of the acting cohort in this grid cell</param>
         /// <param name="currentTimestep">The current model time step</param>
         /// <param name="tracker">A process tracker</param>
-        public void UpdateAllEcology(GridCellCohortHandler gridCellCohorts, int[] actingCohort, SortedList<string, double[]> cellEnvironment, Dictionary<string, Dictionary<string, double>> 
-            deltas, uint currentTimestep, ProcessTracker tracker)
+        public void UpdateAllEcology(GridCellCohortHandler gridCellCohorts, int[] actingCohort, SortedList<string, double[]> cellEnvironment, Dictionary<string, Dictionary<string, double>>
+            deltas, uint currentTimestep, ProcessTracker tracker, CohortTracker cohortTracker)
         {
-           // Apply cohort abundance changes
-            UpdateAbundance(gridCellCohorts, actingCohort, deltas); 
+            // Apply cohort abundance changes
+            UpdateAbundance(gridCellCohorts, actingCohort, deltas);
             // Apply cohort biomass changes
-            UpdateBiomass(gridCellCohorts, actingCohort, deltas, currentTimestep, tracker, cellEnvironment);
+            UpdateBiomass(gridCellCohorts, actingCohort, deltas, currentTimestep, tracker, cohortTracker, cellEnvironment);
+
             // Apply changes to the environmental biomass pools
             UpdatePools(cellEnvironment, deltas);
         }
@@ -38,14 +39,14 @@ namespace Madingley
         /// <param name="gridCellCohorts">The cohorts in the current grid cell</param>
         /// <param name="actingCohort">The location of the acting cohort in the jagged array of grid cell cohorts</param>
         /// <param name="deltas">The sorted list to track changes in biomass and abundance of the acting cohort in this grid cell</param>
-        private void UpdateAbundance(GridCellCohortHandler gridCellCohorts, int[] actingCohort, Dictionary<string,Dictionary<string, double>> deltas)
+        private void UpdateAbundance(GridCellCohortHandler gridCellCohorts, int[] actingCohort, Dictionary<string, Dictionary<string, double>> deltas)
         {
             // Extract the abundance deltas from the sorted list of all deltas
             Dictionary<string, double> deltaAbundance = deltas["abundance"];
-            
+
             // Get all keys from the abundance deltas sorted list
             string[] KeyStrings = deltaAbundance.Keys.ToArray();
-            
+
             // Variable to calculate net abundance change to check that cohort abundance will not become negative
             double NetAbundanceChange = 0.0;
 
@@ -78,8 +79,8 @@ namespace Madingley
         /// <param name="currentTimestep">The current model time step</param>
         /// <param name="tracker">A process tracker</param>
         /// <param name="cellEnvironment">The cell environment</param>
-        private void UpdateBiomass(GridCellCohortHandler gridCellCohorts, int[] actingCohort, Dictionary<string,Dictionary<string, double>> deltas, 
-            uint currentTimestep, ProcessTracker tracker, SortedList<string,double[]> cellEnvironment)
+        private void UpdateBiomass(GridCellCohortHandler gridCellCohorts, int[] actingCohort, Dictionary<string, Dictionary<string, double>> deltas,
+            uint currentTimestep, ProcessTracker tracker, CohortTracker cohortTracker, SortedList<string, double[]> cellEnvironment)
         {
             // Extract the biomass deltas from the sorted list of all deltas
             Dictionary<string, double> deltaBiomass = deltas["biomass"];
@@ -89,8 +90,22 @@ namespace Madingley
                 // Calculate net growth of individuals in this cohort
                 double growth = deltaBiomass["predation"] + deltaBiomass["herbivory"] + deltaBiomass["metabolism"];
                 tracker.TrackTimestepGrowth((uint)cellEnvironment["LatIndex"][0], (uint)cellEnvironment["LonIndex"][0], currentTimestep,
-                    gridCellCohorts[actingCohort].IndividualBodyMass, gridCellCohorts[actingCohort].FunctionalGroupIndex, growth, deltaBiomass["metabolism"],deltaBiomass["predation"],deltaBiomass["herbivory"]);
-                  
+                    gridCellCohorts[actingCohort].IndividualBodyMass, gridCellCohorts[actingCohort].FunctionalGroupIndex, growth, deltaBiomass["metabolism"], deltaBiomass["predation"], deltaBiomass["herbivory"]);
+
+                // Record metabolic cost if necessary
+                cohortTracker.RecordMetabolicCost(deltas["biomass"]["metabolism"]);
+
+                // Record growth
+                cohortTracker.RecordGrowth(deltaBiomass["predation"] + deltaBiomass["herbivory"] + deltaBiomass["metabolism"]);
+
+                // Track eating event between cohorts
+                cohortTracker.RecordPredationFlow((uint)cellEnvironment["LatIndex"][0], (uint)cellEnvironment["LonIndex"][0], gridCellCohorts[actingCohort], deltaBiomass["predation"],
+                    false, cellEnvironment["Realm"][0] == 2.0);
+
+                // Track eating event between cohorts
+                cohortTracker.RecordPredationFlow((uint)cellEnvironment["LatIndex"][0], (uint)cellEnvironment["LonIndex"][0], gridCellCohorts[actingCohort], deltaBiomass["herbivory"],
+                    true, cellEnvironment["Realm"][0] == 2.0);
+
             }
 
             // Get all keys from the biomass deltas sorted list
@@ -106,7 +121,7 @@ namespace Madingley
                 NetBiomass += deltaBiomass[key];
             }
 
-            double BiomassCheck=0.0;
+            double BiomassCheck = 0.0;
             Boolean NetToBeApplied = true;
             // If cohort abundance is greater than zero, then check that the calculated net biomas will not make individual body mass become negative
             if (gridCellCohorts[actingCohort].CohortAbundance.CompareTo(0.0) > 0)
@@ -179,7 +194,7 @@ namespace Madingley
                     deltaReproductiveBiomass[key] = 0.0;
                 }
             }
-            
+
             // Note that maturity time step is set in TReproductionBasic
 
         }
@@ -191,7 +206,7 @@ namespace Madingley
         /// </summary>
         /// <param name="cellEnvironment">The environment of the current gird cell</param>
         /// <param name="deltas">The sorted list to track changes in biomass and abundance of the acting cohort in this grid cell</param>
-        private void UpdatePools(SortedList<string, double[]> cellEnvironment, Dictionary<string,Dictionary<string,double>> deltas)
+        private void UpdatePools(SortedList<string, double[]> cellEnvironment, Dictionary<string, Dictionary<string, double>> deltas)
         {
             // Extract the organic pool deltas from the sorted list of all deltas
             Dictionary<string, double> DeltaOrganicPool = deltas["organicpool"];
