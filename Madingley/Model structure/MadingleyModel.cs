@@ -13,14 +13,14 @@ using Microsoft.Research.Science.Data;
 using System.IO;
 
 namespace Madingley
-{   
-    
+{
+
     /// <summary>
     /// Thread-local variables for tracking extinction and production of cohorts
     /// </summary>
     /// <todo>Needs a little tidying and checking of access levels</todo>
-    public class ThreadLockedParallelVariables 
-    { 
+    public class ThreadLockedParallelVariables
+    {
         /// <summary>
         /// Thread-local variable to track the extinction of cohorts
         /// </summary>
@@ -50,7 +50,7 @@ namespace Madingley
     /// </summary>
     public class MadingleyModel
     {
-        
+
 
         /// <summary>
         /// An instance of the cohort functional group definitions for this model
@@ -97,12 +97,12 @@ namespace Madingley
         /// The right-most longitude for the model grid
         /// </summary>
         private float RightmostLongitude;
-        
+
         /// <summary>
         /// The size of the grid cells in degrees
         /// </summary>
         private float CellSize;
-       
+
         /// <summary>
         /// The number of time steps in the model run
         /// </summary>
@@ -137,7 +137,7 @@ namespace Madingley
         /// The current time step
         /// </summary>
         public uint CurrentTimeStep;
-        
+
         /// <summary>
         /// The current month: 1=Jan; 2=Feb; 3=Mar etc.
         /// </summary>
@@ -148,7 +148,7 @@ namespace Madingley
         /// Default is true
         /// </summary>
         public Boolean DrawRandomly = true;
-        
+
         /// <summary>
         /// The threshold abundance below which cohorts will automatically become extinct
         /// </summary>
@@ -157,14 +157,14 @@ namespace Madingley
         /// Get the extinction threshold for this model
         /// </summary>
         public double ExtinctionThreshold
-        {  get { return _ExtinctionThreshold; } }
+        { get { return _ExtinctionThreshold; } }
 
         //Values to define when cohorts can be merged
         /// <summary>
         /// The proportional difference in adult, juvenile and current body masses that cohorts must fall within in order to be considered for merging
         /// </summary>
         private double MergeDifference;
-        
+
         /// <summary>
         /// The time step units for this model
         /// </summary>
@@ -182,7 +182,7 @@ namespace Madingley
         /// Pairs of longitude and latitude indices for all active cells in the model grid
         /// </summary>
         private List<uint[]> _CellList;
-      
+
 
         /// <summary>
         /// A list of global diagnostics for this model run
@@ -198,7 +198,7 @@ namespace Madingley
         /// Whether the model will be run for specific locations, instead of for the whole model grid
         /// </summary>
         public Boolean SpecificLocations;
-        
+
         /// <summary>
         /// An instance of StopWatch to time individual time steps
         /// </summary>
@@ -262,7 +262,7 @@ namespace Madingley
         /// </summary>
         /// <value>The first item is the scenario type
         /// The second item is an associated magnitude</value>
-        private Tuple<string,double, double> _HumanNPPScenario;
+        private Tuple<string, double, double> _HumanNPPScenario;
         /// <summary>
         /// Get the human NPP scenario
         /// </summary>
@@ -288,11 +288,11 @@ namespace Madingley
         /// </summary>
         public Tuple<string, double, double> HarvestingScenario
         { get { return _HarvestingScenario; } }
-        
+
 
         // A variable to increment for the purposes of giving each cohort a unique ID
         private Int64 NextCohortID;
-     
+
         /// <summary>
         /// Variable to track the number of cohorts that have dispersed. Doesn't need to be thread-local because all threads have converged prior to running cross-grid-cell processes
         /// </summary>
@@ -324,7 +324,7 @@ namespace Madingley
         /// <param name="simulation">The index of the simulation being run</param>
         public MadingleyModel(MadingleyModelInitialisation initialisation, ScenarioParameterInitialisation scenarioParameters, int scenarioIndex,
             string outputFilesSuffix, string globalModelTimeStepUnit, int simulation)
-        {         
+        {
             // Assign the properties for this model run
             AssignModelRunProperties(initialisation, scenarioParameters, scenarioIndex, outputFilesSuffix);
 
@@ -350,7 +350,7 @@ namespace Madingley
             // Instantiate a new cohort tracker
             ACohortTracker = new CohortTracker(EcosystemModelGrid.Lats, EcosystemModelGrid.Lons, initialisation, CohortFunctionalGroupDefinitions,
                 StockFunctionalGroupDefinitions, outputFilesSuffix, initialisation.OutputPath, initialisation.ProcessTrackingOutputs["CohortFlowsOutput"]);
-      
+
 
             // Temporary variables
             Boolean varExists;
@@ -368,12 +368,12 @@ namespace Madingley
                 EcosystemModelGrid.GlobalMissingValue,
                 outputFilesSuffix,
                 initialisation.OutputPath, initialisation.ModelMassBins,
-                SpecificLocations, i, initialisation, 
+                SpecificLocations, i, initialisation,
                 EcosystemModelGrid.GetEnviroLayer("Realm", 0, _CellList[i][0], _CellList[i][1], out varExists) == 2.0,
                 EcosystemModelGrid.LatCellSize,
                 EcosystemModelGrid.LonCellSize);
             }
-            
+
             // Set up a cross cell process tracker
             TrackCrossCellProcesses = new CrossCellProcessTracker(initialisation.TrackCrossCellProcesses, "DispersalData", initialisation.OutputPath, outputFilesSuffix);
 
@@ -428,7 +428,7 @@ namespace Madingley
         /// </summary>
         /// <param name="initialisation">The initialization details for the current set of model simulations</param>
         public void RunMadingley(MadingleyModelInitialisation initialisation)
-        {            
+        {
             // Write out model run details to the console
             Console.WriteLine("Running model");
             Console.WriteLine("Number of time steps is: {0}", NumTimeSteps);
@@ -436,99 +436,99 @@ namespace Madingley
             Console.WriteLine(" ");
 
             // Temporary variable
-            Boolean varExists;  
+            Boolean varExists;
 
-             // Run the model
-             for (UInt32 hh = 0; hh < NumTimeSteps; hh += 1)
-             {
-                 Console.WriteLine("Running time step {0}...",hh + 1);
+            // Run the model
+            for (UInt32 hh = 0; hh < NumTimeSteps; hh += 1)
+            {
+                Console.WriteLine("Running time step {0}...", hh + 1);
 
-                 // Start the timer
-                 TimeStepTimer.Start();
+                // Start the timer
+                TimeStepTimer.Start();
 
-                 // Get current time step and month
-                 CurrentTimeStep = hh;
-                 CurrentMonth = Utilities.GetCurrentMonth(hh,_GlobalModelTimeStepUnit);
-
-
-                 if ((CurrentTimeStep % 12) == 0)
-                 {
-                     EcosystemModelGrid.AssignGridCellTemporalData(EnviroStackTemporal, _CellList, CurrentTimeStep, initialisation.NSFPhyto);
-                 }
-
-                 // Initialise cross grid cell ecology
-                 MadingleyEcologyCrossGridCell.InitializeCrossGridCellEcology(_GlobalModelTimeStepUnit, DrawRandomly, initialisation);
-                
-                 EcologyTimer.Start();
-
-                 // Loop over grid cells and run biological processes
-                 if (RunGridCellsInParallel)
-                 {
-                     // Run cells in parallel
-                     RunCellsInParallel(initialisation);
-                 }
-                 else
-                 {
-                     // Run cells in sequence
-                     RunCellsSequentially(initialisation);
-                 }
-
-                 
-
-                 EcologyTimer.Stop();
-                 Console.WriteLine("Within grid ecology took: {0}" ,EcologyTimer.GetElapsedTimeSecs());
-                 // Run the garbage collector. Note that it works in the background so may take a little while
-                 // Needs to be done to ensure cohorts are deleted properly
-                 GC.Collect();
-
-                 if (TrackGlobalProcesses.TrackProcesses)
-                 {
-                     for (uint ii = 0; ii < StockFunctionalGroupDefinitions.GetNumberOfFunctionalGroups(); ii++)
-                     {
-                         TrackGlobalProcesses.StoreNPPGrid(hh, ii);
-                         TrackGlobalProcesses.StoreHANPPGrid(hh, ii);
-                     }
-                 }
+                // Get current time step and month
+                CurrentTimeStep = hh;
+                CurrentMonth = Utilities.GetCurrentMonth(hh, _GlobalModelTimeStepUnit);
 
 
-                 EcologyTimer.Start();
+                if ((CurrentTimeStep % 12) == 0)
+                {
+                    EcosystemModelGrid.AssignGridCellTemporalData(EnviroStackTemporal, _CellList, CurrentTimeStep, initialisation.NSFPhyto);
+                }
 
-                 // Run cross grid cell ecology
-                 RunCrossGridCellEcology(ref Dispersals, initialisation.DispersalOnly, initialisation);
+                // Initialise cross grid cell ecology
+                MadingleyEcologyCrossGridCell.InitializeCrossGridCellEcology(_GlobalModelTimeStepUnit, DrawRandomly, initialisation);
 
-                 EcologyTimer.Stop();
-                 Console.WriteLine("Across grid ecology took: {0}", EcologyTimer.GetElapsedTimeSecs());
+                EcologyTimer.Start();
 
-                 // Run the garbage collector. Note that it works in the background so may take a little while
-                 // Needs to be done here to ensure cohorts are deleted properly
-                 GC.Collect();
-                 
-                 // Stop the timer
-                 TimeStepTimer.Stop();
-
-                 OutputTimer.Start();
-
-                 // Write the global outputs for this time step
-                 GlobalOutputs.TimeStepOutputs(EcosystemModelGrid, CurrentTimeStep, CurrentMonth, TimeStepTimer,CohortFunctionalGroupDefinitions,
-                     StockFunctionalGroupDefinitions,_CellList,GlobalDiagnosticVariables, initialisation);
-
-                 OutputTimer.Stop();
-                 Console.WriteLine("Global Outputs took: {0}", OutputTimer.GetElapsedTimeSecs());
+                // Loop over grid cells and run biological processes
+                if (RunGridCellsInParallel)
+                {
+                    // Run cells in parallel
+                    RunCellsInParallel(initialisation);
+                }
+                else
+                {
+                    // Run cells in sequence
+                    RunCellsSequentially(initialisation);
+                }
 
 
-                 OutputTimer.Start();
 
-                 if (SpecificLocations)
-                 {
-                     // Loop over grid cells and write (a) time step outputs, and (b) trophic flow data (if process tracking is on)
-                     for (int i = 0; i < _CellList.Count; i++)
-                     {
-                         // Write out the grid cell outputs for this time step
-                         CellOutputs[i].TimeStepOutputs(EcosystemModelGrid, CohortFunctionalGroupDefinitions, StockFunctionalGroupDefinitions,
-                             _CellList, i, GlobalDiagnosticVariables, TimeStepTimer, NumTimeSteps, CurrentTimeStep, initialisation, CurrentMonth, EcosystemModelGrid.GetEnviroLayer("Realm", 0, _CellList[i][0], _CellList[i][1], out varExists) == 2.0);
-                         
-                         // Write out trophic flow data for this time step
-                         if(ProcessTrackers[i].TrackProcesses && (initialisation.TimeStepToStartProcessTrackers >= hh)) ProcessTrackers[i].WriteTimeStepTrophicFlows(CurrentTimeStep, EcosystemModelGrid.NumLatCells, EcosystemModelGrid.NumLonCells, initialisation,
+                EcologyTimer.Stop();
+                Console.WriteLine("Within grid ecology took: {0}", EcologyTimer.GetElapsedTimeSecs());
+                // Run the garbage collector. Note that it works in the background so may take a little while
+                // Needs to be done to ensure cohorts are deleted properly
+                GC.Collect();
+
+                if (TrackGlobalProcesses.TrackProcesses)
+                {
+                    for (uint ii = 0; ii < StockFunctionalGroupDefinitions.GetNumberOfFunctionalGroups(); ii++)
+                    {
+                        TrackGlobalProcesses.StoreNPPGrid(hh, ii);
+                        TrackGlobalProcesses.StoreHANPPGrid(hh, ii);
+                    }
+                }
+
+
+                EcologyTimer.Start();
+
+                // Run cross grid cell ecology
+                RunCrossGridCellEcology(ref Dispersals, initialisation.DispersalOnly, initialisation);
+
+                EcologyTimer.Stop();
+                Console.WriteLine("Across grid ecology took: {0}", EcologyTimer.GetElapsedTimeSecs());
+
+                // Run the garbage collector. Note that it works in the background so may take a little while
+                // Needs to be done here to ensure cohorts are deleted properly
+                GC.Collect();
+
+                // Stop the timer
+                TimeStepTimer.Stop();
+
+                OutputTimer.Start();
+
+                // Write the global outputs for this time step
+                GlobalOutputs.TimeStepOutputs(EcosystemModelGrid, CurrentTimeStep, CurrentMonth, TimeStepTimer, CohortFunctionalGroupDefinitions,
+                    StockFunctionalGroupDefinitions, _CellList, GlobalDiagnosticVariables, initialisation);
+
+                OutputTimer.Stop();
+                Console.WriteLine("Global Outputs took: {0}", OutputTimer.GetElapsedTimeSecs());
+
+
+                OutputTimer.Start();
+
+                if (SpecificLocations)
+                {
+                    // Loop over grid cells and write (a) time step outputs, and (b) trophic flow data (if process tracking is on)
+                    for (int i = 0; i < _CellList.Count; i++)
+                    {
+                        // Write out the grid cell outputs for this time step
+                        CellOutputs[i].TimeStepOutputs(EcosystemModelGrid, CohortFunctionalGroupDefinitions, StockFunctionalGroupDefinitions,
+                            _CellList, i, GlobalDiagnosticVariables, TimeStepTimer, NumTimeSteps, CurrentTimeStep, initialisation, CurrentMonth, EcosystemModelGrid.GetEnviroLayer("Realm", 0, _CellList[i][0], _CellList[i][1], out varExists) == 2.0);
+
+                        // Write out trophic flow data for this time step
+                        if (ProcessTrackers[i].TrackProcesses && (hh >= initialisation.TimeStepToStartProcessTrackers)) ProcessTrackers[i].WriteTimeStepTrophicFlows(CurrentTimeStep, EcosystemModelGrid.NumLatCells, EcosystemModelGrid.NumLonCells, initialisation,
                              EcosystemModelGrid.GetEnviroLayer("Realm", 0, _CellList[i][0], _CellList[i][1], out varExists) == 2.0);
 
                         if (initialisation.TimeStepToStartProcessTrackers == hh)
@@ -537,9 +537,9 @@ namespace Madingley
                             ACohortTracker.OpenTrackerFile();
                         }
                     }
-                 }
-                 else
-                 {
+                }
+                else
+                {
                     if (initialisation.TimeStepToStartProcessTrackers == hh)
                     {
                         FGTracker.OpenTrackerFile();
@@ -547,7 +547,7 @@ namespace Madingley
                     // Write out grid outputs for this time step
                     GridOutputs.TimeStepOutputs(EcosystemModelGrid, CohortFunctionalGroupDefinitions, StockFunctionalGroupDefinitions, _CellList,
                          CurrentTimeStep, initialisation);
-                 }
+                }
 
                 // Loop over grid cells and write (a) time step outputs, and (b) trophic flow data (if process tracking is on)
                 for (int i = 0; i < _CellList.Count; i++)
@@ -562,49 +562,49 @@ namespace Madingley
             EcosystemModelGrid.GetEnviroLayer("Realm", 0, _CellList[i][0], _CellList[i][1], out varExists) == 2.0);
 
                         ACohortTracker.WriteToTrackerFile(CurrentTimeStep, EcosystemModelGrid, EcosystemModelGrid.NumLatCells, EcosystemModelGrid.NumLonCells
-                            ,initialisation, EcosystemModelGrid.GetEnviroLayer("Realm", 0, _CellList[i][0], _CellList[i][1], out varExists) == 2.0);
+                            , initialisation, EcosystemModelGrid.GetEnviroLayer("Realm", 0, _CellList[i][0], _CellList[i][1], out varExists) == 2.0);
                     }
                 }
 
                 OutputTimer.Stop();
-                 Console.WriteLine("Cell/Grid Outputs took: {0}", OutputTimer.GetElapsedTimeSecs());
+                Console.WriteLine("Cell/Grid Outputs took: {0}", OutputTimer.GetElapsedTimeSecs());
 
-                 // Write the results of dispersal to the console
-                 Console.ForegroundColor = ConsoleColor.Green;
-                 Console.WriteLine("Number of cohorts that dispersed this time step: {0}\n", Dispersals);
-                 Console.ForegroundColor = ConsoleColor.White;
-                 Dispersals = 0;
-
-
-                 if (OutputModelStateTimestep.Contains(hh))
-                 {
-                     OutputTimer.Start();
-                     Console.WriteLine("Outputting model state");
-
-                     //Writing to text based output
-                     WriteModelState.OutputCurrentModelState( EcosystemModelGrid, _CellList, hh);
-                     WriteModelState.OutputCurrentModelState(EcosystemModelGrid,CohortFunctionalGroupDefinitions, _CellList, CurrentTimeStep, initialisation.MaxNumberOfCohorts,"ModelState");
-                     
-
-                     OutputTimer.Stop();
-                     // Write the results of dispersal to the console
-                     Console.ForegroundColor = ConsoleColor.Green;
-                     Console.WriteLine("Writing model state took: {0}", OutputTimer.GetElapsedTimeSecs());
-                     Console.ForegroundColor = ConsoleColor.White;
-                    
-                 }
+                // Write the results of dispersal to the console
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("Number of cohorts that dispersed this time step: {0}\n", Dispersals);
+                Console.ForegroundColor = ConsoleColor.White;
+                Dispersals = 0;
 
 
+                if (OutputModelStateTimestep.Contains(hh))
+                {
+                    OutputTimer.Start();
+                    Console.WriteLine("Outputting model state");
 
-             }
+                    //Writing to text based output
+                    WriteModelState.OutputCurrentModelState(EcosystemModelGrid, _CellList, hh);
+                    WriteModelState.OutputCurrentModelState(EcosystemModelGrid, CohortFunctionalGroupDefinitions, _CellList, CurrentTimeStep, initialisation.MaxNumberOfCohorts, "ModelState");
 
-             if (TrackGlobalProcesses.TrackProcesses) TrackGlobalProcesses.CloseNPPFile();
+
+                    OutputTimer.Stop();
+                    // Write the results of dispersal to the console
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("Writing model state took: {0}", OutputTimer.GetElapsedTimeSecs());
+                    Console.ForegroundColor = ConsoleColor.White;
+
+                }
+
+
+
+            }
+
+            if (TrackGlobalProcesses.TrackProcesses) TrackGlobalProcesses.CloseNPPFile();
 
             // Loop over cells and close process trackers
-             for (int i = 0; i < _CellList.Count; i++)
-             {
-                 if (ProcessTrackers[i].TrackProcesses) ProcessTrackers[i].CloseStreams(SpecificLocations);
-             }
+            for (int i = 0; i < _CellList.Count; i++)
+            {
+                if (ProcessTrackers[i].TrackProcesses) ProcessTrackers[i].CloseStreams(SpecificLocations);
+            }
 
             if (initialisation.TrackProcesses)
                 FGTracker.CloseTrackerFile();
@@ -631,7 +631,7 @@ namespace Madingley
                 GridOutputs.FinalOutputs();
             }
 
-            
+
         }
 
         /// <summary>
@@ -643,13 +643,13 @@ namespace Madingley
         /// <param name="initialisation">The Madingley Model intialisation</param>
         /// <remarks>Note that variables and instances of classes that are written to within this method MUST be local within this method to prevent 
         /// race issues and multiple threads attempting to write to the same variable when running the program in parallel</remarks>
-        public void RunCell(int cellIndex, ThreadLockedParallelVariables partial, Boolean dispersalOnly, 
+        public void RunCell(int cellIndex, ThreadLockedParallelVariables partial, Boolean dispersalOnly,
             MadingleyModelInitialisation initialisation)
         {
             // Apply any climate change impacts
             ClimateChangeSimulator.ApplyTemperatureScenario(
                 EcosystemModelGrid.GetCellEnvironment(_CellList[cellIndex][0], _CellList[cellIndex][1]),
-                _TemperatureScenario,CurrentTimeStep,CurrentMonth,NumBurninSteps,NumImpactSteps,
+                _TemperatureScenario, CurrentTimeStep, CurrentMonth, NumBurninSteps, NumImpactSteps,
                 ((initialisation.ImpactCellIndices.Contains((uint)cellIndex) || initialisation.ImpactAll)));
 
             // Create a temporary internal copy of the grid cell cohorts
@@ -676,7 +676,7 @@ namespace Madingley
 
             // Apply any direct harvesting impacts
             HarvestingSimulator.RemoveHarvestedIndividuals(WorkingGridCellCohorts, _HarvestingScenario, CurrentTimeStep, NumBurninSteps,
-                NumImpactSteps,NumTimeSteps, EcosystemModelGrid.GetCellEnvironment(_CellList[cellIndex][0], _CellList[cellIndex][1]),
+                NumImpactSteps, NumTimeSteps, EcosystemModelGrid.GetCellEnvironment(_CellList[cellIndex][0], _CellList[cellIndex][1]),
                 (initialisation.ImpactCellIndices.Contains((uint)cellIndex) || initialisation.ImpactAll), _GlobalModelTimeStepUnit, CohortFunctionalGroupDefinitions);
 
             // For runs with specific locations and where track processes has been specified, write out mass flows data and reset the mass flow tracker 
@@ -697,7 +697,7 @@ namespace Madingley
         /// <param name="scenarioParameters">The parameters for the scenarios to run</param>
         /// <param name="scenarioIndex">The index of the scenario that this model is to run</param>
         /// <param name="outputFilesSuffix">The suffix to be applied to all outputs from this model run</param>
-        public void AssignModelRunProperties(MadingleyModelInitialisation initialisation, 
+        public void AssignModelRunProperties(MadingleyModelInitialisation initialisation,
             ScenarioParameterInitialisation scenarioParameters, int scenarioIndex,
             string outputFilesSuffix)
         {
@@ -783,7 +783,7 @@ namespace Madingley
                         CellOutputs[i].SpawnDatasetViewer(NumTimeSteps);
                     }
                 }
-            
+
             }
             else
             {
@@ -796,7 +796,7 @@ namespace Madingley
                 }
             }
 
-            
+
         }
 
         /// <summary>
@@ -815,7 +815,7 @@ namespace Madingley
                 // Set up the model grid using these locations
                 EcosystemModelGrid = new ModelGrid(BottomLatitude, LeftmostLongitude, TopLatitude, RightmostLongitude,
                     CellSize, CellSize, _CellList, EnviroStack, EnviroStackTemporal, CohortFunctionalGroupDefinitions, StockFunctionalGroupDefinitions,
-                    GlobalDiagnosticVariables, initialisation.TrackProcesses, SpecificLocations,RunGridCellsInParallel, initialisation.NSFPhyto);
+                    GlobalDiagnosticVariables, initialisation.TrackProcesses, SpecificLocations, RunGridCellsInParallel, initialisation.NSFPhyto);
 
             }
             else
@@ -850,7 +850,7 @@ namespace Madingley
                 // Set up a full model grid (i.e. not for specific locations)
                 // Set up the model grid using these locations
                 EcosystemModelGrid = new ModelGrid(BottomLatitude, LeftmostLongitude, TopLatitude, RightmostLongitude,
-                    CellSize, CellSize, _CellList, EnviroStack,EnviroStackTemporal, CohortFunctionalGroupDefinitions, StockFunctionalGroupDefinitions,
+                    CellSize, CellSize, _CellList, EnviroStack, EnviroStackTemporal, CohortFunctionalGroupDefinitions, StockFunctionalGroupDefinitions,
                     GlobalDiagnosticVariables, initialisation.TrackProcesses, SpecificLocations, RunGridCellsInParallel, initialisation.NSFPhyto);
 
                 List<int> cellsToRemove = new List<int>();
@@ -893,7 +893,7 @@ namespace Madingley
             if (initialisation.InputState)
             {
                 InputModelState = new InputModelState();
-                switch(initialisation.ModelStateType[simulation])
+                switch (initialisation.ModelStateType[simulation])
                 {
                     case "txt":
                         InputModelState.InputModelStateTxt(initialisation.ModelStatePath[simulation],
@@ -970,7 +970,7 @@ namespace Madingley
             GlobalOutputs.SetupOutputs(NumTimeSteps, EcosystemModelGrid, OutputFilesSuffix);
 
             // Create initial global outputs
-            GlobalOutputs.InitialOutputs(EcosystemModelGrid,CohortFunctionalGroupDefinitions,StockFunctionalGroupDefinitions,_CellList,
+            GlobalOutputs.InitialOutputs(EcosystemModelGrid, CohortFunctionalGroupDefinitions, StockFunctionalGroupDefinitions, _CellList,
                 GlobalDiagnosticVariables, initialisation);
 
             // Temporary
@@ -992,7 +992,7 @@ namespace Madingley
             else
             {
                 // Set up grid outputs
-                GridOutputs.SetupOutputs(EcosystemModelGrid, OutputFilesSuffix, NumTimeSteps, 
+                GridOutputs.SetupOutputs(EcosystemModelGrid, OutputFilesSuffix, NumTimeSteps,
                     CohortFunctionalGroupDefinitions, StockFunctionalGroupDefinitions);
 
                 // Create initial grid outputs
@@ -1143,12 +1143,12 @@ namespace Madingley
         /// <param name="workingGridCellStocks">A copy of the cohorts in the current grid cell</param>
         /// <param name="cellIndex">The index of the current cell in the list of all cells to run the model for</param>
         /// <param name="initialisation">The Madingley Model initialisation</param>
-        private void RunWithinCellStockEcology(uint latCellIndex, uint lonCellIndex, 
+        private void RunWithinCellStockEcology(uint latCellIndex, uint lonCellIndex,
             GridCellStockHandler workingGridCellStocks, int cellIndex, MadingleyModelInitialisation initialisation)
         {
             // Create a local instance of the stock ecology class
             EcologyStock MadingleyEcologyStock = new EcologyStock();
-            
+
             // Initialise stock ecology
             MadingleyEcologyStock.InitializeEcology();
 
@@ -1171,9 +1171,9 @@ namespace Madingley
                     // Run stock ecology
                     MadingleyEcologyStock.RunWithinCellEcology(initialisation, workingGridCellStocks, ActingStock, EcosystemModelGrid.GetCellEnvironment(
                         latCellIndex, lonCellIndex), EnvironmentalDataUnits, _HumanNPPScenario, CohortFunctionalGroupDefinitions, StockFunctionalGroupDefinitions,
-                        CurrentTimeStep, NumBurninSteps, NumImpactSteps, initialisation.RecoveryTimeSteps, initialisation.InstantaneousTimeStep, initialisation.NumInstantaneousTimeStep, _GlobalModelTimeStepUnit, 
+                        CurrentTimeStep, NumBurninSteps, NumImpactSteps, initialisation.RecoveryTimeSteps, initialisation.InstantaneousTimeStep, initialisation.NumInstantaneousTimeStep, _GlobalModelTimeStepUnit,
                         ProcessTrackers[cellIndex].TrackProcesses, ProcessTrackers[cellIndex], FGTracker, TrackGlobalProcesses, CurrentMonth,
-                        InitialisationFileStrings["OutputDetail"],SpecificLocations,
+                        InitialisationFileStrings["OutputDetail"], SpecificLocations,
                         ((initialisation.ImpactCellIndices.Contains((uint)cellIndex) || (initialisation.ImpactAll))), initialisation.NSFPhyto);
 
                 }
@@ -1181,8 +1181,8 @@ namespace Madingley
 
         }
 
-        private void RunWithinCellCohortEcology(uint latCellIndex, uint lonCellIndex,            ThreadLockedParallelVariables partial, 
-            GridCellCohortHandler workingGridCellCohorts, GridCellStockHandler workingGridCellStocks,string outputDetail, int cellIndex, 
+        private void RunWithinCellCohortEcology(uint latCellIndex, uint lonCellIndex, ThreadLockedParallelVariables partial,
+            GridCellCohortHandler workingGridCellCohorts, GridCellStockHandler workingGridCellStocks, string outputDetail, int cellIndex,
             MadingleyModelInitialisation initialisation)
         {
 
@@ -1280,7 +1280,7 @@ namespace Madingley
                     CohortActivity.AssignProportionTimeActive(workingGridCellCohorts[ActingCohort], EcosystemModelGrid.GetCellEnvironment(latCellIndex, lonCellIndex), CohortFunctionalGroupDefinitions, CurrentTimeStep, CurrentMonth);
 
                     // Record information on cohort abundance and biomass prior to changes.
-                    if (ProcessTrackers[0].TrackProcesses)
+                    if (ProcessTrackers[0].TrackProcesses && (CurrentTimeStep >= initialisation.TimeStepToStartProcessTrackers))
                     {
                         ACohortTracker.RecordGeneralCohortInformation(_CellList[cellIndex][0], _CellList[cellIndex][1], workingGridCellCohorts[ActingCohort], initialisation,
                             StockFunctionalGroupDefinitions,
@@ -1293,17 +1293,17 @@ namespace Madingley
                         ActingCohort, EcosystemModelGrid.GetCellEnvironment(latCellIndex, lonCellIndex),
                         EcosystemModelGrid.GetCellDeltas(latCellIndex, lonCellIndex),
                         CohortFunctionalGroupDefinitions, StockFunctionalGroupDefinitions, CurrentTimeStep,
-                        ProcessTrackers[cellIndex], ACohortTracker, FGTracker, ref partial, SpecificLocations,outputDetail, CurrentMonth, initialisation);
+                        ProcessTrackers[cellIndex], ACohortTracker, FGTracker, ref partial, SpecificLocations, outputDetail, CurrentMonth, initialisation);
 
                     // Update the properties of the acting cohort
                     MadingleyEcologyCohort.UpdateEcology(workingGridCellCohorts, workingGridCellStocks, ActingCohort,
                         EcosystemModelGrid.GetCellEnvironment(latCellIndex, lonCellIndex), EcosystemModelGrid.GetCellDeltas(
                         latCellIndex, lonCellIndex), CohortFunctionalGroupDefinitions, StockFunctionalGroupDefinitions, CurrentTimeStep,
-                        ProcessTrackers[cellIndex], ACohortTracker);
+                        ProcessTrackers[cellIndex], ACohortTracker, initialisation);
 
                     // Add newly produced cohorts to the tracking variable
                     EcosystemModelParallelTempval2 += workingGridCellCohorts[ActingCohort[0]].Count - EcosystemModelParallelTempval1;
-                    
+
 
                     // Check that the mass of individuals in this cohort is still >= 0 after running ecology
                     Debug.Assert(workingGridCellCohorts[ActingCohort].IndividualBodyMass >= 0.0, "Biomass < 0 for this cohort");
@@ -1331,7 +1331,7 @@ namespace Madingley
             }
             else
                 partial.Combinations = 0;
-            
+
             // Write out the updated cohort numbers after all ecological processes have occured
             EcosystemModelGrid.SetGridCellCohorts(workingGridCellCohorts, latCellIndex, lonCellIndex);
         }
@@ -1444,24 +1444,24 @@ namespace Madingley
                     // as they do not exchange information until they are all completed (they basically just build up delta arrays of cohorts to move). However, if cells
                     // should start to exchange information for dispersal, or all contribute to a single centralised variable, then thread-locked parallel variables would
                     // have to be used.
-                     Parallel.For(0, _CellList.Count, ii =>
-                    {
-                        EcologyCrossGridCell TempMadingleyEcologyCrossGridCell = new EcologyCrossGridCell();
+                    Parallel.For(0, _CellList.Count, ii =>
+                   {
+                       EcologyCrossGridCell TempMadingleyEcologyCrossGridCell = new EcologyCrossGridCell();
                         // Initialise cross grid cell ecology
                         TempMadingleyEcologyCrossGridCell.InitializeCrossGridCellEcology(_GlobalModelTimeStepUnit, DrawRandomly, modelInitialisation);
 
                         //Initialise the delta for dispersal lists for this grid cell
                         EcosystemModelGrid.DeltaFunctionalGroupDispersalArray[_CellList[ii][0], _CellList[ii][1]] = new List<uint>();
-                        EcosystemModelGrid.DeltaCohortNumberDispersalArray[_CellList[ii][0], _CellList[ii][1]] = new List<uint>();
-                        EcosystemModelGrid.DeltaCellToDisperseToArray[_CellList[ii][0], _CellList[ii][1]] = new List<uint[]>();
+                       EcosystemModelGrid.DeltaCohortNumberDispersalArray[_CellList[ii][0], _CellList[ii][1]] = new List<uint>();
+                       EcosystemModelGrid.DeltaCellToDisperseToArray[_CellList[ii][0], _CellList[ii][1]] = new List<uint[]>();
 
-                        EcosystemModelGrid.DeltaCellExitDirection[_CellList[ii][0], _CellList[ii][1]] = new List<uint>();
-                        EcosystemModelGrid.DeltaCellEntryDirection[_CellList[ii][0], _CellList[ii][1]] = new List<uint>();
+                       EcosystemModelGrid.DeltaCellExitDirection[_CellList[ii][0], _CellList[ii][1]] = new List<uint>();
+                       EcosystemModelGrid.DeltaCellEntryDirection[_CellList[ii][0], _CellList[ii][1]] = new List<uint>();
 
                         // We have looped through individal cells and calculated ecological processes for each. Now do this for cross grid cell processes
                         TempMadingleyEcologyCrossGridCell.RunCrossGridCellEcology(_CellList[ii], EcosystemModelGrid, dispersalOnly,
-                            CohortFunctionalGroupDefinitions, StockFunctionalGroupDefinitions, CurrentMonth);
-                    });
+                           CohortFunctionalGroupDefinitions, StockFunctionalGroupDefinitions, CurrentMonth);
+                   });
                 }
                 else
                 {

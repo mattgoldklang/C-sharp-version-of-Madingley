@@ -468,7 +468,7 @@ namespace Madingley
 
                     // If the model is being run for specific locations and if track processes has been specified, then track the mass flow between
                     // primary producer and herbivore
-                    if (trackProcesses.TrackProcesses)
+                    if ((trackProcesses.TrackProcesses) && (currentTimestep >= initialisation.TimeStepToStartProcessTrackers))
                     {
 
                         trackProcesses.TrackHerbivoryFGFlow((uint)cellEnvironment["LatIndex"][0], (uint)cellEnvironment["LonIndex"][0],
@@ -481,19 +481,16 @@ namespace Madingley
                             gridCellCohorts[actingCohort].IndividualBodyMass, madingleyStockDefinitions.GetTraitNames("stock name", FunctionalGroup),
                             gridCellStocks[FunctionalGroup][i].IndividualBodyMass, _BiomassesEaten[FunctionalGroup][i], cellEnvironment["Realm"][0] == 2.0);
 
-                        // Track eating event between cohorts
-                        cohortTracker.RecordPredationFlow((uint)cellEnvironment["LatIndex"][0], (uint)cellEnvironment["LonIndex"][0], gridCellCohorts[actingCohort], (_BiomassesEaten[FunctionalGroup][i] / gridCellCohorts[actingCohort].CohortAbundance),
-                            true, cellEnvironment["Realm"][0] == 2.0);
                     }
 
-                    if (specificLocations && trackProcesses.TrackProcesses)
+                    if (specificLocations && trackProcesses.TrackProcesses && (currentTimestep >= initialisation.TimeStepToStartProcessTrackers))
                     {
                         trackProcesses.RecordHerbivoryMassFlow(currentTimestep, _BodyMassHerbivore, _BiomassesEaten[FunctionalGroup][i]);
                     }
 
                     // If track processes has been specified and the output detail level is set to high and the model is being run for specific locations,
                     // then track the flow of mass between trophic levels
-                    if (trackProcesses.TrackProcesses && (outputDetail == "high") && specificLocations)
+                    if (trackProcesses.TrackProcesses && (outputDetail == "high") && specificLocations && (currentTimestep >= initialisation.TimeStepToStartProcessTrackers))
                     {
                         trackProcesses.TrackHerbivoryTrophicFlow((uint)cellEnvironment["LatIndex"][0], (uint)cellEnvironment["LonIndex"][0],
                             gridCellCohorts[actingCohort].FunctionalGroupIndex, madingleyCohortDefinitions, _BiomassesEaten[FunctionalGroup][i], _BodyMassHerbivore, initialisation, cellEnvironment["Realm"][0] == 2.0);

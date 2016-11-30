@@ -21,11 +21,11 @@ namespace Madingley
         // Lists to hold information to record. Everything is done at the individual level - i.e. PredationEaten is the amount eaten per individual
         private List<string[]> CohortIdentifierStrings;
         private List<uint[]> CohortIdentifiers;
-        private List<double> PredationEaten;
-        private List<double> HerbivoryEaten;
-        private List<double[]> FixedCohortProperties;
-        private List<double> MetabolicCosts;
-        private List<double> GrowthRates;
+        private List<float> PredationEaten;
+        private List<float> HerbivoryEaten;
+        private List<float[]> FixedCohortProperties;
+        private List<float> MetabolicCosts;
+        private List<float> GrowthRates;
 
         private int MaxNumberFunctionalGroups;
         /// <summary>
@@ -58,11 +58,11 @@ namespace Madingley
 
             CohortIdentifierStrings = new List<string[]>();
             CohortIdentifiers = new List<uint[]>();
-            FixedCohortProperties = new List<double[]>();
-            PredationEaten = new List<double>();
-            HerbivoryEaten = new List<double>();
-            MetabolicCosts = new List<double>();
-            GrowthRates = new List<double>();
+            FixedCohortProperties = new List<float[]>();
+            PredationEaten = new List<float>();
+            HerbivoryEaten = new List<float>();
+            MetabolicCosts = new List<float>();
+            GrowthRates = new List<float>();
 
         }
 
@@ -86,18 +86,18 @@ namespace Madingley
         {
             CohortIdentifiers.Add(new uint[3] { latIndex, lonIndex, cohort.CohortID[0] });
             CohortIdentifierStrings.Add(new string[1] { MarineFGsForTracking.Keys.ToArray()[DetermineFunctionalGroup(madingleyInitialisation, stockFunctionalGroupDefinitions, cohortOrStockName, cohortOrStockBodyMass, Marine)] });
-            FixedCohortProperties.Add(new double[] { cohort.IndividualBodyMass, cohort.CohortAbundance });
+            FixedCohortProperties.Add(new float[] { (float)cohort.IndividualBodyMass, (float)cohort.CohortAbundance });
         }
 
         public void RecordMetabolicCost(double metabolicCostPerIndividual)
         {
-            MetabolicCosts.Add(metabolicCostPerIndividual);
+            MetabolicCosts.Add((float)metabolicCostPerIndividual);
         }
 
         public void RecordGrowth(double growthPerIndividual)
         {
 
-            GrowthRates.Add(growthPerIndividual);
+            GrowthRates.Add((float)growthPerIndividual);
 
         }
 
@@ -111,9 +111,9 @@ namespace Madingley
         public void RecordPredationFlow(uint latIndex, uint lonIndex, Cohort cohort, double massEaten, Boolean herbivory, Boolean marineCell)
         {
             if (!herbivory)
-                PredationEaten.Add(massEaten);
+                PredationEaten.Add((float)massEaten);
             else
-                HerbivoryEaten.Add(massEaten);
+                HerbivoryEaten.Add((float)massEaten);
         }
 
 
@@ -130,26 +130,26 @@ namespace Madingley
         {
             int NumCohortsToWrite = CohortIdentifiers.Count;
 
-           
-                    for (int i = 0; i < NumCohortsToWrite; i++)
-                    {
-                        SyncedCohortFlowsWriter.WriteLine(Convert.ToString(madingleyModelGrid.GetCellLatitude(CohortIdentifiers.ElementAt(i)[0])) + '\t' +
+
+            for (int i = 0; i < NumCohortsToWrite; i++)
+            {
+                SyncedCohortFlowsWriter.WriteLine(Convert.ToString(madingleyModelGrid.GetCellLatitude(CohortIdentifiers.ElementAt(i)[0])) + '\t' +
                             Convert.ToString(madingleyModelGrid.GetCellLongitude(CohortIdentifiers.ElementAt(i)[1])) + '\t' + Convert.ToString(currentTimeStep) +
                             '\t' + CohortIdentifierStrings.ElementAt(i)[0] + '\t' + CohortIdentifiers.ElementAt(i)[2] + '\t' +
                             FixedCohortProperties.ElementAt(i)[0] + '\t' + FixedCohortProperties.ElementAt(i)[1] + '\t' +
                             PredationEaten.ElementAt(i) + '\t' + HerbivoryEaten.ElementAt(i) + '\t' +
-                            FixedCohortProperties.ElementAt(i)[0] + '\t' + FixedCohortProperties.ElementAt(i)[1]);
-                    }
+                            MetabolicCosts[i], '\t' + GrowthRates[i]);
+            }
 
 
             // Reset lists
             CohortIdentifiers = new List<uint[]>();
             CohortIdentifierStrings = new List<string[]>();
-            FixedCohortProperties = new List<double[]>();
-            PredationEaten = new List<double>();
-            HerbivoryEaten = new List<double>();
-            MetabolicCosts = new List<double>();
-            GrowthRates = new List<double>();
+            FixedCohortProperties = new List<float[]>();
+            PredationEaten = new List<float>();
+            HerbivoryEaten = new List<float>();
+            MetabolicCosts = new List<float>();
+            GrowthRates = new List<float>();
         }
 
 
