@@ -133,6 +133,19 @@ namespace Madingley
         }
 
         /// <summary>
+        /// Whether this cohort has ever been merged with another cohort in this time step
+        /// </summary>
+        private Boolean _MergedThisTimeStep;
+        /// <summary>
+        /// Get or set whether this cohort has ever been merged with another cohort in this time step
+        /// </summary>
+        public Boolean MergedThisTimeStep
+        {
+            get { return _MergedThisTimeStep; }
+            set { _MergedThisTimeStep = value; }
+        }
+
+        /// <summary>
         /// The proportion of the timestep for which this cohort is active
         /// </summary>
         private double _ProportionTimeActive;
@@ -201,6 +214,7 @@ namespace Madingley
             _LogOptimalPreyBodySizeRatio = Math.Log(optimalPreyBodySizeRatio);
             _MaximumAchievedBodyMass = juvenileBodyMass;
             _Merged = false;
+            _MergedThisTimeStep = false;
             _TrophicIndex = trophicIndex;
             _ProportionTimeActive = proportionTimeActive;
             if(tracking)_CohortID.Add(Convert.ToUInt32(nextCohortID));
@@ -221,6 +235,7 @@ namespace Madingley
             _LogOptimalPreyBodySizeRatio = logOptimalPreyBodySizeRatio;
             _MaximumAchievedBodyMass = maxAchievedBodyMass;
             _Merged = false;
+            _MergedThisTimeStep = false;
             _TrophicIndex = trophicIndex;
             _ProportionTimeActive = proportionTimeActive;
             if (tracking) _CohortID.Add(Convert.ToUInt32(nextCohortID));
@@ -242,6 +257,7 @@ namespace Madingley
             _LogOptimalPreyBodySizeRatio = c._LogOptimalPreyBodySizeRatio;
             _MaximumAchievedBodyMass = c._MaximumAchievedBodyMass;
             _Merged = c._Merged;
+            _MergedThisTimeStep = false;
             _TrophicIndex = c._TrophicIndex;
             _ProportionTimeActive = c._ProportionTimeActive;
             _CohortID = c.CohortID;

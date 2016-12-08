@@ -50,7 +50,7 @@ namespace Madingley
     /// </summary>
     public class MadingleyModel
     {
-
+        
 
         /// <summary>
         /// An instance of the cohort functional group definitions for this model
@@ -1319,12 +1319,10 @@ namespace Madingley
 
             RunExtinction(latCellIndex, lonCellIndex, partial, workingGridCellCohorts, cellIndex);
 
-
-
             // Merge cohorts, if necessary
             if (workingGridCellCohorts.GetNumberOfCohorts() > initialisation.MaxNumberOfCohorts)
             {
-                partial.Combinations = CohortMerger.MergeToReachThresholdFast(workingGridCellCohorts, workingGridCellCohorts.GetNumberOfCohorts(), initialisation.MaxNumberOfCohorts);
+                partial.Combinations = CohortMerger.MergeToReachThresholdFast(workingGridCellCohorts, workingGridCellCohorts.GetNumberOfCohortsPerFG(), initialisation.MaxNumberOfCohortsPerFG);
 
                 //Run extinction a second time to remove those cohorts that have been set to zero abundance when merging
                 RunExtinction(latCellIndex, lonCellIndex, partial, workingGridCellCohorts, cellIndex);
@@ -1372,9 +1370,9 @@ namespace Madingley
                 // Code to add the biomass to the biomass pool and dispose of the cohort
                 for (int ll = (CohortIndicesToRemove.Count - 1); ll >= 0; ll--)
                 {
+                    // todo(erik): ask about the calculation of the organic pool. We are multiplying by 0 - why? And sometimes the organic pool becomes NaN - why?
                     // Add biomass of the extinct cohort to the organic matter pool
-                    EcosystemModelGrid.SetEnviroLayer("Organic Pool", 0, EcosystemModelGrid.GetEnviroLayer("Organic Pool", 0, latCellIndex, lonCellIndex, out VarExists) +
-                        (workingGridCellCohorts[kk][CohortIndicesToRemove[ll]].IndividualBodyMass + workingGridCellCohorts[kk][CohortIndicesToRemove[ll]].IndividualReproductivePotentialMass) * workingGridCellCohorts[kk][CohortIndicesToRemove[ll]].CohortAbundance, latCellIndex, lonCellIndex);
+                    EcosystemModelGrid.SetEnviroLayer("Organic Pool", 0, EcosystemModelGrid.GetEnviroLayer("Organic Pool", 0, latCellIndex, lonCellIndex, out VarExists) + (workingGridCellCohorts[kk][CohortIndicesToRemove[ll]].IndividualBodyMass + workingGridCellCohorts[kk][CohortIndicesToRemove[ll]].IndividualReproductivePotentialMass) * workingGridCellCohorts[kk][CohortIndicesToRemove[ll]].CohortAbundance, latCellIndex, lonCellIndex);
                     Debug.Assert(EcosystemModelGrid.GetEnviroLayer("Organic Pool", 0, latCellIndex, lonCellIndex, out VarExists) > 0, "Organic pool < 0");
 
                     if (ProcessTrackers[cellIndex].TrackProcesses && SpecificLocations == true)

@@ -285,6 +285,20 @@ namespace Madingley
             set { _MaxNumberOfCohorts = value; }
         }
 
+        /// <summary>
+        /// The maximum number of cohorts for each functional group to be in the model, per grid cell, when it is running
+        /// </summary>
+        private double[] _MaxNumberOfCohortsPerFG;
+
+        /// <summary>
+        ///  Get and set the maximum number of cohorts per grid cell for each functional group
+        /// <todo> This has to be an array of integers</todo>
+        /// </summary>
+        public double[] MaxNumberOfCohortsPerFG
+        {
+            get { return _MaxNumberOfCohortsPerFG; }
+            set { _MaxNumberOfCohortsPerFG = value; }
+        }
 
         /// <summary>
         /// Whether to run only dispersal (i.e. turn all other ecological processes off, and set dispersal probability to one temporarily)
@@ -759,6 +773,8 @@ namespace Madingley
                         break;
                     case "maximum number of cohorts":
                         _MaxNumberOfCohorts = Convert.ToInt32(VarValues.GetValue(row));
+                        // 
+                        _MaxNumberOfCohortsPerFG = new double[] { 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100 };
                         break;
                     case "read state":
                         if (VarValues.GetValue(row).ToString() != "")

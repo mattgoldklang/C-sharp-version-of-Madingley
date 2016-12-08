@@ -223,6 +223,20 @@ namespace Madingley
             return sum;
         }
 
+        /// <summary>
+        /// Returns an integer array with the number of cohorts in each functional group in this grid cell
+        /// </summary>
+        /// <returns></returns>
+        public int[] GetNumberOfCohortsPerFG()
+        {
+            int[] tempArray = new int[Convert.ToInt32(GridCellCohorts.Count())];
+            for(var i = 0; i < GridCellCohorts.Count(); i++)
+            {
+                tempArray[i] = GridCellCohorts[i].Count();
+            }
+
+            return tempArray;
+        }
     }
 
     /// <summary>

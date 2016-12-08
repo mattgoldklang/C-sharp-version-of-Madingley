@@ -34,34 +34,37 @@ namespace Madingley
             if (Marine)
             {
                 // Put plankton in the right FG
-                if (cohortOrStockBodyMass < madingleyInitialisation.PlanktonDispersalThreshold)
-                {
-                    if (cohortOrStockName == "obligate unicellular zooplankton")
-                    {
-                        // If unicellular and below size threshold then nanoplankton
-                        if (cohortOrStockBodyMass < 5.00E-08)
-                        {
-                            cohortOrStockName = "nanozooplankton";
-                        }
-                        else
-                        {
-                            cohortOrStockName = "microzooplankton";
-                        }
-                    }
-                    else
-                    {
-                        if (cohortOrStockName == "obligate multicellular zooplankton")
-                        {
-                            ;
-                        }
-                        else
-                        {
-                            if (!stockFunctionalGroupDefinitions.GetUniqueTraitValues("stock name").Contains(cohortOrStockName))
-                                cohortOrStockName = "meroplankton";
-                        }
-                    }
+                //if (cohortOrStockBodyMass < madingleyInitialisation.PlanktonDispersalThreshold)
+                //{
+                //    if (!stockFunctionalGroupDefinitions.GetUniqueTraitValues("stock name").Contains(cohortOrStockName))
+                //        cohortOrStockName = "meroplankton";
 
-                }
+                    //if (cohortOrStockName == "obligate unicellular zooplankton")
+                    //{
+                    //    // If unicellular and below size threshold then nanoplankton
+                    //    if (cohortOrStockBodyMass < 5.00E-08)
+                    //    {
+                    //        cohortOrStockName = "nanozooplankton";
+                    //    }
+                    //    else
+                    //    {
+                    //        cohortOrStockName = "microzooplankton";
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //if (cohortOrStockName == "obligate multicellular zooplankton")
+                    //    {
+                    //        ;
+                    //    }
+                    //    else
+                    //    {
+                    //        if (!stockFunctionalGroupDefinitions.GetUniqueTraitValues("stock name").Contains(cohortOrStockName))
+                    //            cohortOrStockName = "meroplankton";
+                    //    }
+                    //}
+
+                //}
 
                 // Return the FG index
                 if (MarineFGsForTracking.ContainsKey(cohortOrStockName))
@@ -108,12 +111,12 @@ namespace Madingley
                 if (fGDefinitions.GetTraitNames("realm", ii) == "marine")
                 {
                     NumberMarineFGsForTracking++;
-
-                    // We create two obligate unicellular zooplankton groups; microzooplankton (here) and nanozooplankton (later)
-                    if (fGDefinitions.GetTraitNames("group description", ii) == "obligate unicellular zooplankton")
-                        MarineFGsForTracking.Add("microzooplankton", TempMarine);
-                    else
-                        MarineFGsForTracking.Add(fGDefinitions.GetTraitNames("group description", ii), TempMarine);
+                    MarineFGsForTracking.Add(fGDefinitions.GetTraitNames("group description", ii), TempMarine);
+                    //// We create two obligate unicellular zooplankton groups; microzooplankton (here) and nanozooplankton (later)
+                    //if (fGDefinitions.GetTraitNames("group description", ii) == "obligate unicellular zooplankton")
+                    //    MarineFGsForTracking.Add("microzooplankton", TempMarine);
+                    //else
+                    //    MarineFGsForTracking.Add(fGDefinitions.GetTraitNames("group description", ii), TempMarine);
 
                     TempMarine++;
                 }
@@ -128,9 +131,9 @@ namespace Madingley
             // These aren't strictly FGs as defined by the model, but are separated for output purposes
             MarineFGsForTracking.Add("meroplankton", TempMarine);
             TempMarine++;
-            MarineFGsForTracking.Add("nanozooplankton", TempMarine);
-            TempMarine++;
-            NumberMarineFGsForTracking = NumberMarineFGsForTracking + 2;
+            //MarineFGsForTracking.Add("nanozooplankton", TempMarine);
+            //TempMarine++;
+            NumberMarineFGsForTracking = NumberMarineFGsForTracking + 1;
 
             // Now add the stocks
 

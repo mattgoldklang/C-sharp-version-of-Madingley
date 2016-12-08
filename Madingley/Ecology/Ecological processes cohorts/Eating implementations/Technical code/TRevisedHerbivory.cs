@@ -254,120 +254,61 @@ namespace Madingley
             {
 
                 case "microphytoplankton":
-                    if (gridCellCohorts[actingCohort].IndividualBodyMass <= 1.0E-1)
+                    for (int ii = 0; ii < _FunctionalGroupIndicesToEat.Length; ii++)
                     {
-                        if (gridCellCohorts[actingCohort].IndividualBodyMass <= 1.0E-3)
+                        if (gridCellStocks[_FunctionalGroupIndicesToEat[ii]].Count > 0)
                         {
-                            for (int ii = 0; ii < _FunctionalGroupIndicesToEat.Length; ii++)
+                            if (gridCellStocks[ii][0].StockName == "microphytoplankton")
                             {
-                                if (gridCellStocks[_FunctionalGroupIndicesToEat[ii]].Count > 0)
+                                if (FunctionalGroupsToGrazeThisCohort == -1)
                                 {
-                                    if (gridCellStocks[ii][0].StockName == "picophytoplankton")
-                                    {
-                                        if (FunctionalGroupsToGrazeThisCohort == -1)
-                                        {
-                                            FunctionalGroupsToGrazeThisCohort = ii;
-                                        }
-                                        else
-                                        {
-                                            Debug.Fail("Cohort trying to eat from multiple stocks but only a single stock can be eaten from at present. Code needs modification");
-                                        }
-                                    }
+                                    FunctionalGroupsToGrazeThisCohort = ii;
                                 }
-                            }
-                        }
-                        else
-                        {
-                            for (int ii = 0; ii < _FunctionalGroupIndicesToEat.Length; ii++)
-                            {
-                                if (gridCellStocks[_FunctionalGroupIndicesToEat[ii]].Count > 0)
+                                else
                                 {
-                                    if (gridCellStocks[ii][0].StockName == "nanophytoplankton")
-                                    {
-                                        if (FunctionalGroupsToGrazeThisCohort == -1)
-                                        {
-                                            FunctionalGroupsToGrazeThisCohort = ii;
-                                        }
-                                        else
-                                        {
-                                            Debug.Fail("Cohort trying to eat from multiple stocks but only a single stock can be eaten from at present. Code needs modification");
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                      
-                    }
-                 
-
-                    else
-                    {
-                        for (int ii = 0; ii < _FunctionalGroupIndicesToEat.Length; ii++)
-                        {
-                            if (gridCellStocks[_FunctionalGroupIndicesToEat[ii]].Count > 0)
-                            {
-                                if (gridCellStocks[ii][0].StockName == "microphytoplankton")
-                                {
-                                    if (FunctionalGroupsToGrazeThisCohort == -1)
-                                    {
-                                        FunctionalGroupsToGrazeThisCohort = ii;
-                                    }
-                                    else
-                                    {
-                                        Debug.Fail("Cohort trying to eat from multiple stocks but only a single stock can be eaten from at present. Code needs modification");
-                                    }
+                                    Debug.Fail("Cohort trying to eat from multiple stocks but only a single stock can be eaten from at present. Code needs modification");
                                 }
                             }
                         }
                     }
-                                       
                     break;
-                case "pico+nanophytoplankton":
-                    if(gridCellCohorts[actingCohort].IndividualBodyMass <= 5.0E-8)
+                case "nanophytoplankton":
+                    for (int ii = 0; ii < _FunctionalGroupIndicesToEat.Length; ii++)
                     {
-                        double indiBodyMass = gridCellCohorts[actingCohort].IndividualBodyMass;
-                        for (int ii = 0; ii < _FunctionalGroupIndicesToEat.Length; ii++)
+                        if (gridCellStocks[_FunctionalGroupIndicesToEat[ii]].Count > 0)
                         {
-                            if (gridCellStocks[_FunctionalGroupIndicesToEat[ii]].Count > 0)
+                            if (gridCellStocks[ii][0].StockName == "nanophytoplankton")
                             {
-                                if (gridCellStocks[ii][0].StockName == "picophytoplankton")
+                                if (FunctionalGroupsToGrazeThisCohort == -1)
                                 {
-                                    if (FunctionalGroupsToGrazeThisCohort == -1)
-                                    {
-                                        FunctionalGroupsToGrazeThisCohort = ii;
-                                    }
-                                    else
-                                    {
-                                        Debug.Fail("Cohort trying to eat from multiple stocks but only a single stock can be eaten from at present. Code needs modification");
-                                    }
+                                    FunctionalGroupsToGrazeThisCohort = ii;
+                                }
+                                else
+                                {
+                                    Debug.Fail("Cohort trying to eat from multiple stocks but only a single stock can be eaten from at present. Code needs modification");
                                 }
                             }
                         }
                     }
-                    else
+                    break;
+                case "picophytoplankton":
+                    for (int ii = 0; ii < _FunctionalGroupIndicesToEat.Length; ii++)
                     {
+                        if (gridCellStocks[_FunctionalGroupIndicesToEat[ii]].Count > 0)
                         {
-                            for (int ii = 0; ii < _FunctionalGroupIndicesToEat.Length; ii++)
+                            if (gridCellStocks[ii][0].StockName == "picophytoplankton")
                             {
-                                if (gridCellStocks[_FunctionalGroupIndicesToEat[ii]].Count > 0)
+                                if (FunctionalGroupsToGrazeThisCohort == -1)
                                 {
-                                    if (gridCellStocks[ii][0].StockName == "nanophytoplankton")
-                                    {
-                                        if (FunctionalGroupsToGrazeThisCohort == -1)
-                                        {
-                                            FunctionalGroupsToGrazeThisCohort = ii;
-                                        }
-                                        else
-                                        {
-                                            Debug.Fail("Cohort trying to eat from multiple stocks but only a single stock can be eaten from at present. Code needs modification");
-                                        }
-                                    }
+                                    FunctionalGroupsToGrazeThisCohort = ii;
+                                }
+                                else
+                                {
+                                    Debug.Fail("Cohort trying to eat from multiple stocks but only a single stock can be eaten from at present. Code needs modification");
                                 }
                             }
                         }
                     }
-
-                    
                     break;
                 default:
                     if (_FunctionalGroupIndicesToEat.Length == 1)
