@@ -1368,25 +1368,26 @@ namespace Madingley
                 }
 
                 // Code to add the biomass to the biomass pool and dispose of the cohort
+                double TotalBiomassToAddToPool = 0.0;
                 for (int ll = (CohortIndicesToRemove.Count - 1); ll >= 0; ll--)
                 {
-                    // todo(erik): ask about the calculation of the organic pool. We are multiplying by 0 - why? And sometimes the organic pool becomes NaN - why?
-                    // Add biomass of the extinct cohort to the organic matter pool
-                    EcosystemModelGrid.SetEnviroLayer("Organic Pool", 0, EcosystemModelGrid.GetEnviroLayer("Organic Pool", 0, latCellIndex, lonCellIndex, out VarExists) + (workingGridCellCohorts[kk][CohortIndicesToRemove[ll]].IndividualBodyMass + workingGridCellCohorts[kk][CohortIndicesToRemove[ll]].IndividualReproductivePotentialMass) * workingGridCellCohorts[kk][CohortIndicesToRemove[ll]].CohortAbundance, latCellIndex, lonCellIndex);
-                    Debug.Assert(EcosystemModelGrid.GetEnviroLayer("Organic Pool", 0, latCellIndex, lonCellIndex, out VarExists) > 0, "Organic pool < 0");
-
+                    // Add biomass of the extinct cohort to the organic matter pool temporary store
+                    TotalBiomassToAddToPool += (workingGridCellCohorts[kk][CohortIndicesToRemove[ll]].IndividualBodyMass + 
+                        workingGridCellCohorts[kk][CohortIndicesToRemove[ll]].IndividualReproductivePotentialMass) *
+                        workingGridCellCohorts[kk][CohortIndicesToRemove[ll]].CohortAbundance;
+                    
                     if (ProcessTrackers[cellIndex].TrackProcesses && SpecificLocations == true)
                         ProcessTrackers[cellIndex].RecordExtinction(latCellIndex, lonCellIndex, CurrentTimeStep, workingGridCellCohorts[kk][CohortIndicesToRemove[ll]].Merged, workingGridCellCohorts[kk][CohortIndicesToRemove[ll]].CohortID);
 
                     // Remove the extinct cohort from the list of cohorts
                     workingGridCellCohorts[kk].RemoveAt(CohortIndicesToRemove[ll]);
-
-
                 }
 
+                // Add biomass from extinction to biomass pool
+                EcosystemModelGrid.SetEnviroLayer("Organic Pool", 0, EcosystemModelGrid.GetEnviroLayer("Organic Pool", 0, latCellIndex, lonCellIndex, out VarExists) + TotalBiomassToAddToPool, latCellIndex, lonCellIndex);
+                Debug.Assert(EcosystemModelGrid.GetEnviroLayer("Organic Pool", 0, latCellIndex, lonCellIndex, out VarExists) > 0, "Organic pool < 0");
             }
-
-        }
+}
 
         private void RunWithinCellDispersalOnly(uint latCellIndex, uint lonCellIndex, ThreadLockedParallelVariables partial,
                    GridCellCohortHandler workingGridCellCohorts, GridCellStockHandler workingGridCellStocks)
