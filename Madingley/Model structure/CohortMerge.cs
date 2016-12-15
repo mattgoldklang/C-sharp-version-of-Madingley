@@ -215,113 +215,95 @@ namespace Madingley
         /// <returns>The number of cohorts that have been merged</returns>
         public int MergeToReachThresholdFast(GridCellCohortHandler gridCellCohorts, int[] TotalNumberOfCohortsPerFG, double[] TargetCohortThresholdPerFG)
         {
-
             // How many cohorts to remove to hit the threshold
             int[] NumberToRemovePerFG = new int[gridCellCohorts.Count];
-            for (var i = 0; i < gridCellCohorts.Count; i++)
+
+            // Work out number to remove per functional group
+            for (int i = 0; i < gridCellCohorts.Count; i++)
             {
                 // todo(erik): the conversion to int should be handled when imported from definition file
                 NumberToRemovePerFG[i] = TotalNumberOfCohortsPerFG[i] - Convert.ToInt32(TargetCohortThresholdPerFG[i]);
             }
 
-            // Holds the pairwise distances between two cohorts; the functional group of the cohorts; the cohort IDs of each cohort
-            Tuple<double, int, int[]> PairwiseDistance;
+            // Holds the pairwise distances between two cohorts; the cohort IDs of each cohort
+            Tuple<double, int[]> PairwiseDistance;
 
-            // Create a list of unique combinations of cohorts to compare in each functional group
+            // Create a list of unique combinations of cohort IDs to compare in each functional group
             List<Tuple<int, int>>[] CohortsToCompareShort = new List<Tuple<int, int>>[gridCellCohorts.Count];
 
             for (int i = 0; i < gridCellCohorts.Count; i++)
             {
-                var cohortIDs = new int[gridCellCohorts[i].Count];
-                for (var j = 0; j < gridCellCohorts[i].Count; j++)
-                {
-                    cohortIDs[j] = Convert.ToInt32(gridCellCohorts[i][j].CohortID[0]);
-                }
-                var query = from item1 in cohortIDs
-                            from item2 in cohortIDs
-                            where item1 < item2
-                            select new Tuple<int, int>(item1, item2);
+                int[] cohortIDs1 = Enumerable.Range(0, (gridCellCohorts[i].Count - 1) + 1).ToArray();
+                
+                var query1 = from item1 in cohortIDs1
+                             from item2 in cohortIDs1
+                             where item1 < item2
+                             select new Tuple<int, int>(item1, item2);
                 CohortsToCompareShort[i] = new List<Tuple<int, int>>();
-                foreach (Tuple<int, int> tuple in query)
+                foreach (Tuple<int, int> tuple in query1)
                 {
                     CohortsToCompareShort[i].Add(tuple);
                 }
             }
 
-            // Create a list of unique combinations of cohorts to compare in each functional group
-            List<Tuple<int, int>>[] CohortsToCompareShort1 = new List<Tuple<int, int>>[gridCellCohorts.Count];
+            // Calculate distances between all unique cohorts in each functional group
+            List<Tuple<double, int[]>>[] DistancesPerFunctionalGroup = new List<Tuple<double, int[]>>[gridCellCohorts.Count];
 
             for (int i = 0; i < gridCellCohorts.Count; i++)
             {
-                var cohortIDs1 = Enumerable.Range(0, (gridCellCohorts[i].Count - 1) + 1).ToArray();
-
-                var query1 = from item1 in cohortIDs1
-                             from item2 in cohortIDs1
-                             where item1 < item2
-                             select new Tuple<int, int>(item1, item2);
-                CohortsToCompareShort1[i] = new List<Tuple<int, int>>();
-                foreach (Tuple<int, int> tuple in query1)
-                {
-                    CohortsToCompareShort1[i].Add(tuple);
-                }
-            }
-
-            // Calculate distances between all unique cohorts in each functional group
-            var DistancesPerFunctionalGroup = new List<Tuple<double, int, int[]>>[gridCellCohorts.Count];
-
-            for (var i = 0; i < gridCellCohorts.Count; i++)
-            {
-                DistancesPerFunctionalGroup[i] = new List<Tuple<double, int, int[]>>();
+                // distances between two cohorts; the functional group of the cohorts; the cohort IDs of each cohort
+                DistancesPerFunctionalGroup[i] = new List<Tuple<double, int[]>>();
 
                 // Loop through cohorts within functional groups
-                for (var j = 0; j < CohortsToCompareShort1[i].Count; j++)
+                for (var j = 0; j < CohortsToCompareShort[i].Count; j++)
                 {
+                    // Choose which cohort to merge to (and from) at random
                     if (RandomNumberGenerator.GetUniform() < 0.5)
                     {
-                        PairwiseDistance = new Tuple<double, int, int[]>(CalculateDistance(gridCellCohorts[i][CohortsToCompareShort1[i][j].Item1], gridCellCohorts[i][CohortsToCompareShort1[i][j].Item2]), i, new int[] { CohortsToCompareShort1[i][j].Item1, CohortsToCompareShort1[i][j].Item2 });
+                        DistancesPerFunctionalGroup[i].Add(new Tuple<double, int[]>(CalculateDistance(gridCellCohorts[i][CohortsToCompareShort[i][j].Item1], gridCellCohorts[i][CohortsToCompareShort[i][j].Item2]), new int[] { CohortsToCompareShort[i][j].Item1, CohortsToCompareShort[i][j].Item2 }));
                     }
                     else
                     {
-                        PairwiseDistance = new Tuple<double, int, int[]>(CalculateDistance(gridCellCohorts[i][CohortsToCompareShort1[i][j].Item2], gridCellCohorts[i][CohortsToCompareShort1[i][j].Item1]), i, new int[] { CohortsToCompareShort1[i][j].Item2, CohortsToCompareShort1[i][j].Item1 });
+                        DistancesPerFunctionalGroup[i].Add(new Tuple<double, int[]>(CalculateDistance(gridCellCohorts[i][CohortsToCompareShort[i][j].Item2], gridCellCohorts[i][CohortsToCompareShort[i][j].Item1]), new int[] { CohortsToCompareShort[i][j].Item2, CohortsToCompareShort[i][j].Item1 }));
                     }
-
-                    DistancesPerFunctionalGroup[i].Add(PairwiseDistance);
                 }
                 DistancesPerFunctionalGroup[i] = DistancesPerFunctionalGroup[i].OrderBy(x => x.Item1).ToList();
             }
 
-            // Counts the number of merges that have happened
+            // Counts the number of merges that have happened for each FG
             int MergeCounter = 0;
-            int CurrentListPosition = 0;
-            int NumberToRemove = 0;
-            int ShortestDistances = 0;
 
+            int TotalNumberOfMerges = 0;
+
+            int CurrentListPosition = 0;
 
             // Perform merge for each functional group
-            for (var i = 0; i < DistancesPerFunctionalGroup.Length; i++)
+            for (int i = 0; i < DistancesPerFunctionalGroup.Length; i++)
             {
-                // reset merge and current list position counters
+                // Reset merge and current list position counters
                 MergeCounter = 0;
                 CurrentListPosition = 0;
-                NumberToRemove = NumberToRemovePerFG[i];
-                while ((MergeCounter < NumberToRemove))
+              
+                while ((MergeCounter < NumberToRemovePerFG[i]))
                 {
                     
                     // Get pairwise traits
-                    //int FunctionalGroup = DistancesPerFunctionalGroup[i][CurrentListPosition].Item2;
-                    int CohortToMergeFrom = DistancesPerFunctionalGroup[i][CurrentListPosition].Item3[1];
-                    int CohortToMergeTo = DistancesPerFunctionalGroup[i][CurrentListPosition].Item3[0];
+                    int CohortToMergeFrom = DistancesPerFunctionalGroup[i][CurrentListPosition].Item2[1];
+                    int CohortToMergeTo = DistancesPerFunctionalGroup[i][CurrentListPosition].Item2[0];
 
-                    if ((gridCellCohorts[i][CohortToMergeTo].MergedThisTimeStep = false) || (gridCellCohorts[i][CohortToMergeFrom].MergedThisTimeStep = false))
+                    // Only merge if these cohorts have not previously merged
+                    if ((gridCellCohorts[i][CohortToMergeTo].MergedThisTimeStep == true) || (gridCellCohorts[i][CohortToMergeFrom].MergedThisTimeStep == true))
                     {
                         ;
                     }
                     else
                     {
                         // Add the abundance of the second cohort to that of the first
-                        gridCellCohorts[i][CohortToMergeTo].CohortAbundance += (gridCellCohorts[i][CohortToMergeFrom].CohortAbundance * gridCellCohorts[i][CohortToMergeFrom].IndividualBodyMass) / gridCellCohorts[i][CohortToMergeFrom].IndividualBodyMass;
+                        gridCellCohorts[i][CohortToMergeTo].CohortAbundance += (gridCellCohorts[i][CohortToMergeFrom].CohortAbundance 
+                            * gridCellCohorts[i][CohortToMergeFrom].IndividualBodyMass) / gridCellCohorts[i][CohortToMergeTo].IndividualBodyMass;
                         // Add the reproductive potential mass of the second cohort to that of the first
-                        gridCellCohorts[i][CohortToMergeTo].IndividualReproductivePotentialMass += (gridCellCohorts[i][CohortToMergeFrom].IndividualReproductivePotentialMass * gridCellCohorts[i][CohortToMergeFrom].CohortAbundance) / gridCellCohorts[i][CohortToMergeTo].CohortAbundance;
+                        gridCellCohorts[i][CohortToMergeTo].IndividualReproductivePotentialMass += (gridCellCohorts[i][CohortToMergeFrom].IndividualReproductivePotentialMass 
+                            * gridCellCohorts[i][CohortToMergeFrom].CohortAbundance) / gridCellCohorts[i][CohortToMergeTo].CohortAbundance;
                         // Set the abundance of the second cohort to zero
                         gridCellCohorts[i][CohortToMergeFrom].CohortAbundance = 0.0;
                         // Designate both cohorts as having merged
@@ -335,16 +317,24 @@ namespace Madingley
                     }
                     // Increase current list position counter
                     CurrentListPosition++;
+
+                    if (CurrentListPosition == DistancesPerFunctionalGroup[i].Count)
+                    {
+                        Console.WriteLine("Merged all possible cohorts");
+                        break;
+                    }
                 }
 
                 // Reset merged this time step identifier
-                for(var j = 0; j < gridCellCohorts[i].Count; j++)
+                for(int j = 0; j < gridCellCohorts[i].Count; j++)
                 {
                     gridCellCohorts[i][j].MergedThisTimeStep = false;
                 }
 
+                TotalNumberOfMerges += MergeCounter;
+
             }
-            return MergeCounter;
+            return TotalNumberOfMerges;
         }
 
 
