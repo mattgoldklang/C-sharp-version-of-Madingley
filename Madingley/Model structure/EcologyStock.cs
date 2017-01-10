@@ -28,6 +28,10 @@ namespace Madingley
         /// </summary>
         HumanAutotrophMatterAppropriation HANPP;
 
+        /// <summary>
+        /// An instance of the class for running the NPZ model
+        /// </summary>
+        NutrientsPlanktonModel NPZModel;
 
 
         public void InitializeEcology()
@@ -41,6 +45,8 @@ namespace Madingley
             // Initialise the human NPP appropriation class
             HANPP = new HumanAutotrophMatterAppropriation();
 
+            // Initialize the Nutrient-Plankton model
+            NPZModel = new NutrientsPlanktonModel();
         }
 
 
@@ -74,10 +80,13 @@ namespace Madingley
             if (madingleyStockDefinitions.GetTraitNames("Realm", actingStock[0]) == "marine")
             {
                 // Run the autotroph processor
-                MarineNPPtoAutotrophStock.ConvertNPPToAutotroph(madingleyInitialisation, madingleyCohortDefinitions, madingleyStockDefinitions, cellEnvironment, gridCellStocks, actingStock, environmentalDataUnits["LandNPP"], 
-                    environmentalDataUnits["OceanNPP"], currentTimeStep,globalModelTimeStepUnit,tracker, functionalTracker, globalTracker ,
-                    outputDetail,specificLocations,currentMonth, nsfPhyto);
-                
+                MarineNPPtoAutotrophStock.ConvertNPPToAutotroph(madingleyInitialisation, madingleyCohortDefinitions, madingleyStockDefinitions, cellEnvironment, gridCellStocks, actingStock, environmentalDataUnits["LandNPP"],
+                    environmentalDataUnits["OceanNPP"], currentTimeStep, globalModelTimeStepUnit, tracker, functionalTracker, globalTracker,
+                    outputDetail, specificLocations, currentMonth, nsfPhyto);
+
+                // Run the Nutrient-Plankton model
+                NPZModel.RunNPZModel();
+
             }
             else if (madingleyStockDefinitions.GetTraitNames("Realm", actingStock[0]) == "terrestrial")
             {

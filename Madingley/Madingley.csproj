@@ -181,7 +181,7 @@
     <Compile Include="Ecology\Ecological processes cohorts\Eating implementations\RevisedPredation.cs" />
     <Compile Include="Ecology\Ecological processes cohorts\Eating implementations\Technical code\TRevisedPredation.cs" />
     <Compile Include="Ecology\Ecological processes cohorts\Eating implementations\Technical code\TRevisedHerbivory.cs" />
-    <Compile Include="Ecology\Ecological processes stocks\Photoautotrophy.cs" />
+    <Compile Include="Ecology\Ecological processes stocks\NutrientsPlanktonModel.cs" />
     <Compile Include="Ecology\EcologicalParameters.cs" />
     <Compile Include="Ecology\Ecological processes cohorts\Metabolism implementations\MetabolismEctotherm.cs" />
     <Compile Include="Ecology\Ecological processes cohorts\Metabolism implementations\MetabolismEndotherm.cs" />

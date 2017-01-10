@@ -142,5 +142,9 @@ namespace Madingley
             //return FieldMetabolicLosskJ * _EnergyScalar;
         }
 
+        /// <summary>
+        /// Calculate metabolic loss in grams for each plankton size class
+        /// </summary>
+
     }
 }
