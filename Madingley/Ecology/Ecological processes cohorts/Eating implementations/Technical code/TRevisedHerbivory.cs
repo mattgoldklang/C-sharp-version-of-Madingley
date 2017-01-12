@@ -338,7 +338,7 @@ namespace Madingley
                 _PotentialBiomassesEaten[i] = new double[gridCellStocks[i].Count];
             }
 
-            // Éxtract the functional group to graze upon into an array of length 1. 
+            // Extract the functional group to graze upon into an array of length 1. 
             // Note that the code can currently only handle each cohort grazing on a single stock functional group
             FunctionalGroupsToEatRevised = new int[] { _FunctionalGroupIndicesToEat.ElementAt(FunctionalGroupsToGrazeThisCohort) };
 

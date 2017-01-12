@@ -296,7 +296,7 @@ namespace Madingley
 
             // Calculate the individual killing rate
             return _SpecificPredatorKillRateConstant * RelativeFeedingPreference * BinnedPreyDensities[preyFunctionalGroup, preyMassBinNumber];
-        }     
+        }
 
         /// <summary>
         /// Calculates the time for an individual predator to handle an individual prey in the terrestrial realm

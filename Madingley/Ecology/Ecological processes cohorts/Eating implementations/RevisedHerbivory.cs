@@ -130,6 +130,20 @@ namespace Madingley
         // Variable to hold the instantaneous fraction of the autotroph stock biomass that is eaten
         double InstantFractionEaten;
 
+        //
+        private double RelativeFeedingPreferenceHerb;
+
+        /// <summary>
+        /// The standard deviation in attack rates around the optimal prey to predator mass ratio
+        /// </summary>
+        private double _FeedingPreferenceStandardDeviation;
+
+        /// <summary>
+        /// Get the standard deviation in attack rates around the optimal prey to predator mass ratio
+        /// </summary>
+        public double FeedingPreferenceStandardDeviation { get { return _FeedingPreferenceStandardDeviation; } }
+        private double FeedingPreferenceHalfStandardDeviation;
+
 
         public void InitialiseParametersHerbivory()
         {
@@ -178,7 +192,7 @@ namespace Madingley
         private double CalculatePotentialBiomassEatenTerrestrial(double autotrophBiomass, double herbivoreIndividualMass)
         {
             // Calculate the inidividual herbivory rate per unit autotroph mass-density per hectare
-            double IndividualHerbivoryRate = CalculateIndividualHerbivoryRatePerHectare(herbivoreIndividualMass);
+            double IndividualHerbivoryRate = CalculateIndividualHerbivoryRatePerHectareTerrestrial(herbivoreIndividualMass);
 
             // Calculate autotroph biomass density per hectare
             double AutotrophBiomassDensity = autotrophBiomass / _CellAreaHectares;
@@ -193,10 +207,12 @@ namespace Madingley
         /// <param name="autotrophBiomass">The total biomass of the autotroph stock</param>
         /// <param name="herbivoreIndividualMass">The individual body mass of the acting (herbivore) cohort</param>
         /// <returns>The potential biomass eaten by the herbivore cohort</returns>
-        private double CalculatePotentialBiomassEatenMarine(double autotrophBiomass, double herbivoreIndividualMass)
+        private double CalculatePotentialBiomassEatenMarine(double autotrophBiomass, double herbivoreIndividualMass, 
+            double stockIndividualMass, double logOptimalPreyPredatorMassRatio)
         {
             // Calculate the individual herbivory rate per unit autotroph mass-density per hectare
-            double IndividualHerbivoryRate = CalculateIndividualHerbivoryRatePerHectare(herbivoreIndividualMass);
+            double IndividualHerbivoryRate = CalculateIndividualHerbivoryRatePerHectareMarine(herbivoreIndividualMass, stockIndividualMass,
+                logOptimalPreyPredatorMassRatio);
 
             // Calculate autotroph biomass density per hectare
             double AutotrophBiomassDensity = autotrophBiomass / _CellAreaHectares;
@@ -207,14 +223,34 @@ namespace Madingley
 
 
         /// <summary>
-        /// Calculate the herbivory rate of an individual herbivore per unit autotroph mass-density per hectare
+        /// Calculate the herbivory rate of an individual herbivore per unit autotroph mass-density per hectare (terrestrial)
         /// </summary>
         /// <param name="herbivoreIndividualMass">Herbivore individual body mass</param>
         /// <returns>The herbivory rate of an individual herbivore per unit autotroph mass-density per hectare</returns>
-        private double CalculateIndividualHerbivoryRatePerHectare(double herbivoreIndividualMass)
+        private double CalculateIndividualHerbivoryRatePerHectareTerrestrial(double herbivoreIndividualMass)
         {
             // Calculate the individual herbivory rate
             return _HerbivoryRateConstant * Math.Pow(herbivoreIndividualMass, (_HerbivoryRateMassExponent));
+
+        }
+
+        /// <summary>
+        /// Calculate the herbivory rate of an individual herbivore per unit autotroph mass-density per hectare (marine)
+        /// </summary>
+        /// <param name="herbivoreIndividualMass">Herbivore individual body mass</param>
+        /// <returns>The herbivory rate of an individual herbivore per unit autotroph mass-density per hectare</returns>
+        private double CalculateIndividualHerbivoryRatePerHectareMarine(double herbivoreIndividualMass, double stockIndividualMass,
+            double logOptimalPreyPredatorMassRatio)
+        {
+            // Calculate the relative feeding preference from a log-normal distribution with mean equal to the optimal
+            // prey to predator ratio and standard deviation as specified
+
+            RelativeFeedingPreferenceHerb = Math.Exp(-(Math.Pow
+                (((Math.Log(stockIndividualMass / herbivoreIndividualMass) - logOptimalPreyPredatorMassRatio) /
+                _FeedingPreferenceStandardDeviation), 2)));
+
+            // Calculate the individual herbivory rate
+            return _HerbivoryRateConstant * Math.Pow(herbivoreIndividualMass, (_HerbivoryRateMassExponent)) * RelativeFeedingPreferenceHerb;
 
         }
 
