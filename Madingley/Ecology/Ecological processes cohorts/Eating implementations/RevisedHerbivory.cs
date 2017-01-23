@@ -36,6 +36,11 @@ namespace Madingley
         }
 
         /// <summary>
+        /// An instance of the simple random number generator class
+        /// </summary>
+        private NonStaticSimpleRNG RandomNumberGenerator = new NonStaticSimpleRNG();
+
+        /// <summary>
         /// The scalar of the relationship between handling time and the function of herbivore mass for the terrestrial realm
         /// </summary>
         private double _HandlingTimeScalarTerrestrial;
@@ -158,6 +163,7 @@ namespace Madingley
             _AttackRateExponentTerrestrial = EcologicalParameters.Parameters["Herbivory.RevisedHerbivory.Terrestrial.AttackRateExponent"];
             _AttackRateExponentMarine = EcologicalParameters.Parameters["Herbivory.RevisedHerbivory.Marine.AttackRateExponent"];
             _ReferenceMass = EcologicalParameters.Parameters["Herbivory.RevisedHerbivory.HandlingTimeReferenceMass"];
+            _FeedingPreferenceStandardDeviation = EcologicalParameters.Parameters["Predation.RevisedPredation.FeedingPreferenceStandardDeviation"];
         }
 
 
@@ -175,7 +181,6 @@ namespace Madingley
             sw.WriteLine("Herbivory\t_HandlingTimeExponentTerrestrial\t" + Convert.ToString(_HandlingTimeExponentTerrestrial));
             sw.WriteLine("Herbivory\t_HandlingTimeExponentMarine\t" + Convert.ToString(_HandlingTimeExponentMarine));
             sw.WriteLine("Herbivory\t_HerbivoryRateConstant\t" + Convert.ToString(_HerbivoryRateConstant));
-
             sw.WriteLine("Herbivory\t_AttackRateExponentTerrestrial\t" + Convert.ToString(_AttackRateExponentTerrestrial));
             sw.WriteLine("Herbivory\t_AttackRateExponentMarine\t" + Convert.ToString(_AttackRateExponentMarine));
             sw.WriteLine("Herbivory\t_HerbivoryRateMassExponent\t" + Convert.ToString(_HerbivoryRateMassExponent));
@@ -208,11 +213,11 @@ namespace Madingley
         /// <param name="herbivoreIndividualMass">The individual body mass of the acting (herbivore) cohort</param>
         /// <returns>The potential biomass eaten by the herbivore cohort</returns>
         private double CalculatePotentialBiomassEatenMarine(double autotrophBiomass, double herbivoreIndividualMass, 
-            double stockIndividualMass, double logOptimalPreyPredatorMassRatio)
+            double logOptimalPreyPredatorMassRatio, string cohortPhytoType)
         {
             // Calculate the individual herbivory rate per unit autotroph mass-density per hectare
-            double IndividualHerbivoryRate = CalculateIndividualHerbivoryRatePerHectareMarine(herbivoreIndividualMass, stockIndividualMass,
-                logOptimalPreyPredatorMassRatio);
+            double IndividualHerbivoryRate = CalculateIndividualHerbivoryRatePerHectareMarine(herbivoreIndividualMass,
+                logOptimalPreyPredatorMassRatio, cohortPhytoType);
 
             // Calculate autotroph biomass density per hectare
             double AutotrophBiomassDensity = autotrophBiomass / _CellAreaHectares;
@@ -239,14 +244,16 @@ namespace Madingley
         /// </summary>
         /// <param name="herbivoreIndividualMass">Herbivore individual body mass</param>
         /// <returns>The herbivory rate of an individual herbivore per unit autotroph mass-density per hectare</returns>
-        private double CalculateIndividualHerbivoryRatePerHectareMarine(double herbivoreIndividualMass, double stockIndividualMass,
-            double logOptimalPreyPredatorMassRatio)
+        private double CalculateIndividualHerbivoryRatePerHectareMarine(double herbivoreIndividualMass,
+            double logOptimalPreyPredatorMassRatio, string cohortPhytoType)
         {
             // Calculate the relative feeding preference from a log-normal distribution with mean equal to the optimal
             // prey to predator ratio and standard deviation as specified
 
+            double stockIndividualMassDraw = RandomNumberGenerator.getPhytoSize(cohortPhytoType);
+            
             RelativeFeedingPreferenceHerb = Math.Exp(-(Math.Pow
-                (((Math.Log(stockIndividualMass / herbivoreIndividualMass) - logOptimalPreyPredatorMassRatio) /
+                (((Math.Log(stockIndividualMassDraw / herbivoreIndividualMass) - logOptimalPreyPredatorMassRatio) /
                 _FeedingPreferenceStandardDeviation), 2)));
 
             // Calculate the individual herbivory rate

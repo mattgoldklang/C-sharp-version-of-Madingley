@@ -11,7 +11,7 @@ namespace Madingley
     /// </summary>
     public class Activity
     {
-
+        
         /// <summary>
         /// The distance of the maximum critical temperature from the ambient temperature
         /// </summary>

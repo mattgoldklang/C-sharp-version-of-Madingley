@@ -23,7 +23,7 @@ namespace Madingley
             /// </summary>
             public int Extinctions, Productions;
         }
-
+        
         /// <summary>
         /// Scalar to convert from the time step units used by this herbivory implementation to global model time step units
         /// </summary>
@@ -139,6 +139,16 @@ namespace Madingley
         private double EdibleScaling;
 
         /// <summary>
+        /// Double to hold the log optimal prey body size ratio for the acting herbivore cohort
+        /// </summary>
+        private double _HerbivoreLogOptimalPreyBodySizeRatio;
+
+        /// <summary>
+        /// String to hold the herbivore diet type
+        /// </summary>
+        private string _HerbivoreDietType;
+
+        /// <summary>
         /// Instance of the class to perform general functions
         /// </summary>
         private UtilityFunctions Utilities;
@@ -246,7 +256,8 @@ namespace Madingley
         /// <param name="cellEnvironment">The environment in the current grid cell</param>
         /// <param name="madingleyCohortDefinitions">The functional group definitions for cohorts in the model</param>
         /// <param name="madingleyStockDefinitions">The functional group definitions for stocks  in the model</param>
-        public void GetEatingPotentialMarine(GridCellCohortHandler gridCellCohorts, GridCellStockHandler gridCellStocks, int[] actingCohort, SortedList<string, double[]> cellEnvironment, FunctionalGroupDefinitions madingleyCohortDefinitions, FunctionalGroupDefinitions madingleyStockDefinitions)
+        public void GetEatingPotentialMarine(GridCellCohortHandler gridCellCohorts, GridCellStockHandler gridCellStocks, int[] actingCohort, 
+            SortedList<string, double[]> cellEnvironment, FunctionalGroupDefinitions madingleyCohortDefinitions, FunctionalGroupDefinitions madingleyStockDefinitions)
         {
             int FunctionalGroupsToGrazeThisCohort = -1;
 
@@ -352,8 +363,13 @@ namespace Madingley
                     //EdibleMass = gridCellStocks[FunctionalGroup][i].TotalBiomass * 0.1;
                     EdibleMass = gridCellStocks[FunctionalGroup][i].TotalBiomass;
 
+                    _HerbivoreLogOptimalPreyBodySizeRatio = gridCellCohorts[actingCohort[0]][actingCohort[1]].LogOptimalPreyBodySizeRatio;
+
+                    _HerbivoreDietType = madingleyCohortDefinitions.GetTraitNames("Diet", actingCohort[0]);
+
                     // Calculate the potential biomass eaten from this stock by the acting cohort
-                    _PotentialBiomassesEaten[FunctionalGroup][i] = CalculatePotentialBiomassEatenMarine(EdibleMass, _BodyMassHerbivore);
+                    _PotentialBiomassesEaten[FunctionalGroup][i] = CalculatePotentialBiomassEatenMarine(EdibleMass, _BodyMassHerbivore, 
+                        _HerbivoreLogOptimalPreyBodySizeRatio, _HerbivoreDietType);
 
                     // Add the time required to handle the potential biomass eaten from this stock to the cumulative total for all stocks
                     _TimeUnitsToHandlePotentialFoodItems += _PotentialBiomassesEaten[FunctionalGroup][i] *

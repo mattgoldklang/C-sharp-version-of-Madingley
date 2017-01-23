@@ -2668,7 +2668,7 @@ namespace Madingley
             Console.WriteLine("\n");
 
         }
-
+        
         /// <summary>
         /// Given a grid cell from where a cohort is dispersing, select at random a grid cell for it to disperse to from those that exist within the 
         /// same realm
