@@ -81,11 +81,17 @@ namespace Madingley
             deltas, FunctionalGroupDefinitions madingleyCohortDefinitions, FunctionalGroupDefinitions madingleyStockDefinitions, ProcessTracker trackProcesses, CohortTracker cohortTracker,
             uint currentTimestep, uint currentMonth)
         {
-
-
-            // Calculate metabolic loss for an individual and add the value to the delta biomass for metabolism
-            deltas["biomass"]["metabolism"] = -CalculateIndividualMetabolicRate(gridCellCohorts[actingCohort].IndividualBodyMass,
-                cellEnvironment["Temperature"][currentMonth] + _TemperatureUnitsConvert, gridCellCohorts[actingCohort].ProportionTimeActive) * _DeltaT;
+            if (gridCellCohorts[actingCohort].IndividualBodyMass < 1)
+            {
+                deltas["biomass"]["metabolism"] = 0;
+            }
+            
+            else
+            {
+                // Calculate metabolic loss for an individual and add the value to the delta biomass for metabolism
+                deltas["biomass"]["metabolism"] = -CalculateIndividualMetabolicRate(gridCellCohorts[actingCohort].IndividualBodyMass,
+                    cellEnvironment["Temperature"][currentMonth] + _TemperatureUnitsConvert, gridCellCohorts[actingCohort].ProportionTimeActive) * _DeltaT;
+            }    
             
             // If metabolic loss is greater than individual body mass after herbivory and predation, then set equal to individual body mass
             deltas["biomass"]["metabolism"] = Math.Max(deltas["biomass"]["metabolism"], -(gridCellCohorts[actingCohort].IndividualBodyMass + deltas["biomass"]["predation"] + deltas["biomass"]["herbivory"]));

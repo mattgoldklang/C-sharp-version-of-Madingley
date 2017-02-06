@@ -130,6 +130,7 @@ namespace Madingley
         /// <returns>The metabolic loss for an individual</returns>
         public double CalculateIndividualMetabolicRate(double individualBodyMass, double temperature, double proportionTimeActive)
         {
+            
             // Calculate field metabolic loss in kJ
             double FieldMetabolicLosskJ = _NormalizationConstant * Math.Pow(individualBodyMass, _MetabolismMassExponent) *
                 Math.Exp(-(_ActivationEnergy / (_BoltzmannConstant * temperature)));
