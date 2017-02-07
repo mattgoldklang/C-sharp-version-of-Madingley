@@ -234,6 +234,8 @@
     <Compile Include="Output and tracking\EcosytemMetrics.cs" />
     <Compile Include="Output and tracking\ExtinctionTracker.cs" />
     <Compile Include="Output and tracking\FeedingInteractions.cs" />
+    <Compile Include="Output and tracking\FunctionalGroupEatingTracker.cs" />
+    <Compile Include="Output and tracking\FunctionalGroupTracker.cs" />
     <Compile Include="Output and tracking\GlobalNPPTracker.cs" />
     <Compile Include="Output and tracking\GlobalProcessTracker.cs" />
     <Compile Include="Output and tracking\GrowthTracker.cs" />
@@ -250,6 +252,7 @@
     <Compile Include="Model structure\ScenarioParameterInitialisation.cs" />
     <Compile Include="Output and tracking\TextualOutput.cs" />
     <Compile Include="Model structure\Stock.cs" />
+    <Compile Include="Output and tracking\Tracker.cs" />
     <Compile Include="Utility classes\ClimateVariablesCalculator.cs" />
     <Compile Include="Utility classes\MassBinsHandler.cs" />
     <Compile Include="Utility classes\NonStaticSimpleRNG.cs" />

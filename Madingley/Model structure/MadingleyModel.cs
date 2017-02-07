@@ -227,6 +227,12 @@ namespace Madingley
         private OutputModelState WriteModelState;
 
         /// <summary>
+        /// An instance of the functional group flows tracker
+        /// </summary>
+        /// 
+        private FunctionalGroupTracker FGTracker;
+
+        /// <summary>
         /// An instance of the output class to deal with global outputs
         /// </summary>
         private OutputGlobal GlobalOutputs;
@@ -334,6 +340,10 @@ namespace Madingley
             // Instance the array of process trackers
             ProcessTrackers = new ProcessTracker[_CellList.Count];
 
+            // Instance a new functional group flows tracker
+            FGTracker = new FunctionalGroupTracker(EcosystemModelGrid.Lats, EcosystemModelGrid.Lons, CohortFunctionalGroupDefinitions,
+                StockFunctionalGroupDefinitions, outputFilesSuffix, initialisation.OutputPath, initialisation.ProcessTrackingOutputs["FGFlowsOutput"]);
+
             // Temporary variables
             Boolean varExists;
 
@@ -346,6 +356,7 @@ namespace Madingley
                 initialisation.ProcessTrackingOutputs,
                 initialisation.TrackProcesses,
                 CohortFunctionalGroupDefinitions,
+                StockFunctionalGroupDefinitions,
                 EcosystemModelGrid.GlobalMissingValue,
                 outputFilesSuffix,
                 initialisation.OutputPath, initialisation.ModelMassBins,

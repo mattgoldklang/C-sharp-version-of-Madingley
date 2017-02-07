@@ -55,7 +55,6 @@ namespace Madingley
         /// </summary>
         public int[] AllFunctionalGroupsIndex { get { return _AllFunctionalGroupsIndex; } }
         
-
         /// <summary>
         /// Constructor for the functional group definitions: reads in the specified functional group definition file, 
         /// constructs lookup tables, mass ranges and initial cohort numbers in each functional group

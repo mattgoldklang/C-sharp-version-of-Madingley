@@ -25,7 +25,7 @@ namespace Madingley
         /// <summary>
         /// Get the conversion ratio for phytoplankton from grams carbon to grams wet weight
         /// </summary>
-        public double PhytoplanktonConversionRatio { get {return _PhytoplanktonConversionRatio; } }
+        public double PhytoplanktonConversionRatio { get { return _PhytoplanktonConversionRatio; } }
 
         /// <summary>
         /// Factor to convert NPP from units per m^2 to units per km^2
@@ -67,16 +67,49 @@ namespace Madingley
             actingStock, string terrestrialNPPUnits, string oceanicNPPUnits, uint currentTimestep, string GlobalModelTimeStepUnit,
             ProcessTracker trackProcesses, GlobalProcessTracker globalTracker, string outputDetail, bool specificLocations,uint currentMonth)
         {
-
-            // Get NPP from the cell environment
-            double NPP = cellEnvironment["NPP"][currentMonth];
-
-            // If NPP is a mssing value then set to zero
-            if (NPP == cellEnvironment["Missing Value"][0]) NPP = 0.0;
+            double NPP = new double();
 
             // Check that this is an ocean cell
-            if (cellEnvironment["Realm"][0] == 2.0)
+            if(cellEnvironment["Realm"][0] == 2.0)
             {
+                switch (gridCellStockHandler[actingStock].StockName)
+                {
+                    case "picophytoplankton":
+
+                        // Get picophytoplankton NPP from cell environment
+                        NPP = cellEnvironment["picoNPP"][currentMonth];
+
+                        // If picophytoplankton NPP is a missing value then set to zero
+                        if (NPP == cellEnvironment["Missing Value"][0]) NPP = 0.0;
+
+                        break;
+
+                    case "nanophytoplankton":
+
+                        // Get nanophytoplankton NPP from cell environment
+                        NPP = cellEnvironment["nanoNPP"][currentMonth];
+
+                        // If nanophytoplankton NPP is a missing value then set to zero
+                        if (NPP == cellEnvironment["Missing Value"][0]) NPP = 0.0;
+
+                        break;
+
+                    case "microphytoplankton":
+
+                        // Get microphytoplankton NPP from cell environment
+                        NPP = cellEnvironment["microNPP"][currentMonth];
+
+                        // If microphytoplankton NPP is a missing value then set to zero
+                        if (NPP == cellEnvironment["Missing Value"][0]) NPP = 0.0;
+
+                        break;
+
+                    default:
+                        Debug.Fail("Can't find phytoplankton name in stocks");
+                        Console.WriteLine("Can't find phytoplankton name in stocks");
+                        break;
+                }
+
                 // Check that the units of oceanic NPP are gC per m2 per day
                 Debug.Assert(oceanicNPPUnits == "gC/m2/day", "Oceanic NPP data are not in the correct units for this formulation of the model");
 
@@ -101,7 +134,7 @@ namespace Madingley
 
                 if (globalTracker.TrackProcesses)
                 {
-                    globalTracker.RecordNPP((uint)cellEnvironment["LatIndex"][0], (uint)cellEnvironment["LonIndex"][0],(uint)actingStock[0],
+                    globalTracker.RecordNPP((uint)cellEnvironment["LatIndex"][0], (uint)cellEnvironment["LonIndex"][0], (uint)actingStock[0],
                             NPP / cellEnvironment["Cell Area"][0]);
                 }
 
@@ -109,6 +142,7 @@ namespace Madingley
                 if (gridCellStockHandler[actingStock].TotalBiomass < 0.0)
                     gridCellStockHandler[actingStock].TotalBiomass = 0.0;
             }
+
             // Else if neither on land or in the ocean
             else
             {
@@ -118,6 +152,5 @@ namespace Madingley
             }
             Debug.Assert(gridCellStockHandler[actingStock].TotalBiomass >= 0.0, "stock negative");
         }
-
     }
 }

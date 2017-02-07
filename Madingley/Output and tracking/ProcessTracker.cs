@@ -113,7 +113,13 @@ namespace Madingley
             get { return _TrackMetabolism; }
             set { _TrackMetabolism = value; }
         }
-       
+
+        /// <summary>
+        /// An instance of the functional group eating tracker
+        /// </summary>
+        /// 
+        private FunctionalGroupEatingTracker _TrackFGEating;
+
 
 
         /// <summary>
@@ -126,6 +132,7 @@ namespace Madingley
         /// <param name="Filenames">The filenames of the output files to write the tracking results to</param>
         /// <param name="trackProcesses">Whether to track processes</param>
         /// <param name="cohortDefinitions">The definitions for cohort functional groups in the model</param>
+        /// <param name="stockDefinitions">The definitions for stock functional groups in the model</param>
         /// <param name="missingValue">The missing value to use in process tracking output files</param>
         /// <param name="outputFileSuffix">The suffix to be applied to output files from process tracking</param>
         /// <param name="outputPath">The path to the folder to be used for process tracking outputs</param>
@@ -142,6 +149,7 @@ namespace Madingley
             SortedList<string,string> Filenames, 
             Boolean trackProcesses, 
             FunctionalGroupDefinitions cohortDefinitions, 
+            FunctionalGroupDefinitions stockDefinitions,
             double missingValue,
             string outputFileSuffix,
             string outputPath, MassBinsHandler trackerMassBins,
@@ -163,6 +171,7 @@ namespace Madingley
                 _TrackMortality = new MortalityTracker(numTimesteps, (uint)lats.Length, (uint)lons.Length, cellIndices, Filenames["MortalityOutput"], outputFileSuffix, outputPath, cellIndex);
                 _TrackExtinction = new ExtinctionTracker(Filenames["ExtinctionOutput"], outputPath, outputFileSuffix, cellIndex);
                 _TrackMetabolism = new MetabolismTracker(Filenames["MetabolismOutput"], outputPath, outputFileSuffix, cellIndex);
+                _TrackFGEating = new 
 
                 // Initialise the predation and herbivory trackers only for runs with specific locations
                 if (specificLocations == true)
