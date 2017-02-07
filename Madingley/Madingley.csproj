@@ -295,7 +295,16 @@
     <None Include="input\Data\Original\Ocean\KennedyetalDTR_monthly_climatology.nc">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="input\Data\Original\Ocean\micro_npp.nc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="input\Data\Original\Ocean\nano_npp.nc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="input\Data\Original\Ocean\OceanNPP.nc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="input\Data\Original\Ocean\pico_npp.nc">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="input\Data\Original\TropicalGrasslandsMask.nc">

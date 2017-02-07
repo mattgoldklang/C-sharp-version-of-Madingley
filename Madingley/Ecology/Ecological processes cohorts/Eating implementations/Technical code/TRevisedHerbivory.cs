@@ -188,7 +188,9 @@ namespace Madingley
         /// <param name="cellEnvironment">The environment in the current grid cell</param>
         /// <param name="madingleyCohortDefinitions">The functional group definitions for cohorts in the model</param>
         /// <param name="madingleyStockDefinitions">The functional group definitions for stocks  in the model</param>
-        public void GetEatingPotentialTerrestrial(GridCellCohortHandler gridCellCohorts, GridCellStockHandler gridCellStocks, int[] actingCohort, SortedList<string, double[]> cellEnvironment, FunctionalGroupDefinitions madingleyCohortDefinitions, FunctionalGroupDefinitions madingleyStockDefinitions)
+        public void GetEatingPotentialTerrestrial(GridCellCohortHandler gridCellCohorts, GridCellStockHandler gridCellStocks, 
+            int[] actingCohort, SortedList<string, double[]> cellEnvironment, FunctionalGroupDefinitions madingleyCohortDefinitions, 
+            FunctionalGroupDefinitions madingleyStockDefinitions)
         {
             // Set the total biomass eaten by the acting cohort to zero
             _TotalBiomassEatenByCohort = 0.0;
