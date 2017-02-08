@@ -90,7 +90,7 @@ namespace Madingley
             Dictionary<string, Dictionary<string, double>> deltas, 
             FunctionalGroupDefinitions madingleyCohortDefinitions, 
             FunctionalGroupDefinitions madingleyStockDefinitions, 
-            uint currentTimestep, ProcessTracker trackProcesses, 
+            uint currentTimestep, ProcessTracker trackProcesses, FunctionalGroupTracker functionalTracker,
             ref ThreadLockedParallelVariables partial, Boolean specificLocations,
             string outputDetail, uint currentMonth, MadingleyModelInitialisation initialisation)
         {
@@ -130,7 +130,7 @@ namespace Madingley
                     Implementations["revised herbivory"].RunEating
                         (gridCellCohorts, gridCellStocks, actingCohort, 
                         cellEnvironment, deltas, madingleyCohortDefinitions, 
-                        madingleyStockDefinitions, trackProcesses, 
+                        madingleyStockDefinitions, trackProcesses, functionalTracker,
                         currentTimestep, specificLocations,outputDetail, initialisation);
 
                     break;
@@ -156,7 +156,7 @@ namespace Madingley
                     // Run predation to apply changes in prey biomass from predation and add biomass eaten to the delta arrays
                     Implementations["revised predation"].RunEating
                         (gridCellCohorts, gridCellStocks, actingCohort, cellEnvironment, deltas, 
-                        madingleyCohortDefinitions, madingleyStockDefinitions, trackProcesses, 
+                        madingleyCohortDefinitions, madingleyStockDefinitions, trackProcesses, functionalTracker,
                         currentTimestep, specificLocations,outputDetail, initialisation);
 
 
@@ -216,14 +216,14 @@ namespace Madingley
                     Implementations["revised predation"].RunEating
                         (gridCellCohorts, gridCellStocks, actingCohort, 
                         cellEnvironment, deltas, madingleyCohortDefinitions, 
-                        madingleyStockDefinitions, trackProcesses, 
+                        madingleyStockDefinitions, trackProcesses, functionalTracker,
                         currentTimestep, specificLocations,outputDetail, initialisation);
 
                     // Run herbivory to update autotroph biomass and delta biomasses for the acting cohort
                     Implementations["revised herbivory"].RunEating
                         (gridCellCohorts, gridCellStocks, actingCohort, 
                         cellEnvironment, deltas, madingleyCohortDefinitions, 
-                        madingleyStockDefinitions, trackProcesses, 
+                        madingleyStockDefinitions, trackProcesses, functionalTracker,
                         currentTimestep, specificLocations,outputDetail, initialisation);
 
                     break;

@@ -596,14 +596,15 @@ namespace Madingley
         /// <param name="madingleyCohortDefinitions">The functional group definitions for cohorts in the model</param>
         /// <param name="madingleyStockDefinitions">The functional group definitions for stocks in the model</param>
         /// <param name="trackProcesses">An instance of ProcessTracker to hold diagnostics for predation</param>
+        /// <param name="functionalTracker">An instance of the Functional group flows tracker</param>
         /// <param name="currentTimestep">The current model time step</param>
         /// <param name="specificLocations">Whether the model is being run for specific locations</param>
         /// <param name="outputDetail">The level of output detail used in this model run</param>
         /// <param name="initialisation">The Madingley Model initialisation</param>
         public void RunEating(GridCellCohortHandler gridCellCohorts, GridCellStockHandler gridCellStocks, int[] actingCohort, SortedList<string, double[]>
             cellEnvironment, Dictionary<string, Dictionary<string, double>> deltas, FunctionalGroupDefinitions madingleyCohortDefinitions,
-            FunctionalGroupDefinitions madingleyStockDefinitions, ProcessTracker trackProcesses, uint currentTimestep, Boolean specificLocations,
-            string outputDetail, MadingleyModelInitialisation initialisation)
+            FunctionalGroupDefinitions madingleyStockDefinitions, ProcessTracker trackProcesses, FunctionalGroupTracker functionalTracker, 
+            uint currentTimestep, Boolean specificLocations, string outputDetail, MadingleyModelInitialisation initialisation)
         {
             if (trackProcesses.TrackProcesses)
             {
@@ -644,10 +645,11 @@ namespace Madingley
 
                     gridCellCohorts[actingCohort].TrophicIndex += (_BodyMassPrey + gridCellCohorts[FunctionalGroup][i].IndividualReproductivePotentialMass) * _AbundancesEaten[FunctionalGroup][i] * gridCellCohorts[FunctionalGroup][i].TrophicIndex;
 
-                    // If the process tracker is set and output detail is set to high and the prey cohort has never been merged,
-                    // then track its mortality owing to predation
-                    if (trackProcesses.TrackProcesses)
+                    
+                    if (trackProcesses.TrackProcesses && (currentTimestep >= initialisation.TimeStepToStartProcessTrackers))
                     {
+                        // If the process tracker is set and output detail is set to high and the prey cohort has never been merged,
+                        // then track its mortality owing to predation
                         if ((outputDetail == "high") && (gridCellCohorts[FunctionalGroup][i].CohortID.Count == 1)
                         && AbundancesEaten[FunctionalGroup][i] > 0)
                         {
@@ -656,6 +658,13 @@ namespace Madingley
                                 gridCellCohorts[FunctionalGroup][i].AdultMass, gridCellCohorts[FunctionalGroup][i].FunctionalGroupIndex,
                                 gridCellCohorts[FunctionalGroup][i].CohortID[0], AbundancesEaten[FunctionalGroup][i], "predation");
                         }
+
+                        // Track flows between functional groups
+                        functionalTracker.RecordFGFlow((uint)cellEnvironment["LatIndex"][0], (uint)cellEnvironment["LonIndex"][0],
+                            madingleyCohortDefinitions.GetTraitNames("group description", gridCellCohorts[actingCohort].FunctionalGroupIndex),
+                            madingleyCohortDefinitions.GetTraitNames("group description", FunctionalGroup),
+                            (_AbundancesEaten[FunctionalGroup][i] * _BodyMassPrey), cellEnvironment["Realm"][0] == 2.0);
+
 
                         // If the model is being run for specific locations and if track processes has been specified, then track the mass flow between
                         // prey and predator

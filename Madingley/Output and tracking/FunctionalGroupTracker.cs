@@ -129,6 +129,9 @@ namespace Madingley
                     }
                 }
             }
+
+            // Reset array to hold mass flows among trophic levels
+            FGMassFlows = new double[numLats, numLons, MaxNumberFunctionalGroups, MaxNumberFunctionalGroups];
         }
 
         /// <summary>

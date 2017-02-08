@@ -106,6 +106,7 @@ namespace Madingley
         /// <param name="madingleyCohortDefinitions">The definitions for cohort functional groups in the model</param>
         /// <param name="madingleyStockDefinitions">The definitions for stock functional groups in the model</param>
         /// <param name="trackProcesses">An instance of ProcessTracker to hold diagnostics for eating</param>
+        /// <param name="functionalTracker">An instance of the Functional group flows tracker</param>
         /// <param name="currentTimestep">The current model time step</param>
         /// <param name="specificLocations">Whether the model is being run for specific locations</param>
         /// <param name="outputDetail">The level of output detail being used in this model run</param>
@@ -115,7 +116,7 @@ namespace Madingley
             Dictionary<string, Dictionary<string, double>> deltas, 
             FunctionalGroupDefinitions madingleyCohortDefinitions, 
             FunctionalGroupDefinitions madingleyStockDefinitions, 
-            ProcessTracker trackProcesses, uint currentTimestep,
+            ProcessTracker trackProcesses, FunctionalGroupTracker functionalTracker, uint currentTimestep, 
             Boolean specificLocations, string outputDetail, MadingleyModelInitialisation initialisation);
 
     }

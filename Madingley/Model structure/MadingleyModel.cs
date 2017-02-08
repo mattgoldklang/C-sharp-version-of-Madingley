@@ -1150,9 +1150,10 @@ namespace Madingley
 
                     // Run stock ecology
                     MadingleyEcologyStock.RunWithinCellEcology(workingGridCellStocks, ActingStock, EcosystemModelGrid.GetCellEnvironment(
-                        latCellIndex, lonCellIndex), EnvironmentalDataUnits, _HumanNPPScenario, StockFunctionalGroupDefinitions,
-                        CurrentTimeStep, NumBurninSteps, NumImpactSteps, initialisation.RecoveryTimeSteps, initialisation.InstantaneousTimeStep, initialisation.NumInstantaneousTimeStep, _GlobalModelTimeStepUnit, ProcessTrackers[cellIndex].TrackProcesses, ProcessTrackers[cellIndex],
-                        TrackGlobalProcesses, CurrentMonth,
+                        latCellIndex, lonCellIndex), EnvironmentalDataUnits, _HumanNPPScenario, CohortFunctionalGroupDefinitions, StockFunctionalGroupDefinitions,
+                        CurrentTimeStep, NumBurninSteps, NumImpactSteps, initialisation.RecoveryTimeSteps, initialisation.InstantaneousTimeStep, initialisation.NumInstantaneousTimeStep, 
+                        _GlobalModelTimeStepUnit, ProcessTrackers[cellIndex].TrackProcesses, ProcessTrackers[cellIndex],
+                        FGTracker, TrackGlobalProcesses, CurrentMonth,
                         InitialisationFileStrings["OutputDetail"], SpecificLocations, ((initialisation.ImpactCellIndices.Contains((uint)cellIndex) || (initialisation.ImpactAll))));
 
                 }
@@ -1262,7 +1263,7 @@ namespace Madingley
                         ActingCohort, EcosystemModelGrid.GetCellEnvironment(latCellIndex, lonCellIndex),
                         EcosystemModelGrid.GetCellDeltas(latCellIndex, lonCellIndex),
                         CohortFunctionalGroupDefinitions, StockFunctionalGroupDefinitions, CurrentTimeStep,
-                        ProcessTrackers[cellIndex], ref partial, SpecificLocations, outputDetail, CurrentMonth, initialisation);
+                        ProcessTrackers[cellIndex], FGTracker, ref partial, SpecificLocations, outputDetail, CurrentMonth, initialisation);
 
                     // Update the properties of the acting cohort
                     MadingleyEcologyCohort.UpdateEcology(workingGridCellCohorts, workingGridCellStocks, ActingCohort,

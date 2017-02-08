@@ -304,7 +304,7 @@ namespace Madingley
         /// <param name="initialisation">The Madingley Model initialisation</param>
         public void RunEating(GridCellCohortHandler gridCellCohorts, GridCellStockHandler gridCellStocks, int[] actingCohort, SortedList<string, double[]>
             cellEnvironment, Dictionary<string, Dictionary<string, double>> deltas, FunctionalGroupDefinitions madingleyCohortDefinitions,
-            FunctionalGroupDefinitions madingleyStockDefinitions, ProcessTracker trackProcesses, uint currentTimestep, Boolean specificLocations,
+            FunctionalGroupDefinitions madingleyStockDefinitions, ProcessTracker trackProcesses, FunctionalGroupTracker functionalTracker, uint currentTimestep, Boolean specificLocations,
             string outputDetail, MadingleyModelInitialisation initialisation)
         {
 
@@ -329,9 +329,22 @@ namespace Madingley
                     // Remove the biomass eaten from the autotroph stock
                     gridCellStocks[FunctionalGroup][i].TotalBiomass -= _BiomassesEaten[FunctionalGroup][i];
 
+
+
+                    // If track processes has been specified, then track flow between primary producers and herbivores
+                    if((trackProcesses.TrackProcesses) && (currentTimestep >= initialisation.TimeStepToStartProcessTrackers))
+                    {
+                        // Track flows between functional groups
+                        functionalTracker.RecordFGFlow((uint)cellEnvironment["LatIndex"][0], (uint)cellEnvironment["LonIndex"][0],
+                            madingleyCohortDefinitions.GetTraitNames("group description", gridCellCohorts[actingCohort].FunctionalGroupIndex),
+                            madingleyStockDefinitions.GetTraitNames("stock name", FunctionalGroup),
+                            _BiomassesEaten[FunctionalGroup][i], cellEnvironment["Realm"][0] == 2.0);
+
+                    }
+
                     // If the model is being run for specific locations and if track processes has been specified, then track the mass flow between
-                    // primary producer and herbivore
-                    if (specificLocations && trackProcesses.TrackProcesses)
+                    // primary producer and herbivore (this is the old tracker)
+                    if (specificLocations && trackProcesses.TrackProcesses && (currentTimestep >= initialisation.TimeStepToStartProcessTrackers))
                     {
                         trackProcesses.RecordHerbivoryMassFlow(currentTimestep, _BodyMassHerbivore, _BiomassesEaten[FunctionalGroup][i]);
                     }

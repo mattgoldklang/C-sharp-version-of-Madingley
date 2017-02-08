@@ -63,9 +63,10 @@ namespace Madingley
         /// <param name="outputDetail">The level of output detail to use for the outputs</param>
         /// <param name="specificLocations">Whether the model is being run for specific locations</param>
         /// <param name="currentMonth">The current month in the model run</param>
-        public void ConvertNPPToAutotroph(SortedList<string,double[]> cellEnvironment, GridCellStockHandler gridCellStockHandler, int[] 
+        public void ConvertNPPToAutotroph(FunctionalGroupDefinitions cohortDefinitions, FunctionalGroupDefinitions stockDefinitions,
+            SortedList<string,double[]> cellEnvironment, GridCellStockHandler gridCellStockHandler, int[] 
             actingStock, string terrestrialNPPUnits, string oceanicNPPUnits, uint currentTimestep, string GlobalModelTimeStepUnit,
-            ProcessTracker trackProcesses, GlobalProcessTracker globalTracker, string outputDetail, bool specificLocations,uint currentMonth)
+            ProcessTracker trackProcesses, FunctionalGroupTracker functionalTracker, GlobalProcessTracker globalTracker, string outputDetail, bool specificLocations,uint currentMonth)
         {
             double NPP = new double();
 
@@ -130,6 +131,13 @@ namespace Madingley
                 {
                     trackProcesses.TrackPrimaryProductionTrophicFlow((uint)cellEnvironment["LatIndex"][0], (uint)cellEnvironment["LonIndex"][0],
                         NPP);
+                }
+
+                if (trackProcesses.TrackProcesses)
+                {
+                    functionalTracker.RecordFGFlow((uint)cellEnvironment["LatIndex"][0], (uint)cellEnvironment["LonIndex"][0],
+                        stockDefinitions.GetTraitNames("stock name", actingStock[0]), "autotroph net production", NPP, 
+                        cellEnvironment["Realm"][0] == 2.0);
                 }
 
                 if (globalTracker.TrackProcesses)
