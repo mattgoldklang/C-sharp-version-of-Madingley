@@ -115,14 +115,6 @@ namespace Madingley
         }
 
         /// <summary>
-        /// An instance of the functional group eating tracker
-        /// </summary>
-        /// 
-        private FunctionalGroupEatingTracker _TrackFGEating;
-
-
-
-        /// <summary>
         /// Constructor for process tracker: Initialises the trackers for individual processes
         /// </summary>
         /// <param name="numTimesteps">The number of time steps in the model</param>
@@ -171,7 +163,6 @@ namespace Madingley
                 _TrackMortality = new MortalityTracker(numTimesteps, (uint)lats.Length, (uint)lons.Length, cellIndices, Filenames["MortalityOutput"], outputFileSuffix, outputPath, cellIndex);
                 _TrackExtinction = new ExtinctionTracker(Filenames["ExtinctionOutput"], outputPath, outputFileSuffix, cellIndex);
                 _TrackMetabolism = new MetabolismTracker(Filenames["MetabolismOutput"], outputPath, outputFileSuffix, cellIndex);
-                _TrackFGEating = new 
 
                 // Initialise the predation and herbivory trackers only for runs with specific locations
                 if (specificLocations == true)

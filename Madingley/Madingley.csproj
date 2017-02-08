@@ -234,7 +234,6 @@
     <Compile Include="Output and tracking\EcosytemMetrics.cs" />
     <Compile Include="Output and tracking\ExtinctionTracker.cs" />
     <Compile Include="Output and tracking\FeedingInteractions.cs" />
-    <Compile Include="Output and tracking\FunctionalGroupEatingTracker.cs" />
     <Compile Include="Output and tracking\FunctionalGroupTracker.cs" />
     <Compile Include="Output and tracking\GlobalNPPTracker.cs" />
     <Compile Include="Output and tracking\GlobalProcessTracker.cs" />
