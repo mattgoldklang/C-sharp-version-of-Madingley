@@ -570,6 +570,22 @@ namespace Madingley
             set { _ModelStateFilename = value; }
         }
 
+        private uint _NumYearsToRunProcessTrackers;
+
+        public uint NumYearsToRunProcessTrackers
+        {
+            get { return _NumYearsToRunProcessTrackers; }
+            set { _NumYearsToRunProcessTrackers = value; }
+        }
+
+        private uint _TimeStepToStartProcessTrackers;
+
+        public uint TimeStepToStartProcessTrackers
+        {
+            get { return _TimeStepToStartProcessTrackers; }
+            set { _TimeStepToStartProcessTrackers = value; }
+        }
+
         
         /// <summary>
         /// Reads the initalization file to get information for the set of simulations to be run
@@ -943,7 +959,19 @@ namespace Madingley
                                 }
                             }
                         }
+                        break;
+                    case "num final years to track individual flows":
 
+                        if(VarValues.GetValue(row).ToString() != "")
+                        {
+                            NumYearsToRunProcessTrackers = (uint)Utilities.ConvertTimeUnits("year", _GlobalModelTimeStepUnit) * Convert.ToUInt32(VarValues.GetValue(row));
+                        }
+                        else
+                        {
+                            NumYearsToRunProcessTrackers = _NumTimeSteps;
+                        }
+
+                        TimeStepToStartProcessTrackers = _NumTimeSteps - NumYearsToRunProcessTrackers;
                         break;
                 }
             }

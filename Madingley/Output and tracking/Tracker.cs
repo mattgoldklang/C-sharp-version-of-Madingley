@@ -8,7 +8,7 @@ namespace Madingley
 {
     public abstract class Tracker
     {
-        abstract public void OpenTtrackerFile();
+        abstract public void OpenTrackerFile();
 
         abstract public void WriteToTrackerFile(uint currentTimeStep, ModelGrid madingleyModelGrid, uint numLats, uint numLons,
             MadingleyModelInitialisation initialisation, Boolean MarineCell);

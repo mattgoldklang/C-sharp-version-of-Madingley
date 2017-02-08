@@ -60,7 +60,7 @@ namespace Madingley
         /// Open the tracking file for writing
         /// </summary>
         /// 
-        public override void OpenTtrackerFile()
+        public override void OpenTrackerFile()
         {
             FGFlowsWriter = new StreamWriter(OutputPath + FileName + FileSuffix + ".txt");
             SyncedFGFlowsWriter = TextWriter.Synchronized(FGFlowsWriter);
