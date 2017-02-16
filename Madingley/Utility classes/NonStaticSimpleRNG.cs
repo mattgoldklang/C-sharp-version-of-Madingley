@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Diagnostics;
 
 namespace Madingley
 {
@@ -307,6 +308,29 @@ namespace Madingley
             double u = GetGamma(a, 1.0);
             double v = GetGamma(b, 1.0);
             return u / (u + v);
+        }
+
+        /// <summary>A random draw from the phytoplankton size distribution assuming traditional pico, nano and micro groups</summary>
+        /// 
+        public double getPhytoSize(string stockName)
+        {
+            if(stockName == "picophytoplankton")
+            {
+                return 1E-6 * Math.Exp(4.6025 * GetUniform());
+            }
+            if(stockName == "nanophytoplankton")
+            {
+                return 1E-4 * Math.Exp(4.6025 * GetUniform());
+            }
+            if(stockName == "microphytoplankton")
+            {
+                return 1E-2 * Math.Exp(4.6025 * GetUniform());
+            }
+            else
+            {
+                Debug.Fail("No phytoplankton stock name defined.");
+                return -1;
+            }
         }
     }
 }

@@ -64,7 +64,7 @@ namespace Madingley
         {
             FGFlowsWriter = new StreamWriter(OutputPath + FileName + FileSuffix + ".txt");
             SyncedFGFlowsWriter = TextWriter.Synchronized(FGFlowsWriter);
-            SyncedFGFlowsWriter.WriteLine("tLatitude\tLongitude\tTime_step\tFromIndex\tToIndex\tMass_eaten_g");
+            SyncedFGFlowsWriter.WriteLine("Latitude\tLongitude\tTime_step\tFromIndex\tToIndex\tMass_eaten_g");
         }
 
         /// <summary>

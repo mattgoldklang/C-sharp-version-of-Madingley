@@ -194,6 +194,7 @@ namespace Madingley
             // if current speeds were not constrained
             if (DispersalProbability >= 1)
             {
+                Console.ReadLine();
                 Debug.Fail("Dispersal probability in advection should always be <= 1");
             }
 

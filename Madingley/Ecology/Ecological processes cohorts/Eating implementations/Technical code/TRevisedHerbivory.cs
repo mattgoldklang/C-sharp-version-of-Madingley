@@ -139,6 +139,18 @@ namespace Madingley
         private double EdibleScaling;
 
         /// <summary>
+        /// Double to hold the log-optimal prey body size ratio for the acting herbivore cohort
+        /// </summary>
+        /// 
+        private double _HerbivoreLogOptimalPreyBodySizeRatio;
+
+        /// <summary>
+        /// String to hold current stock type
+        /// </summary>
+        /// 
+        private string _PhytoStockType;
+
+        /// <summary>
         /// Instance of the class to perform general functions
         /// </summary>
         private UtilityFunctions Utilities;
@@ -275,8 +287,12 @@ namespace Madingley
                     //EdibleMass = gridCellStocks[FunctionalGroup][i].TotalBiomass * 0.1;
                     EdibleMass = gridCellStocks[FunctionalGroup][i].TotalBiomass;
 
+                    _HerbivoreLogOptimalPreyBodySizeRatio = gridCellCohorts[actingCohort[0]][actingCohort[1]].LogOptimalPreyBodySizeRatio;
+
+                    _PhytoStockType = madingleyStockDefinitions.GetTraitNames("stock name", FunctionalGroup);
                     // Calculate the potential biomass eaten from this stock by the acting cohort
-                    _PotentialBiomassesEaten[FunctionalGroup][i] = CalculatePotentialBiomassEatenMarine(EdibleMass, _BodyMassHerbivore);
+                    _PotentialBiomassesEaten[FunctionalGroup][i] = CalculatePotentialBiomassEatenMarine(EdibleMass, _BodyMassHerbivore,
+                        _HerbivoreLogOptimalPreyBodySizeRatio, _PhytoStockType);
 
                     // Add the time required to handle the potential biomass eaten from this stock to the cumulative total for all stocks
                     _TimeUnitsToHandlePotentialFoodItems += _PotentialBiomassesEaten[FunctionalGroup][i] *
