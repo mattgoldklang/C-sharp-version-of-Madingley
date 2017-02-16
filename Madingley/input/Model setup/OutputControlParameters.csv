@@ -1,6 +1,6 @@
 Parameter,Value
 Live outputs,yes
-Track Processes,yes
+Track Processes,no
 Track Cross Cell Processes,no
 Track Global Processes,yes
 Track marine specifics,no
@@ -19,4 +19,4 @@ Growth Filename,Growth
 Metabolism Filename,Metabolism
 NPP Output Filename,NPP
 Functional Group Flows Filename,FGFlows
-Num Final Years to Track Individual Flows,10
+Num Final Years to Track Individual Flows,100
