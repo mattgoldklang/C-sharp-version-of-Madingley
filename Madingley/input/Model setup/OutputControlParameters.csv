@@ -13,10 +13,11 @@ Predation Flows Filename,PredationFlows
 Herbivory Flows Filename,HerbivoryFlows
 Biomasses Eaten Filename,BiomassesEaten
 Trophic Flows Filename,TrophicFlows
+Cohort Flows Filename,CohortFlows
 Mortality Filename,Mortality
 Extinction Filename,Extinction
 Growth Filename,Growth
 Metabolism Filename,Metabolism
 NPP Output Filename,NPP
 Functional Group Flows Filename,FGFlows
-Num Final Years to Track Individual Flows,10
+Num Final Years to Track Individual Flows,3

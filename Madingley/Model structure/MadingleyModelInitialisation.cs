@@ -920,6 +920,9 @@ namespace Madingley
                     case "functional group flows filename":
                         _ProcessTrackingOutputs.Add("FGFlowsOutput", VarValues.GetValue(row).ToString());
                         break;
+                    case "cohort flows filename":
+                        _ProcessTrackingOutputs.Add("CohortFlowsOutput", VarValues.GetValue(row).ToString());
+                        break;
                     case "output detail":
                         _InitialisationFileStrings.Add("OutputDetail", VarValues.GetValue(row).ToString());
                         break;

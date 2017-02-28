@@ -320,8 +320,8 @@ namespace Madingley
         /// <param name="initialisation">The Madingley Model initialisation</param>
         public void RunEating(GridCellCohortHandler gridCellCohorts, GridCellStockHandler gridCellStocks, int[] actingCohort, SortedList<string, double[]>
             cellEnvironment, Dictionary<string, Dictionary<string, double>> deltas, FunctionalGroupDefinitions madingleyCohortDefinitions,
-            FunctionalGroupDefinitions madingleyStockDefinitions, ProcessTracker trackProcesses, FunctionalGroupTracker functionalTracker, uint currentTimestep, Boolean specificLocations,
-            string outputDetail, MadingleyModelInitialisation initialisation)
+            FunctionalGroupDefinitions madingleyStockDefinitions, ProcessTracker trackProcesses, FunctionalGroupTracker functionalTracker, 
+            CohortTracker cohortTracker, uint currentTimestep, Boolean specificLocations, string outputDetail, MadingleyModelInitialisation initialisation)
         {
 
             EdibleScaling = 1.0;

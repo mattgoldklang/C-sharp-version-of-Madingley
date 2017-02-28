@@ -4,65 +4,159 @@ using System.Linq;
 using System.Text;
 using System.IO;
 
-
-using System.Diagnostics;
-
 namespace Madingley
 {
-    public class CohortTracker
+    public class CohortTracker : Tracker
     {
-        /// <summary>
-        /// File to write data on cohort biomass abundance and to
-        /// </summary>
-        string CohortFilename;
+        private StreamWriter CohortFlowsWriter;
+
+        private TextWriter SyncedCohortFlowsWriter;
+
+        private float[] Latitudes;
+        private float[] Longitudes;
+
+        private string OutputPath;
+        private string FileName;
+        private string FileSuffix;
+
+        // Lists to hold information to record. Everything is done at the individual level,
+        // i.e. PredationEaten is the amount eaten per individual
+        private List<string[]> CohortIdentifierStrings;
+        private List<uint[]> CohortIdentifiers;
+        private List<float> PredationEaten;
+        private List<float> HerbivoryEaten;
+        private List<float[]> FixedCohortProperties;
+        private List<float> MetabolicCosts;
+        private List<float> GrowthRates;
+
+        private int MaxNumberFunctionalGroups;
 
         /// <summary>
-        /// A streamwriter for writing out data on cohorts 
+        /// Set up tracker for outputting properties of the eating process between functional groups
         /// </summary>
-        private StreamWriter CohortWriter;
-
-        /// <summary>
-        /// Thread-safe text-writer to output cohort data
-        /// </summary>
-        private TextWriter SyncCohortWriter;
-
-        public CohortTracker(string cohortFilename, 
-            string outputFilesSuffix, string outputPath)
+        /// 
+        public CohortTracker(float[] latitudes, float[] longitudes, 
+            FunctionalGroupDefinitions fGDefinitions, FunctionalGroupDefinitions stockFGDefinitions,
+            string outputFileSuffix, string outputPath, string fileName)
         {
-            CohortFilename = cohortFilename;
+            Latitudes = latitudes;
+            Longitudes = longitudes;
 
-            // Initialise streamwriter to output biomasses eaten data
-            CohortWriter = new StreamWriter(outputPath + cohortFilename + outputFilesSuffix + ".txt");
-            SyncCohortWriter = TextWriter.Synchronized(CohortWriter);
-            SyncCohortWriter.WriteLine("Latitude\tLongitude\ttime_step\tfunctional_group\tCurrent_body_mass_g\tAbundance\tJuvenile_mass_g\tAdult_mass_g");
+            FileName = fileName;
+            OutputPath = outputPath;
+            FileSuffix = outputFileSuffix;
 
+            // Assign a number and name to each functional group (FG as defined by output, not by model)
+            AssignFunctionalGroups(fGDefinitions, stockFGDefinitions);
+
+            // Initialize array to hold mass flows among functional groups
+            MaxNumberFunctionalGroups = Math.Max(NumberMarineFGsForTracking, NumberTerrestrialFGsForTracking);
+
+            CohortIdentifierStrings = new List<string[]>();
+            CohortIdentifiers = new List<uint[]>();
+            FixedCohortProperties = new List<float[]>();
+            PredationEaten = new List<float>();
+            HerbivoryEaten = new List<float>();
+            MetabolicCosts = new List<float>();
+            GrowthRates = new List<float>();
         }
 
-        public void RecordCohorts(uint lat, uint lon, uint currentTimeStep, GridCellCohortHandler cohorts)
+        /// <summary>
+        /// Open the tracking file for writing to
+        /// </summary>
+        /// 
+        public override void OpenTrackerFile()
         {
-            foreach (var fg in cohorts)
+            CohortFlowsWriter = new StreamWriter(OutputPath + FileName + FileSuffix + ".txt");
+            SyncedCohortFlowsWriter = TextWriter.Synchronized(CohortFlowsWriter);
+
+            // Identifier properties: Lat index, lon index, cohort ID
+            // Identified string properties: FG
+            // Double flows: Predation, herbivory
+            // Fixed double properties: Mass, abundance, metabolic cost, growth
+
+            SyncedCohortFlowsWriter.WriteLine
+                ("Latitude\tLongitude\ttime_step\tfunctional_group\tcohort_ID\tbody_mass_g\tabundance\tpredation_eaten_perind_g\therbivory_eaten_perind_g\tmetabolic_cost_perind_g\tgrowth_perind_g");
+        }
+
+        public void RecordGeneralCohortInformation(uint latIndex, uint lonIndex, Cohort cohort, 
+            MadingleyModelInitialisation madingleyInitialisation, FunctionalGroupDefinitions stockFunctionalGroupDefinitions,
+            string cohortOrStockName, double cohortOrStockBodyMass, Boolean Marine)
+            // todo(erik): not all arguments are used.
+        {
+            CohortIdentifiers.Add(new uint[3] { latIndex, lonIndex, cohort.CohortID[0] });
+            CohortIdentifierStrings.Add(new string[1] { MarineFGsForTracking.Keys.ToArray()[DetermineFunctionalGroup(cohortOrStockName, Marine)] });
+            FixedCohortProperties.Add(new float[] { (float)cohort.IndividualBodyMass, (float)cohort.CohortAbundance });
+        }
+
+        public void RecordMetabolicCost(double metabolicCostPerIndividual)
+        {
+            MetabolicCosts.Add((float)metabolicCostPerIndividual);
+        }
+
+        public void RecordGrowth(double growthPerIndividual)
+        {
+            GrowthRates.Add((float)growthPerIndividual);
+        }
+
+        /// <summary>
+        /// Record an eating (predation or herbivory) event
+        /// </summary>
+        /// 
+        public void RecordPredationFlow(uint latIndex, uint lonIndex, Cohort cohort, double massEaten, Boolean herbivory, Boolean marineCell)
+        {
+            if(!herbivory)
             {
-                foreach (Cohort c in fg)
-                {
-                    SyncCohortWriter.WriteLine(
-                        Convert.ToString(lat) + '\t' +
-                        Convert.ToString(lon) + '\t' +
-                        Convert.ToString(currentTimeStep) + '\t' +
-                        Convert.ToString(c.FunctionalGroupIndex) + '\t' +
-                        Convert.ToString(c.IndividualBodyMass) + '\t' +
-                        Convert.ToString(c.CohortAbundance) + '\t' +
-                        Convert.ToString(c.JuvenileMass) + '\t' +
-                        Convert.ToString(c.AdultMass));
-                }
-                
+                PredationEaten.Add((float)massEaten);
+            }
+            else
+            {
+                HerbivoryEaten.Add((float)massEaten);
             }
         }
 
-        public void CloseStreams()
+        /// <summary>
+        /// Write flows of matter among functional groups to the output file at the end of the time step
+        /// </summary>
+        /// 
+        public override void WriteToTrackerFile(uint currentTimeStep, ModelGrid madingleyModelGrid, uint numLats, uint numLons, 
+            MadingleyModelInitialisation initialisation, bool MarineCell)
         {
-            SyncCohortWriter.Dispose();
-            CohortWriter.Dispose();
+            int NumCohortsToWrite = CohortIdentifiers.Count;
+
+            for(int i = 0; i < NumCohortsToWrite; i++)
+            {
+                SyncedCohortFlowsWriter.WriteLine(
+                    Convert.ToString(madingleyModelGrid.GetCellLatitude(CohortIdentifiers.ElementAt(i)[0])) + '\t' +
+                    Convert.ToString(madingleyModelGrid.GetCellLongitude(CohortIdentifiers.ElementAt(i)[1])) + '\t' +
+                    Convert.ToString(currentTimeStep) + '\t' +
+                    CohortIdentifierStrings.ElementAt(i)[0] + '\t' +
+                    CohortIdentifiers.ElementAt(i)[2] + '\t' + // 1 or 2?
+                    FixedCohortProperties.ElementAt(i)[0] + '\t' +
+                    FixedCohortProperties.ElementAt(i)[1] + '\t' +
+                    PredationEaten.ElementAt(i) + '\t' +
+                    HerbivoryEaten.ElementAt(i) + '\t' +
+                    MetabolicCosts.ElementAt(i) + '\t' +
+                    GrowthRates.ElementAt(i));
+            }
+
+            // Reset lists
+            CohortIdentifiers = new List<uint[]>();
+            CohortIdentifierStrings = new List<string[]>();
+            FixedCohortProperties = new List<float[]>();
+            PredationEaten = new List<float>();
+            HerbivoryEaten = new List<float>();
+            MetabolicCosts = new List<float>();
+            GrowthRates = new List<float>();
         }
 
+        /// <summary>
+        /// Close the file that has been written to
+        /// </summary>
+        /// 
+        public override void CloseTrackerFile()
+        {
+            CohortFlowsWriter.Dispose();
+        }
     }
 }

@@ -131,32 +131,32 @@ namespace Madingley
         public void RunWithinCellEcology(GridCellCohortHandler gridCellCohorts, GridCellStockHandler gridCellStocks, int[] actingCohort, 
             SortedList<string, double[]> cellEnvironment, Dictionary<string, Dictionary<string, double>> deltas, FunctionalGroupDefinitions 
             madingleyCohortDefinitions, FunctionalGroupDefinitions madingleyStockDefinitions, uint currentTimestep, ProcessTracker trackProcesses, 
-            FunctionalGroupTracker functionalTracker, ref ThreadLockedParallelVariables partial, Boolean specificLocations,string outputDetail, uint currentMonth, 
-            MadingleyModelInitialisation initialisation)
+            FunctionalGroupTracker functionalTracker, CohortTracker cohortTracker, ref ThreadLockedParallelVariables partial, Boolean specificLocations,
+            string outputDetail, uint currentMonth,  MadingleyModelInitialisation initialisation)
         {
 
             // RUN EATING
             _EatingFormulations["Basic eating"].RunEcologicalProcess(gridCellCohorts, gridCellStocks, actingCohort, cellEnvironment,
-                deltas, madingleyCohortDefinitions, madingleyStockDefinitions, currentTimestep, trackProcesses, functionalTracker, ref partial,
-                specificLocations, outputDetail, currentMonth, initialisation);
+                deltas, madingleyCohortDefinitions, madingleyStockDefinitions, currentTimestep, trackProcesses, functionalTracker, 
+                cohortTracker, ref partial, specificLocations, outputDetail, currentMonth, initialisation);
 
             
             // RUN METABOLISM - THIS TIME TAKE THE METABOLIC LOSS TAKING INTO ACCOUNT WHAT HAS BEEN INGESTED THROUGH EATING
             _MetabolismFormulations["Basic metabolism"].RunEcologicalProcess(gridCellCohorts, gridCellStocks, actingCohort,
-                cellEnvironment, deltas, madingleyCohortDefinitions, madingleyStockDefinitions, currentTimestep, trackProcesses, functionalTracker, ref partial,
-                specificLocations, outputDetail, currentMonth, initialisation);
+                cellEnvironment, deltas, madingleyCohortDefinitions, madingleyStockDefinitions, currentTimestep, trackProcesses, 
+                functionalTracker, cohortTracker, ref partial, specificLocations, outputDetail, currentMonth, initialisation);
               
            
             // RUN REPRODUCTION - TAKING INTO ACCOUNT NET BIOMASS CHANGES RESULTING FROM EATING AND METABOLISING
             _ReproductionFormulations["Basic reproduction"].RunEcologicalProcess(gridCellCohorts, gridCellStocks, actingCohort,
-                cellEnvironment, deltas, madingleyCohortDefinitions, madingleyStockDefinitions, currentTimestep, trackProcesses, functionalTracker, ref partial,
-                specificLocations, outputDetail, currentMonth, initialisation);
+                cellEnvironment, deltas, madingleyCohortDefinitions, madingleyStockDefinitions, currentTimestep, trackProcesses,
+                functionalTracker, cohortTracker, ref partial, specificLocations, outputDetail, currentMonth, initialisation);
             
               
             // RUN MORTALITY - TAKING INTO ACCOUNT NET BIOMASS CHANGES RESULTING FROM EATING, METABOLISM AND REPRODUCTION
             _MortalityFormulations["Basic mortality"].RunEcologicalProcess(gridCellCohorts, gridCellStocks, actingCohort,
-                cellEnvironment, deltas, madingleyCohortDefinitions, madingleyStockDefinitions, currentTimestep, trackProcesses, functionalTracker, ref partial,
-                specificLocations, outputDetail, currentMonth, initialisation);
+                cellEnvironment, deltas, madingleyCohortDefinitions, madingleyStockDefinitions, currentTimestep, trackProcesses, 
+                functionalTracker, cohortTracker, ref partial, specificLocations, outputDetail, currentMonth, initialisation);
         }
 
         /// <summary>
@@ -173,10 +173,11 @@ namespace Madingley
         /// <param name="tracker">A process tracker</param>
         public void UpdateEcology(GridCellCohortHandler gridCellCohorts, GridCellStockHandler gridCellStocks, int[] actingCohort, 
             SortedList<string, double[]> cellEnvironment, Dictionary<string, Dictionary<string, double>> deltas, FunctionalGroupDefinitions 
-            madingleyCohortDefinitions, FunctionalGroupDefinitions madingleyStockDefinitions, uint currentTimestep, ProcessTracker tracker)
+            madingleyCohortDefinitions, FunctionalGroupDefinitions madingleyStockDefinitions, uint currentTimestep, ProcessTracker tracker,
+            CohortTracker cohortTracker, MadingleyModelInitialisation initialisation)
         {
             // Apply the results of within-cell ecological processes
-            ApplyEcologicalProcessResults.UpdateAllEcology(gridCellCohorts, actingCohort, cellEnvironment, deltas, currentTimestep, tracker);
+            ApplyEcologicalProcessResults.UpdateAllEcology(gridCellCohorts, actingCohort, cellEnvironment, deltas, currentTimestep, tracker, cohortTracker, initialisation);
 
         }
     }

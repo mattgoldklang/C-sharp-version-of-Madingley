@@ -67,8 +67,8 @@ namespace Madingley
         public void RunEcologicalProcess(GridCellCohortHandler gridCellCohorts, GridCellStockHandler gridCellStocks, 
             int[] actingCohort, SortedList<string, double[]> cellEnvironment, Dictionary<string, Dictionary<string, double>> deltas, 
             FunctionalGroupDefinitions madingleyCohortDefinitions, FunctionalGroupDefinitions madingleyStockDefinitions, 
-            uint currentTimestep, ProcessTracker trackProcesses, FunctionalGroupTracker functionalTracker, ref ThreadLockedParallelVariables partial,
-            Boolean specificLocations, string outputDetail, uint currentMonth, MadingleyModelInitialisation initialisation)
+            uint currentTimestep, ProcessTracker trackProcesses, FunctionalGroupTracker functionalTracker, CohortTracker cohortTracker,
+            ref ThreadLockedParallelVariables partial, Boolean specificLocations, string outputDetail, uint currentMonth, MadingleyModelInitialisation initialisation)
         {
             double Realm = cellEnvironment["Realm"][0];
             if (madingleyCohortDefinitions.GetTraitNames("Heterotroph/Autotroph", gridCellCohorts[actingCohort].FunctionalGroupIndex) == "heterotroph")

@@ -228,6 +228,7 @@
     <Compile Include="Model structure\InputModelState.cs" />
     <Compile Include="Model structure\MadingleyModelInitialisation.cs" />
     <Compile Include="Ecology\Ecological processes stocks\RevisedTerrestrialPlantModel.cs" />
+    <Compile Include="Output and tracking\CohortTracker.cs" />
     <Compile Include="Output and tracking\Cross cell\DispersalTracker.cs" />
     <Compile Include="Output and tracking\Cross cell\CrossCellProcessTracker.cs" />
     <Compile Include="Output and tracking\EatingTracker.cs" />
