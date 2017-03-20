@@ -545,6 +545,18 @@ namespace Madingley
             set { _CellList = value; }
         }
 
+        /// <summary>
+        /// Pairs of longitude and latitude indices for all cell where processes trackers should be run when
+        /// the model is run in a grid
+        /// </summary>
+        /// 
+        private List<uint[]> _CellsToTrackList;
+        public List<uint[]> CellsToTrackList
+        {
+            get { return _CellsToTrackList; }
+            set { _CellsToTrackList = value; }
+        }
+
         //Indicates if specific locations have been specified
         private Boolean _SpecificLocations = false;
 
@@ -552,6 +564,15 @@ namespace Madingley
         {
             get { return _SpecificLocations; }
             set { _SpecificLocations = value; }
+        }
+
+        // Indicates if specific locations to track processes have been specified when model is run in a grid.
+        private Boolean _LocationsToTrack = false;
+
+        public Boolean LocationsToTrack
+        {
+            get { return _LocationsToTrack; }
+            set { _LocationsToTrack = value; }
         }
 
         private List<string> _ModelStatePath;
@@ -743,6 +764,22 @@ namespace Madingley
                             // Copy the initialisation file to the output directory
                             System.IO.File.Copy("input/Model setup/Initial Model State Setup/" + _InitialisationFileStrings["Locations"], outputPath + _InitialisationFileStrings["Locations"], true);
                             ReadSpecificLocations(_InitialisationFileStrings["Locations"], outputPath);
+                        }
+                        break;
+                    case "locations to track file":
+                        // Check if specific locations has been specified and throw an error.
+                        // Locations to track can only be specified when the model is run in grid.
+                        if(_SpecificLocations == true)
+                        {
+                            Debug.Fail("Locations to track can only run if specific locations are turned off");
+                        }
+                        if(VarValues.GetValue(row).ToString() != "")
+                        {
+                            _InitialisationFileStrings.Add("TrackedLocations", VarValues.GetValue(row).ToString());
+                            _LocationsToTrack = true;
+                            // Copy the initialisation file to the output directory
+                            System.IO.File.Copy("input/Model setup/Initial Model State Setup/" + _InitialisationFileStrings["TrackedLocations"], outputPath + _InitialisationFileStrings["TrackedLocations"], true);
+                            //ReadLocationsToTrack(_InitialisationFileStrings["TrackedLocations"], outputPath);
                         }
                         break;
                     case "impact cell index":
@@ -1081,6 +1118,60 @@ namespace Madingley
 
         }
 
+        /// <summary>
+        /// Read in a list of locations where process trackers will be run
+        /// </summary>
+        /// 
+        public void ReadLocationsToTrack(string locationsToTrackFile, string outputPath)
+        {
+            Console.WriteLine("Reading in specific locations to track processes");
+            Console.WriteLine("");
+
+            _CellsToTrackList = new List<uint[]>();
+
+            List<double> LatitudeList = new List<double>();
+            List<double> LongitudeList = new List<double>();
+
+            // Construct file name
+            string FileString = "msds:csv?file=input/Model setup/Initial Model State Setup/" + locationsToTrackFile + "&openMode=readOnly";
+
+            // Read in the data
+            DataSet InternalData = DataSet.Open(FileString);
+
+            foreach (Variable v in InternalData.Variables)
+            {
+                // Get name of the variable currently referenced in the dataset
+                string HeaderName = v.Name;
+                // Copy the values for this variable into an array
+                var TempValues = v.GetData();
+
+                switch(HeaderName.ToLower())
+                {
+                    // Add the latitude and longitude values to the appropriate list
+                    case "latitude":
+                        for(int i = 0; i < TempValues.Length; i++)
+                        {
+                            LatitudeList.Add(Convert.ToDouble(TempValues.GetValue(i).ToString()));
+                        }
+                        break;
+                    case "longitude":
+                        for(int i = 0; i < TempValues.Length; i++)
+                        {
+                            LongitudeList.Add(Convert.ToDouble(TempValues.GetValue(i).ToString()));
+                        }
+                        break;
+                    default:
+                        Console.WriteLine("Variable defined in the locations to track file but not processed: ", HeaderName);
+                        break;
+                }
+            }
+
+            //// Loop over cells defined in the specific locations file
+            //for(int i = 0; i < LatitudeList.Count; i++)
+            //{
+            //    // Define vector to hold the longitude and latitude index f
+            //}
+        }
 
         /// <summary>
         /// Read in the specified locations in which to run the model

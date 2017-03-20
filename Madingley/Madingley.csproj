@@ -334,6 +334,9 @@
     <None Include="input\Model setup\FileLocationParameters.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="input\Model setup\Initial model state setup\LocationsToTrack.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="input\Model setup\Initial model state setup\ReadModelState.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

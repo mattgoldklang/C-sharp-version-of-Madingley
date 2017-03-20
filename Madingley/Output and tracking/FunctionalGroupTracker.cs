@@ -96,7 +96,7 @@ namespace Madingley
         /// Write flows of matter among functional groups to the output file at the end of the time step
         /// </summary>
         /// 
-        public override void WriteToTrackerFile(uint currentTimeStep, ModelGrid madingleyModelGrid, uint numLats, uint numLons, MadingleyModelInitialisation initialisation, bool MarineCell)
+        public override void WriteToTrackerFile(uint currentTimeStep, ModelGrid madingleyModelGrid, uint numLats, uint numLons, MadingleyModelInitialisation initialisation, Boolean MarineCell)
         {
             int NumFGs = FGMassFlows.GetLength(2);
 

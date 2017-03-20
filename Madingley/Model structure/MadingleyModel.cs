@@ -560,7 +560,7 @@ namespace Madingley
 
                 for(int i = 0; i < _CellList.Count; i++)
                 {
-                    if(ProcessTrackers[i].TrackProcesses)
+                    if(ProcessTrackers[i].TrackProcesses && (hh >= initialisation.TimeStepToStartProcessTrackers))
                     {
                         FGTracker.WriteToTrackerFile(CurrentTimeStep, EcosystemModelGrid, EcosystemModelGrid.NumLatCells,
                             EcosystemModelGrid.NumLonCells, initialisation,
