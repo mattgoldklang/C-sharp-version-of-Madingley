@@ -397,6 +397,9 @@ namespace Madingley
                 EcosystemModelGrid.LatCellSize,
                 EcosystemModelGrid.LonCellSize);
 
+            // Set up location to track process tracker
+            
+
             //Set-up the instance of OutputModelState
             WriteModelState = new OutputModelState(initialisation, outputFilesSuffix, simulation);
 
@@ -546,6 +549,7 @@ namespace Madingley
                     if(initialisation.TimeStepToStartProcessTrackers == hh)
                     {
                         FGTracker.OpenTrackerFile();
+                        ACohortTracker.OpenTrackerFile();
                     }
                     
 
@@ -1178,7 +1182,8 @@ namespace Madingley
         }
 
         private void RunWithinCellCohortEcology(uint latCellIndex, uint lonCellIndex, ThreadLockedParallelVariables partial,
-            GridCellCohortHandler workingGridCellCohorts, GridCellStockHandler workingGridCellStocks, string outputDetail, int cellIndex, MadingleyModelInitialisation initialisation)
+            GridCellCohortHandler workingGridCellCohorts, GridCellStockHandler workingGridCellStocks, string outputDetail, int cellIndex, 
+            MadingleyModelInitialisation initialisation)
         {
 
 
@@ -1320,8 +1325,8 @@ namespace Madingley
             // Merge cohorts, if necessary
             if (workingGridCellCohorts.GetNumberOfCohorts() > initialisation.MaxNumberOfCohorts)
             {
-                partial.Combinations = CohortMerger.MergeToReachThresholdFast(workingGridCellCohorts, workingGridCellCohorts.GetNumberOfCohorts(), initialisation.MaxNumberOfCohorts);
-
+                partial.Combinations = CohortMerger.MergeToReachThresholdFast(workingGridCellCohorts, workingGridCellCohorts.GetNumberOfCohortsPerFG(), initialisation.MaxNumberOfCohortsPerFG);
+                
                 //Run extinction a second time to remove those cohorts that have been set to zero abundance when merging
                 RunExtinction(latCellIndex, lonCellIndex, partial, workingGridCellCohorts, cellIndex);
             }

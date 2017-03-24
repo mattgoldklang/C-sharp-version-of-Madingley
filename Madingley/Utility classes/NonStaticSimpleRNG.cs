@@ -316,15 +316,15 @@ namespace Madingley
         {
             if(stockName == "picophytoplankton")
             {
-                return 1E-6 * Math.Exp(4.6025 * GetUniform());
+                return 1E-8 * Math.Exp(4.6025 * GetUniform());
             }
             if(stockName == "nanophytoplankton")
             {
-                return 1E-4 * Math.Exp(4.6025 * GetUniform());
+                return 1E-6 * Math.Exp(4.6025 * GetUniform());
             }
             if(stockName == "microphytoplankton")
             {
-                return 1E-2 * Math.Exp(4.6025 * GetUniform());
+                return 1E-4 * Math.Exp(4.6025 * GetUniform());
             }
             else
             {

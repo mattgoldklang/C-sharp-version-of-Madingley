@@ -218,6 +218,16 @@ namespace Madingley
             return sum;
         }
 
+        public int[] GetNumberOfCohortsPerFG()
+        {
+            int[] tempArray = new int[Convert.ToInt32(GridCellCohorts.Count())];
+            for(var i = 0; i < GridCellCohorts.Count(); i++)
+            {
+                tempArray[i] = GridCellCohorts[i].Count();
+            }
+            return tempArray;
+        }
+
     }
 
     /// <summary>
