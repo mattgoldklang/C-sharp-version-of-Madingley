@@ -1,5 +1,6 @@
 Parameter,Value
 Timestep Units,Month
+Length of simulation (years),100
 Burn-in (years),0
 Impact duration (years),0
 Recovery duration (years),0

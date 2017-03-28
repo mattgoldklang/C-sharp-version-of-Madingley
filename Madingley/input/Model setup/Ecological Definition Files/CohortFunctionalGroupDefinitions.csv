@@ -7,6 +7,7 @@ Heterotroph,Omnivore,All,Marine,Mobile,iteroparity,Ectotherm,0.6,0.64,0.5,1.00E-
 Heterotroph,Omnivore,All,Marine,Mobile,semelparity,Ectotherm,0.6,0.64,0.5,1.00E-07,1000,111,Omnivorous ectotherms sem
 Heterotroph,Omnivore,Planktivore,Marine,Planktonic,iteroparity,Ectotherm,0.6,0.64,0.5,1.00E-03,1.00E-01,111,Obligate mesozooplankton sem
 Heterotroph,Omnivore,Planktivore,Marine,Planktonic,semelparity,Ectotherm,0.6,0.64,0.5,1.00E-05,1.00E-03,111,Obligate microzooplankton sem
+Heterotroph,Herbivore,Planktivore,Marine,Planktonic,semelparity,Ectotherm,0.7,0,0.5,1.00E-07,1.00E-05,111,Obligate nanozooplankton sem
 Heterotroph,Herbivore,All,Terrestrial,Mobile,iteroparity,Endotherm,0.5,0,0.5,1.5,5000000,111,itHerbEndo
 Heterotroph,Carnivore,All,Terrestrial,Mobile,iteroparity,Endotherm,0,0.8,0.5,3,700000,111,itCarnEndo
 Heterotroph,Omnivore,All,Terrestrial,Mobile,iteroparity,Endotherm,0.4,0.64,0.5,3,1500000,111,itOmnEndo
