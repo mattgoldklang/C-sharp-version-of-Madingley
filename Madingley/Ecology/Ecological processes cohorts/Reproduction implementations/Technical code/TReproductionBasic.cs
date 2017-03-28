@@ -131,24 +131,38 @@ namespace Madingley
             // Must have enough mass to hit reproduction threshold criterion, and either (1) be in breeding season, or (2) be a marine cell (no breeding season in marine cells)
             if ((CurrentMassRatio > _MassRatioThreshold) && ((cellEnvironment["Breeding Season"][currentMonth] == 1.0) || ((cellEnvironment["Realm"][0] == 2.0))))
             {
-                // Iteroparous and semelparous organisms have different strategies
-                if (iteroparous)
+                switch(madingleyCohortDefinitions.GetTraitNames("reproductive strategy", gridCellCohorts[actingCohort].FunctionalGroupIndex))
                 {
-                    // Iteroparous organisms do not allocate any of their current non-reproductive biomass to reproduction
-                    AdultMassLost = 0.0;
+                    case "iteroparity":
+                        // Iteroparous organisms do not allocate any of their current non-reproductive biomass to reproduction
+                        AdultMassLost = 0.0;
 
-                    // Calculate the number of offspring that could be produced given the reproductive potential mass of individuals
-                    _OffspringCohortAbundance = gridCellCohorts[actingCohort].CohortAbundance * ReproductiveMassIncludingChangeThisTimeStep /
-                        gridCellCohorts[actingCohort].JuvenileMass;
-                }
-                else
-                {
-                    // Semelparous organisms allocate a proportion of their current non-reproductive biomass (including the effects of other ecological processes) to reproduction
-                    AdultMassLost = _SemelparityAdultMassAllocation * BodyMassIncludingChangeThisTimeStep;
+                        // Calculate the number of offspring that could be produced given the reproductive potential mass of individuals
+                        _OffspringCohortAbundance = gridCellCohorts[actingCohort].CohortAbundance * ReproductiveMassIncludingChangeThisTimeStep /
+                            gridCellCohorts[actingCohort].JuvenileMass;
+                        break;
+                    case "semelparity":
+                        // Semelparous organisms allocate a proportion of their current non-reproductive biomass (including the effects of other ecological processes) to reproduction
+                        AdultMassLost = _SemelparityAdultMassAllocation * BodyMassIncludingChangeThisTimeStep;
 
-                    // Calculate the number of offspring that could be produced given the reproductive potential mass of individuals
-                    _OffspringCohortAbundance = gridCellCohorts[actingCohort].CohortAbundance * (AdultMassLost + ReproductiveMassIncludingChangeThisTimeStep) /
-                        gridCellCohorts[actingCohort].JuvenileMass;
+                        // Calculate the number of offspring that could be produced given the reproductive potential mass of individuals
+                        _OffspringCohortAbundance = gridCellCohorts[actingCohort].CohortAbundance * (AdultMassLost + ReproductiveMassIncludingChangeThisTimeStep) /
+                            gridCellCohorts[actingCohort].JuvenileMass;
+                        break;
+                    case "cell division":
+                        // Organisms that reproduce by cell division allocate all their current non-reproductive biomass to reproduction.
+                        // That is, they literaly split into two (or more) new cohorts.
+                        AdultMassLost = BodyMassIncludingChangeThisTimeStep;
+
+                        // Calculate the number of offspring that could be produced given the reproductive potential mass of individuals
+                        _OffspringCohortAbundance = gridCellCohorts[actingCohort].CohortAbundance * (AdultMassLost + ReproductiveMassIncludingChangeThisTimeStep) /
+                            gridCellCohorts[actingCohort].JuvenileMass;
+                        break;
+                    default:
+                        _OffspringCohortAbundance = -1.0;
+                        AdultMassLost = -1.0;
+                        Debug.Fail("Cohort reproduction strategy not defined");
+                        break;
                 }
 
                 // Check that the abundance in the cohort to produce is greater than or equal to zero
@@ -179,24 +193,52 @@ namespace Madingley
                 }
 
                 // Create the offspring cohort
-                OffspringCohort = new Cohort((byte)actingCohort[0], OffspringJuvenileAndAdultBodyMasses[0], OffspringJuvenileAndAdultBodyMasses[1], OffspringJuvenileAndAdultBodyMasses[0],
+                if(madingleyCohortDefinitions.GetTraitNames("reproductive strategy", gridCellCohorts[actingCohort].FunctionalGroupIndex) == "cell division")
+                {
+                    // Set the number of new cohorts to be produced
+                    float numberOfCohorts = 2.0f;
+
+                    // Calculate the abundance in each of the new cohorts
+                    _OffspringCohortAbundance = _OffspringCohortAbundance / numberOfCohorts;
+
+                    // Loop over the number of new cohorts to create the offspring cohorts
+                    for(int i = 0; i < (int)numberOfCohorts; i++)
+                    {
+                        OffspringCohort = new Cohort((byte)actingCohort[0], OffspringJuvenileAndAdultBodyMasses[0], OffspringJuvenileAndAdultBodyMasses[1], OffspringJuvenileAndAdultBodyMasses[0],
                                                     _OffspringCohortAbundance, Math.Exp(gridCellCohorts[actingCohort].LogOptimalPreyBodySizeRatio),
-                                                    (ushort)currentTimestep, gridCellCohorts[actingCohort].ProportionTimeActive, ref partial.NextCohortIDThreadLocked,TrophicIndex, tracker.TrackProcesses);
-                
-                // Add the offspring cohort to the grid cell cohorts array
-                gridCellCohorts[actingCohort[0]].Add(OffspringCohort);
+                                                    (ushort)currentTimestep, gridCellCohorts[actingCohort].ProportionTimeActive, ref partial.NextCohortIDThreadLocked, TrophicIndex, tracker.TrackProcesses);
 
-                // If track processes has been specified then add the new cohort to the process tracker 
-                if (tracker.TrackProcesses)
-                    tracker.RecordNewCohort((uint)cellEnvironment["LatIndex"][0],  (uint)cellEnvironment["LonIndex"][0], 
-                        currentTimestep, _OffspringCohortAbundance, gridCellCohorts[actingCohort].AdultMass, gridCellCohorts[actingCohort].FunctionalGroupIndex,
-                        gridCellCohorts[actingCohort].CohortID, (uint)partial.NextCohortIDThreadLocked);
+                        // Add the offspring cohort to the grid cell cohorts array
+                        gridCellCohorts[actingCohort[0]].Add(OffspringCohort);
 
-                // Subtract all of the reproductive potential mass of the parent cohort, which has been used to generate the new
-                // cohort, from the delta reproductive potential mass and delta adult body mass
-                deltas["reproductivebiomass"]["reproduction"] -= ReproductiveMassIncludingChangeThisTimeStep;
-                deltas["biomass"]["reproduction"] -= AdultMassLost;
+                        // If track processes has been specified then add the new cohort to the process tracker 
+                        if (tracker.TrackProcesses)
+                            tracker.RecordNewCohort((uint)cellEnvironment["LatIndex"][0], (uint)cellEnvironment["LonIndex"][0],
+                                currentTimestep, _OffspringCohortAbundance, gridCellCohorts[actingCohort].AdultMass, gridCellCohorts[actingCohort].FunctionalGroupIndex,
+                                gridCellCohorts[actingCohort].CohortID, (uint)partial.NextCohortIDThreadLocked);
+                    }
+                }
 
+                else
+                {
+                    OffspringCohort = new Cohort((byte)actingCohort[0], OffspringJuvenileAndAdultBodyMasses[0], OffspringJuvenileAndAdultBodyMasses[1], OffspringJuvenileAndAdultBodyMasses[0],
+                                                    _OffspringCohortAbundance, Math.Exp(gridCellCohorts[actingCohort].LogOptimalPreyBodySizeRatio),
+                                                    (ushort)currentTimestep, gridCellCohorts[actingCohort].ProportionTimeActive, ref partial.NextCohortIDThreadLocked, TrophicIndex, tracker.TrackProcesses);
+
+                    // Add the offspring cohort to the grid cell cohorts array
+                    gridCellCohorts[actingCohort[0]].Add(OffspringCohort);
+
+                    // If track processes has been specified then add the new cohort to the process tracker 
+                    if (tracker.TrackProcesses)
+                        tracker.RecordNewCohort((uint)cellEnvironment["LatIndex"][0], (uint)cellEnvironment["LonIndex"][0],
+                            currentTimestep, _OffspringCohortAbundance, gridCellCohorts[actingCohort].AdultMass, gridCellCohorts[actingCohort].FunctionalGroupIndex,
+                            gridCellCohorts[actingCohort].CohortID, (uint)partial.NextCohortIDThreadLocked);
+
+                    // Subtract all of the reproductive potential mass of the parent cohort, which has been used to generate the new
+                    // cohort, from the delta reproductive potential mass and delta adult body mass
+                    deltas["reproductivebiomass"]["reproduction"] -= ReproductiveMassIncludingChangeThisTimeStep;
+                    deltas["biomass"]["reproduction"] -= AdultMassLost;
+                }
             }
             else
             {
