@@ -187,7 +187,6 @@ namespace Madingley
         /// </summary>
         public double KillRateConstantMassExponent { get { return _KillRateConstantMassExponent; } }
 
-
         public void InitialiseParametersPredation()
         {
             _TimeUnitImplementation =
@@ -240,12 +239,13 @@ namespace Madingley
         private double CalculateExpectedNumberKilledTerrestrial(double preyAbundance, double preyIndividualMass, int preyMassBinNumber, 
             int preyFunctionalGroup, double predatorIndividualMass, Boolean preyIsCarnivore, Boolean preyIsOmnivore, Boolean predatorIsOmnivore, 
             double logOptimalPreyPredatorMassRatio)
-            
-    {
+        {
             // Calculate the killing rate of an individual predator per unit prey density per hectare per time unit
-        Alphaij = CalculateIndividualKillingRatePerHectare(preyIndividualMass, preyMassBinNumber, preyFunctionalGroup, predatorIndividualMass, logOptimalPreyPredatorMassRatio);
-                        
+            Alphaij = CalculateIndividualKillingRatePerHectare(preyIndividualMass, preyMassBinNumber, preyFunctionalGroup, predatorIndividualMass, logOptimalPreyPredatorMassRatio);
+
             // Calculate the potential number of prey killed given the number of prey detections
+            // Note(erik) that the calculation below makes the response curve Holling II. 
+            // See the marine calculation for Holling III.
             return Alphaij * preyAbundance / _CellAreaHectares;
         }
 
@@ -270,7 +270,7 @@ namespace Madingley
             Alphaij = CalculateIndividualKillingRatePerHectare(preyIndividualMass, preyMassBinNumber, preyFunctionalGroup, predatorIndividualMass, logOptimalPreyPredatorMassRatio);
             
             // Calculate the potential number of prey killed given the number of prey detections
-            return Alphaij * preyAbundance / _CellAreaHectares;
+            return Alphaij * Math.Pow((preyAbundance / _CellAreaHectares), 2);
         }
 
         // Original
