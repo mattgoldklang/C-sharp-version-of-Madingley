@@ -312,7 +312,7 @@ namespace Madingley
 
         /// <summary>A random draw from the phytoplankton size distribution assuming traditional pico, nano and micro groups</summary>
         /// 
-        public double getPhytoSize(string stockName)
+        public double getPhytoSizeLog(string stockName)
         {
             if(stockName == "picophytoplankton")
             {
@@ -329,6 +329,35 @@ namespace Madingley
             else
             {
                 Debug.Fail("No phytoplankton stock name defined.");
+                return -1;
+            }
+        }
+
+        public double getPhytoSize(string stockName)
+        {
+            Random rnd = new Random();
+
+            if (stockName == "picophytoplankton")
+            {
+                double minSize = 1E-9;
+                double maxSize = 1E-7;
+                return GetUniform() * (maxSize - minSize) + minSize;
+            }
+            if(stockName == "nanophytoplankton")
+            {
+                double minSize = 1E-7;
+                double maxSize = 1E-5;
+                return GetUniform() * (maxSize - minSize) + minSize;
+            }
+            if(stockName == "microphytoplankton")
+            {
+                double minSize = 1E-5;
+                double maxSize = 1E-3;
+                return GetUniform() * (maxSize - minSize) + minSize;
+            }
+            else
+            {
+                Debug.Fail("No phytoplankton stock name defined. Please define name and size");
                 return -1;
             }
         }
