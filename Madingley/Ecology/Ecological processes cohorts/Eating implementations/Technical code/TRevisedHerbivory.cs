@@ -361,11 +361,11 @@ namespace Madingley
                 // Commented out for the purposes of speed
                 //Debug.Assert(deltas["biomass"]["herbivory"] >= 0, "Delta biomass from herbviory is negative");
                 
-                // Calculate the total biomass eaten by the acting (herbivore) cohort
+                // Calculate the total biomass eaten by the acting (herbivore) cohort. This can potentially be deleted everywhere as does not appear to be used?
                 _TotalBiomassEatenByCohort = deltas["biomass"]["herbivory"] * gridCellCohorts[actingCohort].CohortAbundance;
 
-                // Update tracer mass in a cohort
-                gridCellCohorts[actingCohort].TracerMass = _TotalBiomassEatenByCohort;
+                // Update tracer mass in a cohort. This should be at a per individual level
+                gridCellCohorts[actingCohort].TracerMass += deltas["biomass"]["herbivory"];
 
             }
         }
