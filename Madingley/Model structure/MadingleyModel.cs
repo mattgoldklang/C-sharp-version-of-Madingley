@@ -1199,6 +1199,21 @@ namespace Madingley
             MadingleyEcologyCohort.EatingFormulations["Basic eating"].InitializeEcologicalProcess(workingGridCellCohorts, workingGridCellStocks
                 , CohortFunctionalGroupDefinitions, StockFunctionalGroupDefinitions, "revised herbivory");
 
+            // Increment tracer age. Note that we are doing all cohorts here at the start of the time step for consistency
+            // Loop over randomly ordered gridCellCohorts to implement biological functions
+            for (int ll = 0; ll < RandomCohortOrder.Length; ll++)
+            {
+                // Locate the randomly chosen cohort within the array of lists of gridCellCohorts in the grid cell
+                ActingCohort = Utilities.FindJaggedArrayIndex(RandomCohortOrder[ll], CohortIndices, TotalCohortNumber);
+
+                // Update the age of the cohort
+                workingGridCellCohorts[ActingCohort].UpdateTracerAge();
+
+                Debug.Assert(workingGridCellCohorts[ActingCohort].TracerAge >= 0.0, "Tracer age is negative");
+                Debug.Assert(workingGridCellCohorts[ActingCohort].TracerMass >= 0.0, "Tracer mass is negative");
+            }
+
+
             // Loop over randomly ordered gridCellCohorts to implement biological functions
             for (int ll = 0; ll < RandomCohortOrder.Length; ll++)
             {

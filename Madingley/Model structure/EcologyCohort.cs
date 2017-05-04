@@ -140,23 +140,36 @@ namespace Madingley
                 deltas, madingleyCohortDefinitions, madingleyStockDefinitions, currentTimestep, trackProcesses, ref partial,
                 specificLocations, outputDetail, currentMonth, initialisation);
 
-            
+            Debug.Assert(gridCellCohorts[actingCohort].TracerAge >= 0.0, "Tracer age is negative");
+            Debug.Assert(gridCellCohorts[actingCohort].TracerMass >= 0.0, "Tracer mass is negative");
+
             // RUN METABOLISM - THIS TIME TAKE THE METABOLIC LOSS TAKING INTO ACCOUNT WHAT HAS BEEN INGESTED THROUGH EATING
             _MetabolismFormulations["Basic metabolism"].RunEcologicalProcess(gridCellCohorts, gridCellStocks, actingCohort,
                 cellEnvironment, deltas, madingleyCohortDefinitions, madingleyStockDefinitions, currentTimestep, trackProcesses, ref partial,
                 specificLocations, outputDetail, currentMonth, initialisation);
-              
-           
+
+
+            Debug.Assert(gridCellCohorts[actingCohort].TracerAge >= 0.0, "Tracer age is negative");
+            Debug.Assert(gridCellCohorts[actingCohort].TracerMass >= 0.0, "Tracer mass is negative");
+
+
             // RUN REPRODUCTION - TAKING INTO ACCOUNT NET BIOMASS CHANGES RESULTING FROM EATING AND METABOLISING
             _ReproductionFormulations["Basic reproduction"].RunEcologicalProcess(gridCellCohorts, gridCellStocks, actingCohort,
                 cellEnvironment, deltas, madingleyCohortDefinitions, madingleyStockDefinitions, currentTimestep, trackProcesses, ref partial,
                 specificLocations, outputDetail, currentMonth, initialisation);
-            
-              
+
+
+            Debug.Assert(gridCellCohorts[actingCohort].TracerAge >= 0.0, "Tracer age is negative");
+            Debug.Assert(gridCellCohorts[actingCohort].TracerMass >= 0.0, "Tracer mass is negative");
+
             // RUN MORTALITY - TAKING INTO ACCOUNT NET BIOMASS CHANGES RESULTING FROM EATING, METABOLISM AND REPRODUCTION
             _MortalityFormulations["Basic mortality"].RunEcologicalProcess(gridCellCohorts, gridCellStocks, actingCohort,
                 cellEnvironment, deltas, madingleyCohortDefinitions, madingleyStockDefinitions, currentTimestep, trackProcesses, ref partial,
                 specificLocations, outputDetail, currentMonth, initialisation);
+
+
+            Debug.Assert(gridCellCohorts[actingCohort].TracerAge >= 0.0, "Tracer age is negative");
+            Debug.Assert(gridCellCohorts[actingCohort].TracerMass >= 0.0, "Tracer mass is negative");
         }
 
         /// <summary>

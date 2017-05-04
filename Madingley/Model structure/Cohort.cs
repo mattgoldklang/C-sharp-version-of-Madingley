@@ -277,7 +277,10 @@ namespace Madingley
         /// </summary>
         public void UpdateTracerAge()
         {
-            this._TracerAge = this._TracerAge + this._TracerMass;
+            if (this.TracerMass.CompareTo(0.0) == 0)
+                this.TracerAge = 0.0;
+            else
+                this.TracerAge = this.TracerAge + this.TracerMass;
         }
     }
 }
