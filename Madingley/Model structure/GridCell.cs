@@ -691,7 +691,7 @@ namespace Madingley
                                         // it is actually (despite the name) not an optimal prey body size ratio, but an actual body size.
                                         // This is because it is invariant as the predator (filter-feeding baleen whale) grows.
                                         // See also the predation classes.
-                                        OptimalPreyBodySizeRatio = Math.Max(0.00001, RandomNumberGenerator.GetNormal(0.0001, 0.1));
+                                        OptimalPreyBodySizeRatio = Math.Max(1, RandomNumberGenerator.GetNormal(2, 2));
                                     }
                                     else
                                     {

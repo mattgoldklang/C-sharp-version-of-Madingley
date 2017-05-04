@@ -126,7 +126,7 @@ namespace Madingley
 
             for(int i = 0; i < NumCohortsToWrite; i++)
             {
-                SyncedCohortFlowsWriter.WriteLine(
+                string newline = 
                     Convert.ToString(madingleyModelGrid.GetCellLatitude(CohortIdentifiers.ElementAt(i)[0])) + '\t' +
                     Convert.ToString(madingleyModelGrid.GetCellLongitude(CohortIdentifiers.ElementAt(i)[1])) + '\t' +
                     Convert.ToString(currentTimeStep) + '\t' +
@@ -137,7 +137,9 @@ namespace Madingley
                     PredationEaten.ElementAt(i) + '\t' +
                     HerbivoryEaten.ElementAt(i) + '\t' +
                     MetabolicCosts.ElementAt(i) + '\t' +
-                    GrowthRates.ElementAt(i));
+                    GrowthRates.ElementAt(i);
+
+                SyncedCohortFlowsWriter.WriteLine(newline);
             }
 
             // Reset lists
@@ -157,6 +159,7 @@ namespace Madingley
         public override void CloseTrackerFile()
         {
             CohortFlowsWriter.Dispose();
+            SyncedCohortFlowsWriter.Dispose();
         }
     }
 }

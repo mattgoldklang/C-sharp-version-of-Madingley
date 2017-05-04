@@ -115,7 +115,33 @@ namespace Madingley
             // Return the deterministically ordered vector of cohort indices
             return RandomOrderCohorts;
 
-         }
+        }
+
+        ///// <summary>
+        ///// Generate a size based order in which cohorts will be subjected to ecological processes
+        ///// </summary>
+        ///// 
+        //public uint SizeOrderedCohorts(uint cohortNumber, GridCellCohortHandler gridCellCohorts)
+        //{
+        //    // A vector to hold indices of cohorts in size order
+        //    uint[] SizeOrderedCohorts = new uint[cohortNumber];
+
+        //    // A tuble to hold cohort information and body mass
+        //    List<Tuple<double, int, int[]>> CohortSizes = new List<Tuple<double, int, int[]>>();
+
+            
+
+        //    for(int i = 0; i < gridCellCohorts.Count; i++)
+        //    {
+                
+        //    }
+
+
+            
+
+
+        //    return -1;
+        //}
 
         /// <summary>
         /// Get the month corresponding to the current time step

@@ -126,6 +126,7 @@ namespace Madingley
             return BiomassWeightedTI/TotalBiomass;
         }
 
+
         /// <summary>
         /// Return the distribution of biomasses among trophic level bins
         /// </summary>
