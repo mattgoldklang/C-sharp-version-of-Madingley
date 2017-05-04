@@ -1027,7 +1027,10 @@ namespace Madingley
                             NumYearsToRunProcessTrackers = _NumTimeSteps;
                         }
 
-                        TimeStepToStartProcessTrackers = _NumTimeSteps - NumYearsToRunProcessTrackers;
+                        if (_NumTimeSteps > NumYearsToRunProcessTrackers)
+                            TimeStepToStartProcessTrackers = _NumTimeSteps - NumYearsToRunProcessTrackers;
+                        else
+                            TimeStepToStartProcessTrackers = 0;
                         break;
                 }
             }
