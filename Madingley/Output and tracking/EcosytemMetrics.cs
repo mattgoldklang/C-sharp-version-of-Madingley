@@ -587,5 +587,60 @@ namespace Madingley
 
         }
 
+        /// <summary>
+        /// Calculate the average age of the tracer across all individuals in a grid cell
+        /// </summary>
+        /// <param name="ecosystemModelGrid"></param>
+        /// <param name="cellIndices"></param>
+        /// <param name="cellIndex"></param>
+        /// <returns></returns>
+        public double MeanTracerAge(ModelGrid ecosystemModelGrid, List<uint[]> cellIndices, int cellIndex)
+        {
+
+            //Get the cohorts for the specified cell
+            GridCellCohortHandler CellCohorts = ecosystemModelGrid.GetGridCellCohorts(cellIndices[cellIndex][0], cellIndices[cellIndex][1]);
+
+            // Calculate the mean tracer age
+            double SumTracerAge = 0.0;
+            double TotalIndividualsInAllCohorts = 0.0;
+            foreach (var fg in CellCohorts)
+            {
+                foreach (var cohort in fg)
+                {
+                    SumTracerAge += cohort.CalcMeanTracerAge() * cohort.CohortAbundance ;
+                    TotalIndividualsInAllCohorts += cohort.CohortAbundance;
+                }
+            }
+
+            return SumTracerAge / TotalIndividualsInAllCohorts;
+        }
+
+        /// <summary>
+        /// Calculate the mean concentration of tracer across all individuals in a grid cell
+        /// </summary>
+        /// <param name="ecosystemModelGrid"></param>
+        /// <param name="cellIndices"></param>
+        /// <param name="cellIndex"></param>
+        /// <returns></returns>
+        public double MeanConcentration(ModelGrid ecosystemModelGrid, List<uint[]> cellIndices, int cellIndex)
+        {
+
+            //Get the cohorts for the specified cell
+            GridCellCohortHandler CellCohorts = ecosystemModelGrid.GetGridCellCohorts(cellIndices[cellIndex][0], cellIndices[cellIndex][1]);
+
+            // Calculate the mean tracer age
+            double SumTracerMass = 0.0;
+            double TotalIndividualsInAllCohorts = 0.0;
+            foreach (var fg in CellCohorts)
+            {
+                foreach (var cohort in fg)
+                {
+                    SumTracerMass += cohort.TracerMass / (cohort.IndividualBodyMass + cohort.IndividualReproductivePotentialMass) * cohort.CohortAbundance;
+                    TotalIndividualsInAllCohorts += cohort.CohortAbundance;
+                }
+            }
+
+            return SumTracerMass / TotalIndividualsInAllCohorts;
+        }
     }
 }

@@ -179,7 +179,8 @@ namespace Madingley
                 }
 
                 // Create the offspring cohort
-                double TracerMassInReproductiveTissue = CalculateTracerMassInReproductiveTissue(gridCellCohorts[actingCohort], AdultMassLost, ReproductiveMassIncludingChangeThisTimeStep);
+                double TracerMassInReproductiveTissue = CalculateTracerMassInReproductiveTissue(gridCellCohorts[actingCohort], AdultMassLost, ReproductiveMassIncludingChangeThisTimeStep, BodyMassIncludingChangeThisTimeStep);
+
                 OffspringCohort = new Cohort((byte)actingCohort[0], OffspringJuvenileAndAdultBodyMasses[0], OffspringJuvenileAndAdultBodyMasses[1], OffspringJuvenileAndAdultBodyMasses[0],
                                                     _OffspringCohortAbundance, Math.Exp(gridCellCohorts[actingCohort].LogOptimalPreyBodySizeRatio),
                                                     (ushort)currentTimestep, gridCellCohorts[actingCohort].ProportionTimeActive, ref partial.NextCohortIDThreadLocked,TrophicIndex, tracker.TrackProcesses,
@@ -202,6 +203,9 @@ namespace Madingley
                 deltas["biomass"]["reproduction"] -= AdultMassLost;
 
                 // Update tracer mass in adult cohort
+                if (TracerMassInReproductiveTissue > gridCellCohorts[actingCohort].TracerMass)
+                    ;
+
                 gridCellCohorts[actingCohort].TracerMass -= TracerMassInReproductiveTissue;
             }
             else
@@ -279,11 +283,11 @@ namespace Madingley
             }
         }
 
-        private double CalculateTracerMassInReproductiveTissue(Cohort c, double adultMassLost, 
+        private double CalculateTracerMassInReproductiveTissue(Cohort c, double adultMassLost, double bodyMassIncludingChangeThisTimeStep,
             double reproductiveMassIncludingChangeThisTimeStep)
         {
             return ((adultMassLost + reproductiveMassIncludingChangeThisTimeStep) / 
-                (c.IndividualBodyMass + reproductiveMassIncludingChangeThisTimeStep) * c.TracerMass);
+                (bodyMassIncludingChangeThisTimeStep + reproductiveMassIncludingChangeThisTimeStep) * c.TracerMass);
         }
     }
 }

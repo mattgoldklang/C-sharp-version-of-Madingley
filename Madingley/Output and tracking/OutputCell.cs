@@ -665,6 +665,8 @@ namespace Madingley
                 DataConverter.AddVariable(BasicOutputMemory, "Min Trophic Index", "dimensionless", 1, TimeDimension, ecosystemModelGrid.GlobalMissingValue, TimeSteps);
                 DataConverter.AddVariable(BasicOutputMemory, "Geometric Mean Bodymass", "g", 1, TimeDimension, ecosystemModelGrid.GlobalMissingValue, TimeSteps);
                 DataConverter.AddVariable(BasicOutputMemory, "Arithmetic Mean Bodymass", "g", 1, TimeDimension, ecosystemModelGrid.GlobalMissingValue, TimeSteps);
+                DataConverter.AddVariable(BasicOutputMemory, "Mean age of tracer", "months", 1, TimeDimension, ecosystemModelGrid.GlobalMissingValue, TimeSteps);
+                DataConverter.AddVariable(BasicOutputMemory, "Mean concentration ratio of tracer", "dimensionless", 1, TimeDimension, ecosystemModelGrid.GlobalMissingValue, TimeSteps);
             }
 
             if (marineCell)
@@ -1334,6 +1336,13 @@ namespace Madingley
                     DataConverter.ValueToSDS1D(Metrics.CalculateGeometricCommunityMeanBodyMass(ecosystemModelGrid, cellIndices, cellIndex),
                                                 "Geometric Mean Bodymass", "Time step", ecosystemModelGrid.GlobalMissingValue,
                                                 BasicOutputMemory, 0);
+                    DataConverter.ValueToSDS1D(Metrics.MeanConcentration(ecosystemModelGrid, cellIndices, cellIndex),
+                                         "Mean concentration ratio of tracer", "Time step", ecosystemModelGrid.GlobalMissingValue,
+                                         BasicOutputMemory, 0);
+                    DataConverter.ValueToSDS1D(Metrics.MeanTracerAge(ecosystemModelGrid, cellIndices, cellIndex),
+                                   "Mean age of tracer", "Time step", ecosystemModelGrid.GlobalMissingValue,
+                                   BasicOutputMemory, 0);
+
 
                 }
 
@@ -1633,6 +1642,12 @@ namespace Madingley
                     DataConverter.ValueToSDS1D(Metrics.CalculateGeometricCommunityMeanBodyMass(ecosystemModelGrid, cellIndices, cellIndex),
                                                 "Geometric Mean Bodymass", "Time step", ecosystemModelGrid.GlobalMissingValue,
                                                 BasicOutputMemory, (int)currentTimeStep + 1);
+                    DataConverter.ValueToSDS1D(Metrics.MeanConcentration(ecosystemModelGrid, cellIndices, cellIndex),
+                     "Mean concentration ratio of tracer", "Time step", ecosystemModelGrid.GlobalMissingValue,
+                     BasicOutputMemory, (int)currentTimeStep + 1);
+                    DataConverter.ValueToSDS1D(Metrics.MeanTracerAge(ecosystemModelGrid, cellIndices, cellIndex),
+                                   "Mean age of tracer", "Time step", ecosystemModelGrid.GlobalMissingValue,
+                                   BasicOutputMemory, (int)currentTimeStep + 1);
                 }
 
                 if (TrackMarineSpecifics && MarineCell)
