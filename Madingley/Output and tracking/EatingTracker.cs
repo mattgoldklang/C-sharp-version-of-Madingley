@@ -174,7 +174,7 @@ namespace Madingley
                         break;
                 }
 
-                // Get the trophic level index of the functional group that mass is flowing to
+                // Get the index of the functional group that mass is flowing to
                 switch (cohortFunctionalGroupDefinitions.GetTraitNames("nutrition source", toFunctionalGroup))
                 {
                     case "omnivore":

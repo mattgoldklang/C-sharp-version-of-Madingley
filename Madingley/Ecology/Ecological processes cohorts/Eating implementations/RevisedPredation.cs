@@ -295,7 +295,8 @@ namespace Madingley
                     _FeedingPreferenceStandardDeviation), 2)));
 
             // Calculate the individual killing rate
-            return _SpecificPredatorKillRateConstant * RelativeFeedingPreference * BinnedPreyDensities[preyFunctionalGroup, preyMassBinNumber];
+            //return _SpecificPredatorKillRateConstant * RelativeFeedingPreference * BinnedPreyDensities[preyFunctionalGroup, preyMassBinNumber];
+            return _SpecificPredatorKillRateConstant * RelativeFeedingPreference;
         }     
 
         /// <summary>

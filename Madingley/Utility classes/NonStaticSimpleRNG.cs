@@ -312,7 +312,7 @@ namespace Madingley
 
         /// <summary>A random draw from the phytoplankton size distribution assuming traditional pico, nano and micro groups</summary>
         /// 
-        public double getPhytoSizeLog(string stockName)
+        public double getPhytoSize(string stockName)
         {
             if(stockName == "picophytoplankton")
             {
@@ -333,7 +333,7 @@ namespace Madingley
             }
         }
 
-        public double getPhytoSize(string stockName)
+        public double getPhytoSizeUni(string stockName)
         {
             Random rnd = new Random();
 
