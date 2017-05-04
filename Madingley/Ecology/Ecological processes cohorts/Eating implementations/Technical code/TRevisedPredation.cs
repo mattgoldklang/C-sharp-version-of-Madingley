@@ -612,7 +612,7 @@ namespace Madingley
             
 
             TempDouble = 0.0;
-
+            
             // Temporary variable to hold the total time spent eating + 1. Saves an extra calculation in CalculateAbundanceEaten
             double TotalTimeUnitsToHandlePlusOne = TimeUnitsToHandlePotentialFoodItems + 1;
 
@@ -643,6 +643,23 @@ namespace Madingley
                     gridCellCohorts[FunctionalGroup][i].CohortAbundance -= _AbundancesEaten[FunctionalGroup][i];
 
                     gridCellCohorts[actingCohort].TrophicIndex += (_BodyMassPrey + gridCellCohorts[FunctionalGroup][i].IndividualReproductivePotentialMass) * _AbundancesEaten[FunctionalGroup][i] * gridCellCohorts[FunctionalGroup][i].TrophicIndex;
+
+                    // Update predator tracer concentration
+                    double TotalMassTracerAssimilatedPerPredator = gridCellCohorts[FunctionalGroup][i].TracerMass * 
+                        _PredatorAssimilationEfficiency * _AbundancesEaten[FunctionalGroup][i] / 
+                        gridCellCohorts[actingCohort].CohortAbundance;
+                gridCellCohorts[actingCohort].TracerMass += TotalMassTracerAssimilatedPerPredator;
+
+                    // Prey tracer concentration does not change because whole individuals are killed
+
+                    // Update predator tracer age
+                    if(gridCellCohorts[FunctionalGroup][i].TracerMass > 0)
+                    {
+                        gridCellCohorts[actingCohort].TracerAge += TotalMassTracerAssimilatedPerPredator /
+                        gridCellCohorts[FunctionalGroup][i].TracerMass * gridCellCohorts[FunctionalGroup][i].TracerAge;
+                    }
+
+                    // Prey tracer age does not change because whole individuals are killed
 
                     // If the process tracker is set and output detail is set to high and the prey cohort has never been merged,
                     // then track its mortality owing to predation

@@ -89,6 +89,8 @@ namespace Madingley
             List<double[,,]> CohortBirthTimeStep = new List<double[,,]>();
             List<double[,,]> CohortProportionTimeActive = new List<double[,,]>();
             List<double[,,]> CohortTrophicIndex = new List<double[,,]>();
+            List<double[,,]> CohortTracerMass = new List<double[,,]>();
+            List<double[,,]> CohortTracerAge = new List<double[,,]>();
 
             double[,,,] tempData = new double[Latitude.Length, Longitude.Length,
                 CohortFunctionalGroup.Length, Cohort.Length];
@@ -228,6 +230,44 @@ namespace Madingley
                 }
             }
 
+            tempData = StateDataSet.GetData<double[,,,]>("TracerMass");
+
+            for (int la = 0; la < Latitude.Length; la++)
+            {
+                CohortTracerMass.Add(new double[Longitude.Length, CohortFunctionalGroup.Length, Cohort.Length]);
+            }
+
+            foreach (uint[] cell in cellList)
+            {
+                for (int fg = 0; fg < CohortFunctionalGroup.Length; fg++)
+                {
+                    for (int c = 0; c < Cohort.Length; c++)
+                    {
+                        CohortTracerMass[(int)cell[0]][cell[1], fg, c] = tempData[
+                            cell[0], cell[1], fg, c];
+                    }
+                }
+            }
+
+            tempData = StateDataSet.GetData<double[,,,]>("TracerAge");
+
+            for (int la = 0; la < Latitude.Length; la++)
+            {
+                CohortTracerAge.Add(new double[Longitude.Length, CohortFunctionalGroup.Length, Cohort.Length]);
+            }
+
+            foreach (uint[] cell in cellList)
+            {
+                for (int fg = 0; fg < CohortFunctionalGroup.Length; fg++)
+                {
+                    for (int c = 0; c < Cohort.Length; c++)
+                    {
+                        CohortTracerAge[(int)cell[0]][cell[1], fg, c] = tempData[
+                            cell[0], cell[1], fg, c];
+                    }
+                }
+            }
+
             tempData = StateDataSet.GetData<double[,,,]>("CohortTrophicIndex");
 
             for (int la = 0; la < Latitude.Length; la++)
@@ -272,7 +312,9 @@ namespace Madingley
                                 Convert.ToUInt16(CohortBirthTimeStep[(int)cellList[cell][0]][cellList[cell][1], fg, c]),
                                 CohortProportionTimeActive[(int)cellList[cell][0]][cellList[cell][1], fg, c], ref temp,
                                 CohortTrophicIndex[(int)cellList[cell][0]][cellList[cell][1], fg, c],
-                                false);
+                                false,
+                                CohortTracerMass[(int)cellList[cell][0]][cellList[cell][1], fg, c],
+                                CohortTracerAge[(int)cellList[cell][0]][cellList[cell][1], fg, c]);
 
                             _GridCellCohorts[cellList[cell][0], cellList[cell][1]][fg].Add(TempCohort);
                         }

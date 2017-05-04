@@ -814,7 +814,8 @@ namespace Madingley
                             
                             // Initialise the new cohort with the relevant properties
                             NewCohort = new Cohort((byte)FunctionalGroup, CohortJuvenileMass, CohortAdultMass, CohortJuvenileMass, NewAbund,
-                            OptimalPreyBodySizeRatio, (ushort)0, ProportionTimeActive[FunctionalGroup], ref CohortIDIncrementer,TrophicIndex, tracking);
+                            OptimalPreyBodySizeRatio, (ushort)0, ProportionTimeActive[FunctionalGroup], ref CohortIDIncrementer,TrophicIndex, tracking,
+                            0.0, 0.0);
 
                             // Add the new cohort to the list of grid cell cohorts
                             _GridCellCohorts[FunctionalGroup].Add(NewCohort);

@@ -171,7 +171,28 @@ namespace Madingley
             get { return _LogOptimalPreyBodySizeRatio ; }
             set { _LogOptimalPreyBodySizeRatio = value; }
         }
-        
+
+        /// <summary>
+        /// Get and set the mass of a traced material
+        /// </summary>
+        private double _TracerMass;
+
+        public double TracerMass
+        {
+            get { return _TracerMass; }
+            set { _TracerMass = value; }
+        }
+
+        /// <summary>
+        /// Get and set the age of the traced material
+        /// </summary>
+        private double _TracerAge;
+
+        public double TracerAge
+        {
+            get { return _TracerAge; }
+            set { _TracerAge = value; }
+        }
 
         /// <summary>
         /// Constructor for the Cohort class: assigns cohort starting properties
@@ -187,9 +208,11 @@ namespace Madingley
         /// <param name="nextCohortID">The unique ID to assign to the next cohort created</param>
         /// <param name="trophicIndex">The trophic level index of the cohort</param>
         /// <param name="tracking">Whether the process tracker is enabled</param>
+        /// <param name="tracerMass">The initial mass of the traced material</param>
+        /// <param name="tracerAge">The initial age of the traced material</param>
         public Cohort(byte functionalGroupIndex, double juvenileBodyMass, double adultBodyMass, double initialBodyMass, 
             double initialAbundance, double optimalPreyBodySizeRatio, ushort birthTimeStep, double proportionTimeActive, ref Int64 nextCohortID,
-            double trophicIndex, Boolean tracking)
+            double trophicIndex, Boolean tracking, double tracerMass, double tracerAge)
         {
             _FunctionalGroupIndex = functionalGroupIndex;
             _JuvenileMass = juvenileBodyMass;
@@ -205,6 +228,8 @@ namespace Madingley
             _ProportionTimeActive = proportionTimeActive;
             if(tracking)_CohortID.Add(Convert.ToUInt32(nextCohortID));
             nextCohortID++;
+            _TracerMass = tracerMass;
+            _TracerAge = tracerAge;
         }
 
 
@@ -223,6 +248,36 @@ namespace Madingley
             _TrophicIndex = c._TrophicIndex;
             _ProportionTimeActive = c._ProportionTimeActive;
             _CohortID = c.CohortID;
+            _TracerMass = c.TracerMass;
+            _TracerAge = c._TracerAge;
+        }
+
+        /// <summary>
+        /// A method for calculating the mean age of the traced material
+        /// </summary>
+        /// <returns>
+        /// The mean age of the traced material
+        /// </returns>
+        public double CalcMeanTracerAge()
+        {
+            if (this._TracerMass > 0.0)
+            {
+                return this._TracerAge / this._TracerMass;
+            }
+            else
+            {
+                return -999.0;
+            }
+        }
+
+        /// <summary>
+        /// Update the age of the tracer material in a cohort due to a timestep passing.
+        /// Note that this is implicitly multiplied by delta-timestep, which is the timestep of the model (e.g.
+        /// a day or a month). This means that the tracer age is expressed in the units of the model time-step.
+        /// </summary>
+        public void UpdateTracerAge()
+        {
+            this._TracerAge = this._TracerAge + this._TracerMass;
         }
     }
 }

@@ -86,6 +86,14 @@ namespace Madingley
 
             }
 
+            // Remove tracer mass in proportion to the fraction of total body mass that is metabolised
+            double PerIndividualFractionalBiomassLoss = deltas["biomass"]["metabolism"] /
+                (gridCellCohorts[actingCohort].IndividualBodyMass + gridCellCohorts[actingCohort].IndividualReproductivePotentialMass);
+            gridCellCohorts[actingCohort].TracerMass += gridCellCohorts[actingCohort].TracerMass * PerIndividualFractionalBiomassLoss;
+            gridCellCohorts[actingCohort].TracerAge  += gridCellCohorts[actingCohort].TracerAge * PerIndividualFractionalBiomassLoss;
+
+
+
             // If the process tracker is on and output detail is set to high and this cohort has not been merged yet, then record
             // the number of individuals that have died
             if (trackProcesses.TrackProcesses && (outputDetail == "high"))

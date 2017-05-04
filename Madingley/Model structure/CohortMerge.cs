@@ -355,6 +355,14 @@ namespace Madingley
                 //              (gridCellCohorts[FunctionalGroup][CohortToMergeTo].CohortAbundance.CompareTo(0.0) > 0))
                 //          {
 
+                // Add the tracer and age of the two cohorts
+                double CombinedTracerMass = gridCellCohorts[FunctionalGroup][CohortToMergeFrom].TracerMass * gridCellCohorts[FunctionalGroup][CohortToMergeFrom].CohortAbundance +
+                    gridCellCohorts[FunctionalGroup][CohortToMergeTo].TracerMass * gridCellCohorts[FunctionalGroup][CohortToMergeTo].CohortAbundance;
+
+                double CombinedTracerAge = gridCellCohorts[FunctionalGroup][CohortToMergeFrom].TracerAge * gridCellCohorts[FunctionalGroup][CohortToMergeFrom].CohortAbundance +
+                    gridCellCohorts[FunctionalGroup][CohortToMergeTo].TracerAge * gridCellCohorts[FunctionalGroup][CohortToMergeTo].CohortAbundance;
+
+
                 // Add the abundance of the second cohort to that of the first
                 gridCellCohorts[FunctionalGroup][CohortToMergeTo].CohortAbundance += (gridCellCohorts[FunctionalGroup][CohortToMergeFrom].CohortAbundance * gridCellCohorts[FunctionalGroup][CohortToMergeFrom].IndividualBodyMass) / gridCellCohorts[FunctionalGroup][CohortToMergeTo].IndividualBodyMass;
                 // Add the reproductive potential mass of the second cohort to that of the first
@@ -364,6 +372,12 @@ namespace Madingley
                 // Designate both cohorts as having merged
                 gridCellCohorts[FunctionalGroup][CohortToMergeTo].Merged = true;
                 gridCellCohorts[FunctionalGroup][CohortToMergeFrom].Merged = true;
+
+
+                //Convert combined tracer mass and age to per individual values
+                gridCellCohorts[FunctionalGroup][CohortToMergeTo].TracerMass = CombinedTracerMass / gridCellCohorts[FunctionalGroup][CohortToMergeTo].CohortAbundance;
+                gridCellCohorts[FunctionalGroup][CohortToMergeTo].TracerAge = CombinedTracerAge / gridCellCohorts[FunctionalGroup][CohortToMergeTo].CohortAbundance;
+
 
                 MergeCounter++;
                 CurrentListPosition++;

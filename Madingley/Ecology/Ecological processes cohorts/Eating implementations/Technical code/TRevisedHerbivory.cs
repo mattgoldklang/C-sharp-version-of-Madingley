@@ -364,7 +364,8 @@ namespace Madingley
                 // Calculate the total biomass eaten by the acting (herbivore) cohort
                 _TotalBiomassEatenByCohort = deltas["biomass"]["herbivory"] * gridCellCohorts[actingCohort].CohortAbundance;
 
-                
+                // Update tracer mass in a cohort
+                gridCellCohorts[actingCohort].TracerMass = _TotalBiomassEatenByCohort;
 
             }
         }

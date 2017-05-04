@@ -64,7 +64,8 @@ namespace Madingley
             SyncStateWriter = TextWriter.Synchronized(StateWriter);
             SyncStateWriter.WriteLine("TimeStep\tLatitude\tLongitude\tID" +
             "\tFunctionalGroup\tJuvenileMass\tAdultMass\tIndividualBodyMass\tCohortAbundance\tBirthTimeStep" +
-                "\tMaturityTimeStep\tLogOptimalPreyBodySizeRatio\tMaximumAchievedBodyMass\tTrophicIndex\tProportionTimeActive");
+                "\tMaturityTimeStep\tLogOptimalPreyBodySizeRatio\tMaximumAchievedBodyMass\tTrophicIndex\tProportionTimeActive" +
+                "\tTracerMass\tTracerAge");
 
             Simulation = simulation;
 
@@ -118,7 +119,9 @@ namespace Madingley
                                     Convert.ToString(C.LogOptimalPreyBodySizeRatio) + "\t" +
                                     Convert.ToString(C.MaximumAchievedBodyMass) + "\t" +
                                     Convert.ToString(C.TrophicIndex) + "\t" +
-                                    Convert.ToString(C.ProportionTimeActive);
+                                    Convert.ToString(C.ProportionTimeActive) + "\t" +
+                                    Convert.ToString(C.TracerMass) + "\t" +
+                                    Convert.ToString(C.TracerAge);
 
                         SyncStateWriter.WriteLine(context + organism);
 
@@ -176,7 +179,8 @@ namespace Madingley
             string[] CohortProperties = new string[]
             {"JuvenileMass", "AdultMass", "IndividualBodyMass", "CohortAbundance",
              "BirthTimeStep", "MaturityTimeStep", "LogOptimalPreyBodySizeRatio",
-             "MaximumAchievedBodyMass","Merged","TrophicIndex","ProportionTimeActive"};
+             "MaximumAchievedBodyMass","Merged","TrophicIndex","ProportionTimeActive",
+            "TracerMass","TracerAge"};
 
             //define the dimensions for cohort outputs
             string[] dims = new string[] { "Latitude", "Longitude", "Cohort Functional Group", "Cohort" };
@@ -269,6 +273,12 @@ namespace Madingley
                                 break;
                             case "ProportionTimeActive":
                                 State[cellList[cellIndex][0], cellList[cellIndex][1], functionalGroupIndex, cohortIndex] = CellCohorts[functionalGroupIndex][cohortIndex].ProportionTimeActive;
+                                break;
+                            case "TracerMass":
+                                State[cellList[cellIndex][0], cellList[cellIndex][1], functionalGroupIndex, cohortIndex] = CellCohorts[functionalGroupIndex][cohortIndex].TracerMass;
+                                break;
+                            case "TracerAge":
+                                State[cellList[cellIndex][0], cellList[cellIndex][1], functionalGroupIndex, cohortIndex] = CellCohorts[functionalGroupIndex][cohortIndex].TracerAge;
                                 break;
                         }
                     }
