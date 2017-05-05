@@ -1209,8 +1209,8 @@ namespace Madingley
                 // Update the age of the cohort
                 workingGridCellCohorts[ActingCohort].UpdateTracerAge();
 
-                Debug.Assert(workingGridCellCohorts[ActingCohort].TracerAge >= 0.0, "Tracer age is negative");
-                Debug.Assert(workingGridCellCohorts[ActingCohort].TracerMass >= 0.0, "Tracer mass is negative");
+                Debug.Assert(workingGridCellCohorts[ActingCohort].SomaticTracerAge >= 0.0, "Tracer age is negative");
+                Debug.Assert(workingGridCellCohorts[ActingCohort].SomaticTracerMass >= 0.0, "Tracer mass is negative");
             }
 
 

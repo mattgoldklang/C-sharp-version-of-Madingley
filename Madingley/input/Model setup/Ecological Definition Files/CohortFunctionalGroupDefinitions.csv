@@ -7,12 +7,12 @@ Heterotroph,Omnivore,All,Marine,Planktonic,semelparity,Ectotherm,0.8,0.8,0.5,1.0
 Heterotroph,Omnivore,Planktivore,Marine,Planktonic,iteroparity,Ectotherm,0.8,0.8,0.5,1.00E-03,1.00E-01,125,Obligate mesozooplankton it
 Heterotroph,Omnivore,Planktivore,Marine,Planktonic,iteroparity,Ectotherm,0.8,0.8,0.5,1.00E-05,1.00E-03,125,Obligate microzooplankton sem
 Heterotroph,Herbivore,Planktivore,Marine,Planktonic,cell division,Ectotherm,0.8,0,0.5,1.00E-07,1.00E-05,125,Obligate nanozooplankton cell
-Heterotroph,Herbivore,All,Terrestrial,Mobile,iteroparity,Endotherm,0.5,0,0.5,1.5,5000000,111,itHerbEndo
-Heterotroph,Carnivore,All,Terrestrial,Mobile,iteroparity,Endotherm,0,0.8,0.5,3,700000,111,itCarnEndo
-Heterotroph,Omnivore,All,Terrestrial,Mobile,iteroparity,Endotherm,0.4,0.64,0.5,3,1500000,111,itOmnEndo
-Heterotroph,Herbivore,All,Terrestrial,Mobile,semelparity,Ectotherm,0.5,0,0.5,0.0004,1000,111,SemHerb
-Heterotroph,Carnivore,All,Terrestrial,Mobile,semelparity,Ectotherm,0,0.8,0.5,0.0008,2000,111,SemCarn
-Heterotroph,Omnivore,All,Terrestrial,Mobile,semelparity,Ectotherm,0.4,0.64,0.5,0.0004,2000,111,SemOmn
-Heterotroph,Herbivore,All,Terrestrial,Mobile,iteroparity,Ectotherm,0.5,0,0.5,1,300000,111,itHerb
-Heterotroph,Carnivore,All,Terrestrial,Mobile,iteroparity,Ectotherm,0,0.8,0.5,1.5,2000000,111,itCarn
-Heterotroph,Omnivore,All,Terrestrial,Mobile,iteroparity,Ectotherm,0.4,0.64,0.5,1.5,55000,111,itOmn
+Heterotroph,Herbivore,All,Terrestrial,Mobile,iteroparity,Endotherm,0.5,0,0.5,1.5,5000000,1,itHerbEndo
+Heterotroph,Carnivore,All,Terrestrial,Mobile,iteroparity,Endotherm,0,0.8,0.5,3,700000,0,itCarnEndo
+Heterotroph,Omnivore,All,Terrestrial,Mobile,iteroparity,Endotherm,0.4,0.64,0.5,3,1500000,0,itOmnEndo
+Heterotroph,Herbivore,All,Terrestrial,Mobile,semelparity,Ectotherm,0.5,0,0.5,0.0004,1000,0,SemHerb
+Heterotroph,Carnivore,All,Terrestrial,Mobile,semelparity,Ectotherm,0,0.8,0.5,0.0008,2000,0,SemCarn
+Heterotroph,Omnivore,All,Terrestrial,Mobile,semelparity,Ectotherm,0.4,0.64,0.5,0.0004,2000,0,SemOmn
+Heterotroph,Herbivore,All,Terrestrial,Mobile,iteroparity,Ectotherm,0.5,0,0.5,1,300000,0,itHerb
+Heterotroph,Carnivore,All,Terrestrial,Mobile,iteroparity,Ectotherm,0,0.8,0.5,1.5,2000000,0,itCarn
+Heterotroph,Omnivore,All,Terrestrial,Mobile,iteroparity,Ectotherm,0.4,0.64,0.5,1.5,55000,0,itOmn

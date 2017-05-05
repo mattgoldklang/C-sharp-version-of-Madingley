@@ -179,13 +179,15 @@ namespace Madingley
                 }
 
                 // Create the offspring cohort
-                double TracerMassInReproductiveTissue = CalculateTracerMassInReproductiveTissue(gridCellCohorts[actingCohort], AdultMassLost, ReproductiveMassIncludingChangeThisTimeStep, BodyMassIncludingChangeThisTimeStep);
+                double TracerMassInReproductiveTissue = CalculateTracerMassInReproductiveTissue(gridCellCohorts[actingCohort], AdultMassLost, BodyMassIncludingChangeThisTimeStep, ReproductiveMassIncludingChangeThisTimeStep);
+                double TracerAgeToTransfer = gridCellCohorts[actingCohort].SomaticTracerAge * TracerMassInReproductiveTissue / (gridCellCohorts[actingCohort].SomaticTracerMass);
+
 
                 OffspringCohort = new Cohort((byte)actingCohort[0], OffspringJuvenileAndAdultBodyMasses[0], OffspringJuvenileAndAdultBodyMasses[1], OffspringJuvenileAndAdultBodyMasses[0],
                                                     _OffspringCohortAbundance, Math.Exp(gridCellCohorts[actingCohort].LogOptimalPreyBodySizeRatio),
                                                     (ushort)currentTimestep, gridCellCohorts[actingCohort].ProportionTimeActive, ref partial.NextCohortIDThreadLocked,TrophicIndex, tracker.TrackProcesses,
-                                                    TracerMassInReproductiveTissue * gridCellCohorts[actingCohort].CohortAbundance / _OffspringCohortAbundance, 
-                                                    gridCellCohorts[actingCohort].TracerAge) ;
+                                                    TracerMassInReproductiveTissue * gridCellCohorts[actingCohort].CohortAbundance / _OffspringCohortAbundance,
+                                                    TracerAgeToTransfer * gridCellCohorts[actingCohort].CohortAbundance/ _OffspringCohortAbundance) ;
                 
 
                 // Add the offspring cohort to the grid cell cohorts array
@@ -202,11 +204,9 @@ namespace Madingley
                 deltas["reproductivebiomass"]["reproduction"] -= ReproductiveMassIncludingChangeThisTimeStep;
                 deltas["biomass"]["reproduction"] -= AdultMassLost;
 
-                // Update tracer mass in adult cohort
-                if (TracerMassInReproductiveTissue > gridCellCohorts[actingCohort].TracerMass)
-                    ;
 
-                gridCellCohorts[actingCohort].TracerMass -= TracerMassInReproductiveTissue;
+                gridCellCohorts[actingCohort].SomaticTracerMass -= TracerMassInReproductiveTissue;
+                gridCellCohorts[actingCohort].SomaticTracerAge -= TracerAgeToTransfer;
             }
             else
             {
@@ -287,7 +287,7 @@ namespace Madingley
             double reproductiveMassIncludingChangeThisTimeStep)
         {
             return ((adultMassLost + reproductiveMassIncludingChangeThisTimeStep) / 
-                (bodyMassIncludingChangeThisTimeStep + reproductiveMassIncludingChangeThisTimeStep) * c.TracerMass);
+                (bodyMassIncludingChangeThisTimeStep + reproductiveMassIncludingChangeThisTimeStep) * c.SomaticTracerMass);
         }
     }
 }

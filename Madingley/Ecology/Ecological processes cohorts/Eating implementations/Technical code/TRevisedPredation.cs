@@ -645,18 +645,18 @@ namespace Madingley
                     gridCellCohorts[actingCohort].TrophicIndex += (_BodyMassPrey + gridCellCohorts[FunctionalGroup][i].IndividualReproductivePotentialMass) * _AbundancesEaten[FunctionalGroup][i] * gridCellCohorts[FunctionalGroup][i].TrophicIndex;
 
                     // Update predator tracer concentration
-                    double TotalMassTracerAssimilatedPerPredator = gridCellCohorts[FunctionalGroup][i].TracerMass * 
+                    double TotalMassTracerAssimilatedPerPredator = gridCellCohorts[FunctionalGroup][i].SomaticTracerMass * 
                         _PredatorAssimilationEfficiency * _AbundancesEaten[FunctionalGroup][i] / 
                         gridCellCohorts[actingCohort].CohortAbundance;
-                gridCellCohorts[actingCohort].TracerMass += TotalMassTracerAssimilatedPerPredator;
+                    gridCellCohorts[actingCohort].SomaticTracerMass += TotalMassTracerAssimilatedPerPredator;
 
                     // Prey tracer concentration does not change because whole individuals are killed
 
                     // Update predator tracer age
-                    if(gridCellCohorts[FunctionalGroup][i].TracerMass > 0)
+                    if(gridCellCohorts[FunctionalGroup][i].SomaticTracerMass > 0)
                     {
-                        gridCellCohorts[actingCohort].TracerAge += TotalMassTracerAssimilatedPerPredator /
-                        gridCellCohorts[FunctionalGroup][i].TracerMass * gridCellCohorts[FunctionalGroup][i].TracerAge;
+                        gridCellCohorts[actingCohort].SomaticTracerAge += TotalMassTracerAssimilatedPerPredator /
+                        gridCellCohorts[FunctionalGroup][i].SomaticTracerMass * gridCellCohorts[FunctionalGroup][i].SomaticTracerAge;
                     }
 
                     // Prey tracer age does not change because whole individuals are killed

@@ -594,6 +594,34 @@ namespace Madingley
         /// <param name="cellIndices"></param>
         /// <param name="cellIndex"></param>
         /// <returns></returns>
+        public double MeanTracerAgePerIndividual(ModelGrid ecosystemModelGrid, List<uint[]> cellIndices, int cellIndex)
+        {
+
+            //Get the cohorts for the specified cell
+            GridCellCohortHandler CellCohorts = ecosystemModelGrid.GetGridCellCohorts(cellIndices[cellIndex][0], cellIndices[cellIndex][1]);
+
+            // Calculate the mean tracer age
+            double SumTracerAge = 0.0;
+            double TotalTracerMass = 0.0;
+            foreach (var fg in CellCohorts)
+            {
+                foreach (var cohort in fg)
+                {
+                    SumTracerAge += cohort.SomaticTracerAge * cohort.CohortAbundance;
+                    TotalTracerMass += cohort.SomaticTracerMass * cohort.CohortAbundance;
+                }
+            }
+
+            return SumTracerAge / TotalTracerMass;
+        }
+
+        /// <summary>
+        /// Calculate the average age of the tracer per gram across all individuals in a grid cell
+        /// </summary>
+        /// <param name="ecosystemModelGrid"></param>
+        /// <param name="cellIndices"></param>
+        /// <param name="cellIndex"></param>
+        /// <returns></returns>
         public double MeanTracerAge(ModelGrid ecosystemModelGrid, List<uint[]> cellIndices, int cellIndex)
         {
 
@@ -602,21 +630,21 @@ namespace Madingley
 
             // Calculate the mean tracer age
             double SumTracerAge = 0.0;
-            double TotalIndividualsInAllCohorts = 0.0;
+            double TotalMassOfAllCohorts = 0.0;
             foreach (var fg in CellCohorts)
             {
                 foreach (var cohort in fg)
                 {
-                    SumTracerAge += cohort.CalcMeanTracerAge() * cohort.CohortAbundance ;
-                    TotalIndividualsInAllCohorts += cohort.CohortAbundance;
+                    SumTracerAge += cohort.SomaticTracerAge * cohort.CohortAbundance;
+                    TotalMassOfAllCohorts += (cohort.IndividualBodyMass + cohort.IndividualReproductivePotentialMass) * cohort.CohortAbundance;
                 }
             }
 
-            return SumTracerAge / TotalIndividualsInAllCohorts;
+            return SumTracerAge / TotalMassOfAllCohorts;
         }
 
         /// <summary>
-        /// Calculate the mean concentration of tracer across all individuals in a grid cell
+        /// Calculate the mean concentration of tracer per gram across all individuals in a grid cell
         /// </summary>
         /// <param name="ecosystemModelGrid"></param>
         /// <param name="cellIndices"></param>
@@ -628,14 +656,45 @@ namespace Madingley
             //Get the cohorts for the specified cell
             GridCellCohortHandler CellCohorts = ecosystemModelGrid.GetGridCellCohorts(cellIndices[cellIndex][0], cellIndices[cellIndex][1]);
 
-            // Calculate the mean tracer age
+            // Calculate the mean tracer concentration
+            double SumTracerMass = 0.0;
+            double TotalIndividualsInAllCohorts = 0.0;
+            double TotalMassOfAllCohorts = 0.0;
+            foreach (var fg in CellCohorts)
+            {
+                foreach (var cohort in fg)
+                {
+                    SumTracerMass += cohort.SomaticTracerMass * cohort.CohortAbundance;
+                    // SumTracerMass += cohort.TracerMass / (cohort.IndividualBodyMass + cohort.IndividualReproductivePotentialMass) * cohort.CohortAbundance;
+                    // TotalIndividualsInAllCohorts += cohort.CohortAbundance;
+                    TotalMassOfAllCohorts += (cohort.IndividualBodyMass + cohort.IndividualReproductivePotentialMass) * cohort.CohortAbundance;
+                }
+            }
+
+            return SumTracerMass / TotalMassOfAllCohorts;
+        }
+
+        /// <summary>
+        /// Calculate the mean concentration per individual of tracer across all individuals in a grid cell
+        /// </summary>
+        /// <param name="ecosystemModelGrid"></param>
+        /// <param name="cellIndices"></param>
+        /// <param name="cellIndex"></param>
+        /// <returns></returns>
+        public double MeanConcentrationPerIndividual(ModelGrid ecosystemModelGrid, List<uint[]> cellIndices, int cellIndex)
+        {
+
+            //Get the cohorts for the specified cell
+            GridCellCohortHandler CellCohorts = ecosystemModelGrid.GetGridCellCohorts(cellIndices[cellIndex][0], cellIndices[cellIndex][1]);
+
+            // Calculate the mean tracer concentration
             double SumTracerMass = 0.0;
             double TotalIndividualsInAllCohorts = 0.0;
             foreach (var fg in CellCohorts)
             {
                 foreach (var cohort in fg)
                 {
-                    SumTracerMass += cohort.TracerMass / (cohort.IndividualBodyMass + cohort.IndividualReproductivePotentialMass) * cohort.CohortAbundance;
+                    SumTracerMass += cohort.SomaticTracerMass * cohort.CohortAbundance;
                     TotalIndividualsInAllCohorts += cohort.CohortAbundance;
                 }
             }

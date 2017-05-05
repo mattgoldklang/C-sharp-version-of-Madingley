@@ -120,8 +120,8 @@ namespace Madingley
                                     Convert.ToString(C.MaximumAchievedBodyMass) + "\t" +
                                     Convert.ToString(C.TrophicIndex) + "\t" +
                                     Convert.ToString(C.ProportionTimeActive) + "\t" +
-                                    Convert.ToString(C.TracerMass) + "\t" +
-                                    Convert.ToString(C.TracerAge);
+                                    Convert.ToString(C.SomaticTracerMass) + "\t" +
+                                    Convert.ToString(C.SomaticTracerAge);
 
                         SyncStateWriter.WriteLine(context + organism);
 
@@ -275,10 +275,10 @@ namespace Madingley
                                 State[cellList[cellIndex][0], cellList[cellIndex][1], functionalGroupIndex, cohortIndex] = CellCohorts[functionalGroupIndex][cohortIndex].ProportionTimeActive;
                                 break;
                             case "TracerMass":
-                                State[cellList[cellIndex][0], cellList[cellIndex][1], functionalGroupIndex, cohortIndex] = CellCohorts[functionalGroupIndex][cohortIndex].TracerMass;
+                                State[cellList[cellIndex][0], cellList[cellIndex][1], functionalGroupIndex, cohortIndex] = CellCohorts[functionalGroupIndex][cohortIndex].SomaticTracerMass;
                                 break;
                             case "TracerAge":
-                                State[cellList[cellIndex][0], cellList[cellIndex][1], functionalGroupIndex, cohortIndex] = CellCohorts[functionalGroupIndex][cohortIndex].TracerAge;
+                                State[cellList[cellIndex][0], cellList[cellIndex][1], functionalGroupIndex, cohortIndex] = CellCohorts[functionalGroupIndex][cohortIndex].SomaticTracerAge;
                                 break;
                         }
                     }

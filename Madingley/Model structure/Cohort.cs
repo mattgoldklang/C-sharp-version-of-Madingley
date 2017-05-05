@@ -175,24 +175,49 @@ namespace Madingley
         /// <summary>
         /// Get and set the mass of a traced material
         /// </summary>
-        private double _TracerMass;
+        private double _SomaticTracerMass;
 
-        public double TracerMass
+        public double SomaticTracerMass
         {
-            get { return _TracerMass; }
-            set { _TracerMass = value; }
+            get { return _SomaticTracerMass; }
+            set { _SomaticTracerMass = value; }
         }
 
         /// <summary>
         /// Get and set the age of the traced material
         /// </summary>
-        private double _TracerAge;
+        private double _SomaticTracerAge;
 
-        public double TracerAge
+        public double SomaticTracerAge
         {
-            get { return _TracerAge; }
-            set { _TracerAge = value; }
+            get { return _SomaticTracerAge; }
+            set { _SomaticTracerAge = value; }
         }
+
+        /// <summary>
+        /// Get and set the mass of a traced material
+        /// </summary>
+        private double _ReproductiveTracerMass;
+
+        public double ReproductiveTracerMass
+        {
+            get { return _ReproductiveTracerMass; }
+            set { _ReproductiveTracerMass = value; }
+        }
+
+        /// <summary>
+        /// Get and set the age of the traced material
+        /// </summary>
+        private double _ReproductiveTracerAge;
+
+        public double ReproductiveTracerAge
+        {
+            get { return _ReproductiveTracerAge; }
+            set { _ReproductiveTracerAge = value; }
+        }
+
+
+
 
         /// <summary>
         /// Constructor for the Cohort class: assigns cohort starting properties
@@ -212,7 +237,7 @@ namespace Madingley
         /// <param name="tracerAge">The initial age of the traced material</param>
         public Cohort(byte functionalGroupIndex, double juvenileBodyMass, double adultBodyMass, double initialBodyMass, 
             double initialAbundance, double optimalPreyBodySizeRatio, ushort birthTimeStep, double proportionTimeActive, ref Int64 nextCohortID,
-            double trophicIndex, Boolean tracking, double tracerMass, double tracerAge)
+            double trophicIndex, Boolean tracking, double somaticTracerMass, double somaticTracerAge)
         {
             _FunctionalGroupIndex = functionalGroupIndex;
             _JuvenileMass = juvenileBodyMass;
@@ -228,8 +253,10 @@ namespace Madingley
             _ProportionTimeActive = proportionTimeActive;
             if(tracking)_CohortID.Add(Convert.ToUInt32(nextCohortID));
             nextCohortID++;
-            _TracerMass = tracerMass;
-            _TracerAge = tracerAge;
+            _SomaticTracerMass = somaticTracerMass;
+            _SomaticTracerAge = somaticTracerAge;
+            _ReproductiveTracerMass = 0.0;
+            _ReproductiveTracerAge = 0.0;
         }
 
 
@@ -248,26 +275,11 @@ namespace Madingley
             _TrophicIndex = c._TrophicIndex;
             _ProportionTimeActive = c._ProportionTimeActive;
             _CohortID = c.CohortID;
-            _TracerMass = c.TracerMass;
-            _TracerAge = c._TracerAge;
-        }
+            _SomaticTracerMass = c.SomaticTracerMass;
+            _SomaticTracerAge = c._SomaticTracerAge;
+            _ReproductiveTracerMass = c._ReproductiveTracerMass;
+            _ReproductiveTracerAge = c._ReproductiveTracerAge;
 
-        /// <summary>
-        /// A method for calculating the mean age of the traced material
-        /// </summary>
-        /// <returns>
-        /// The mean age of the traced material
-        /// </returns>
-        public double CalcMeanTracerAge()
-        {
-            if (this._TracerMass > 0.0)
-            {
-                return this._TracerAge / this._TracerMass;
-            }
-            else
-            {
-                return -999.0;
-            }
         }
 
         /// <summary>
@@ -277,10 +289,15 @@ namespace Madingley
         /// </summary>
         public void UpdateTracerAge()
         {
-            if (this.TracerMass.CompareTo(0.0) == 0)
-                this.TracerAge = 0.0;
+            if (this.SomaticTracerMass.CompareTo(0.0) == 0)
+                this.SomaticTracerAge = 0.0;
             else
-                this.TracerAge = this.TracerAge + this.TracerMass;
+                this.SomaticTracerAge = this.SomaticTracerAge + this.SomaticTracerMass;
+
+            if (this.ReproductiveTracerMass.CompareTo(0.0) == 0)
+                this.ReproductiveTracerAge = 0.0;
+            else
+                this.ReproductiveTracerAge = this.ReproductiveTracerAge + this.ReproductiveTracerMass;
         }
     }
 }

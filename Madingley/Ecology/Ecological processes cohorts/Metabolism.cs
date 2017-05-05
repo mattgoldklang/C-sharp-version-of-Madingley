@@ -89,14 +89,17 @@ namespace Madingley
             // Calculates the fraction of initial body mass lost from metabolism. Note that this will be a negative value, with -1 equivalent to metabolising the whole 
             // initial time step body mass
             double PerIndividualFractionalBiomassLoss = deltas["biomass"]["metabolism"] /
-                (gridCellCohorts[actingCohort].IndividualBodyMass + gridCellCohorts[actingCohort].IndividualReproductivePotentialMass);
+                (gridCellCohorts[actingCohort].IndividualBodyMass);
+
+            if (Math.Abs(deltas["biomass"]["metabolism"]) > deltas["biomass"]["herbivory"])
+                ;
 
             // The Math.Max prevents cohorts from metabolising more tracer than the sum of their initial tracer plus any tracer accumulated from eating
             // Note that tracers have been accumulated already, whereas biomass eaten is not accumulated until the end of the time step.
-            gridCellCohorts[actingCohort].TracerMass += Math.Max(-gridCellCohorts[actingCohort].TracerMass, 
-                gridCellCohorts[actingCohort].TracerMass * PerIndividualFractionalBiomassLoss);
-            gridCellCohorts[actingCohort].TracerAge  += Math.Max(-gridCellCohorts[actingCohort].TracerAge, 
-                gridCellCohorts[actingCohort].TracerAge * PerIndividualFractionalBiomassLoss);
+            gridCellCohorts[actingCohort].SomaticTracerMass += Math.Max(-gridCellCohorts[actingCohort].SomaticTracerMass, 
+                gridCellCohorts[actingCohort].SomaticTracerMass * PerIndividualFractionalBiomassLoss);
+            gridCellCohorts[actingCohort].SomaticTracerAge  += Math.Max(-gridCellCohorts[actingCohort].SomaticTracerAge, 
+                gridCellCohorts[actingCohort].SomaticTracerAge * PerIndividualFractionalBiomassLoss);
 
 
             // If the process tracker is on and output detail is set to high and this cohort has not been merged yet, then record

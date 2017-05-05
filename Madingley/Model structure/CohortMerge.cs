@@ -356,11 +356,11 @@ namespace Madingley
                 //          {
 
                 // Add the tracer and age of the two cohorts
-                double CombinedTracerMass = gridCellCohorts[FunctionalGroup][CohortToMergeFrom].TracerMass * gridCellCohorts[FunctionalGroup][CohortToMergeFrom].CohortAbundance +
-                    gridCellCohorts[FunctionalGroup][CohortToMergeTo].TracerMass * gridCellCohorts[FunctionalGroup][CohortToMergeTo].CohortAbundance;
+                double CombinedTracerMass = gridCellCohorts[FunctionalGroup][CohortToMergeFrom].SomaticTracerMass * gridCellCohorts[FunctionalGroup][CohortToMergeFrom].CohortAbundance +
+                    gridCellCohorts[FunctionalGroup][CohortToMergeTo].SomaticTracerMass * gridCellCohorts[FunctionalGroup][CohortToMergeTo].CohortAbundance;
 
-                double CombinedTracerAge = gridCellCohorts[FunctionalGroup][CohortToMergeFrom].TracerAge * gridCellCohorts[FunctionalGroup][CohortToMergeFrom].CohortAbundance +
-                    gridCellCohorts[FunctionalGroup][CohortToMergeTo].TracerAge * gridCellCohorts[FunctionalGroup][CohortToMergeTo].CohortAbundance;
+                double CombinedTracerAge = gridCellCohorts[FunctionalGroup][CohortToMergeFrom].SomaticTracerAge * gridCellCohorts[FunctionalGroup][CohortToMergeFrom].CohortAbundance +
+                    gridCellCohorts[FunctionalGroup][CohortToMergeTo].SomaticTracerAge * gridCellCohorts[FunctionalGroup][CohortToMergeTo].CohortAbundance;
 
 
                 // Add the abundance of the second cohort to that of the first
@@ -375,8 +375,8 @@ namespace Madingley
 
 
                 //Convert combined tracer mass and age to per individual values
-                gridCellCohorts[FunctionalGroup][CohortToMergeTo].TracerMass = CombinedTracerMass / gridCellCohorts[FunctionalGroup][CohortToMergeTo].CohortAbundance;
-                gridCellCohorts[FunctionalGroup][CohortToMergeTo].TracerAge = CombinedTracerAge / gridCellCohorts[FunctionalGroup][CohortToMergeTo].CohortAbundance;
+                gridCellCohorts[FunctionalGroup][CohortToMergeTo].SomaticTracerMass = CombinedTracerMass / gridCellCohorts[FunctionalGroup][CohortToMergeTo].CohortAbundance;
+                gridCellCohorts[FunctionalGroup][CohortToMergeTo].SomaticTracerAge = CombinedTracerAge / gridCellCohorts[FunctionalGroup][CohortToMergeTo].CohortAbundance;
 
 
                 MergeCounter++;
