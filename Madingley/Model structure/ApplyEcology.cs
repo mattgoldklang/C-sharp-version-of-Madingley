@@ -235,10 +235,12 @@ namespace Madingley
             // Loop over all keys in the respiratory pool deltas sorted list
             foreach (var key in KeyStrings)
             {
+            
                 // Check that the delta value is not negative
                 Debug.Assert(DeltaRespiratoryPool[key] >= 0.0, "A delta value for the respiratory CO2 pool is negative");
                 // Update the respiratory CO2 pool
                 cellEnvironment["Respiratory CO2 Pool"][0] += DeltaRespiratoryPool[key];
+                cellEnvironment["Respiratory CO2 Pool Per Timestep"][0] += DeltaRespiratoryPool[key];
                 // Reset the delta value to zero
                 DeltaRespiratoryPool[key] = 0.0;
 

@@ -665,6 +665,8 @@ namespace Madingley
                 DataConverter.AddVariable(BasicOutputMemory, "Min Trophic Index", "dimensionless", 1, TimeDimension, ecosystemModelGrid.GlobalMissingValue, TimeSteps);
                 DataConverter.AddVariable(BasicOutputMemory, "Geometric Mean Bodymass", "g", 1, TimeDimension, ecosystemModelGrid.GlobalMissingValue, TimeSteps);
                 DataConverter.AddVariable(BasicOutputMemory, "Arithmetic Mean Bodymass", "g", 1, TimeDimension, ecosystemModelGrid.GlobalMissingValue, TimeSteps);
+                DataConverter.AddVariable(BasicOutputMemory, "Ecosystem Metabolism Per Unit Biomass", "gC / g", 1, TimeDimension, ecosystemModelGrid.GlobalMissingValue, TimeSteps);
+
             }
 
             if (marineCell)
@@ -1334,7 +1336,9 @@ namespace Madingley
                     DataConverter.ValueToSDS1D(Metrics.CalculateGeometricCommunityMeanBodyMass(ecosystemModelGrid, cellIndices, cellIndex),
                                                 "Geometric Mean Bodymass", "Time step", ecosystemModelGrid.GlobalMissingValue,
                                                 BasicOutputMemory, 0);
-
+                    DataConverter.ValueToSDS1D(Metrics.CalculateBiomassWeightedSystemMetabolism(ecosystemModelGrid, cellIndices, cellIndex),
+                                                "Ecosystem Metabolism Per Unit Biomass", "Time step", ecosystemModelGrid.GlobalMissingValue,
+                                                BasicOutputMemory, 0);
                 }
 
                 if (MarineCell && TrackMarineSpecifics)
@@ -1633,6 +1637,10 @@ namespace Madingley
                     DataConverter.ValueToSDS1D(Metrics.CalculateGeometricCommunityMeanBodyMass(ecosystemModelGrid, cellIndices, cellIndex),
                                                 "Geometric Mean Bodymass", "Time step", ecosystemModelGrid.GlobalMissingValue,
                                                 BasicOutputMemory, (int)currentTimeStep + 1);
+                    DataConverter.ValueToSDS1D(Metrics.CalculateBiomassWeightedSystemMetabolism(ecosystemModelGrid, cellIndices, cellIndex),
+                                                "Ecosystem Metabolism Per Unit Biomass", "Time step", ecosystemModelGrid.GlobalMissingValue,
+                                                BasicOutputMemory, (int)currentTimeStep + 1);
+                    
                 }
 
                 if (TrackMarineSpecifics && MarineCell)

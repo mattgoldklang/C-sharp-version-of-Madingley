@@ -210,6 +210,11 @@ namespace Madingley
             tempVector[0] = 0.0;
             _CellEnvironment.Add("Respiratory CO2 Pool", tempVector);
 
+            // Add a per time step respiratory CO2 pool to the cell environment with an initial value of 0
+            tempVector = new double[1];
+            tempVector[0] = 0.0;
+            _CellEnvironment.Add("Respiratory CO2 Pool Per Timestep", tempVector);
+
             // Add the grid cell area (in km2) to the cell environment with an initial value of 0
             tempVector = new double[1];
             // Calculate the area of this grid cell

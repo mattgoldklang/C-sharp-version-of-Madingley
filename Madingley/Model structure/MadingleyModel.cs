@@ -1185,7 +1185,8 @@ namespace Madingley
             GridCellCohortHandler workingGridCellCohorts, GridCellStockHandler workingGridCellStocks, string outputDetail, int cellIndex, 
             MadingleyModelInitialisation initialisation)
         {
-
+            // Reset the per timestep CO2 pool
+            EcosystemModelGrid.ResetGridCellPerTimestepCO2Pool(latCellIndex, lonCellIndex);
 
             // Local instances of classes
             EcologyCohort MadingleyEcologyCohort = new EcologyCohort();

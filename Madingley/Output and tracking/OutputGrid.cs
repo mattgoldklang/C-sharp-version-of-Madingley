@@ -329,6 +329,9 @@ namespace Madingley
                     double[,] GeomMean = new double[ecosystemModelGrid.NumLatCells, ecosystemModelGrid.NumLonCells];
                     MetricsGrid.Add("Geometric Mean Bodymass", GeomMean);
 
+                    double[,] EcosystemMetabolismPerUnitBiomass = new double[ecosystemModelGrid.NumLatCells, ecosystemModelGrid.NumLonCells];
+                    MetricsGrid.Add("Ecosystem metabolism per unit biomass", GeomMean);
+
                     DataConverter.AddVariable(GridOutput, "Mean Trophic Level", 3, GeographicalDimensions, 0, outLats, outLons, TimeSteps);
                     DataConverter.AddVariable(GridOutput, "Trophic Evenness", 3, GeographicalDimensions, 0, outLats, outLons, TimeSteps);
                     DataConverter.AddVariable(GridOutput, "Biomass Evenness", 3, GeographicalDimensions, 0, outLats, outLons, TimeSteps);
@@ -342,6 +345,8 @@ namespace Madingley
                     DataConverter.AddVariable(GridOutput, "Min Trophic Index", 3, GeographicalDimensions, 0, outLats, outLons, TimeSteps);
                     DataConverter.AddVariable(GridOutput, "Arithmetic Mean Bodymass", 3, GeographicalDimensions, 0, outLats, outLons, TimeSteps);
                     DataConverter.AddVariable(GridOutput, "Geometric Mean Bodymass", 3, GeographicalDimensions, 0, outLats, outLons, TimeSteps);
+                    DataConverter.AddVariable(GridOutput, "Ecosystem metabolism per unit biomass", 3, GeographicalDimensions, 0, outLats, outLons, TimeSteps);
+
                 }
             }
 
@@ -475,6 +480,8 @@ namespace Madingley
 
                     MetricsGrid["Arithmetic Mean Bodymass"][latIndex, lonIndex] = Metrics.CalculateArithmeticCommunityMeanBodyMass(ecosystemModelGrid, cellIndices, i);
                     MetricsGrid["Geometric Mean Bodymass"][latIndex, lonIndex] = Metrics.CalculateGeometricCommunityMeanBodyMass(ecosystemModelGrid, cellIndices, i);
+                    MetricsGrid["Geometric Mean Bodymass"][latIndex, lonIndex] = Metrics.CalculateGeometricCommunityMeanBodyMass(ecosystemModelGrid, cellIndices, i);
+                    MetricsGrid["Ecosystem metabolism per unit biomass"][latIndex, lonIndex] = Metrics.CalculateBiomassWeightedSystemMetabolism(ecosystemModelGrid, cellIndices, i);        
                 }
             }
             

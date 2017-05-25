@@ -1,7 +1,7 @@
 Parameter,Value
 Live outputs,no
-Track Processes,yes
-Track Cross Cell Processes,yes
+Track Processes,no
+Track Cross Cell Processes,no
 Track Global Processes,yes
 Track marine specifics,yes
 Output Detail,high
