@@ -996,7 +996,7 @@ namespace Madingley
                     CohortFunctionalGroupDefinitions, StockFunctionalGroupDefinitions);
 
                 // Create initial grid outputs
-                GridOutputs.InitialOutputs(EcosystemModelGrid, CohortFunctionalGroupDefinitions, StockFunctionalGroupDefinitions, _CellList, initialisation);
+                GridOutputs.InitialOutputs(EcosystemModelGrid, CohortFunctionalGroupDefinitions, StockFunctionalGroupDefinitions, _CellList, initialisation, 0);
             }
 
         }
