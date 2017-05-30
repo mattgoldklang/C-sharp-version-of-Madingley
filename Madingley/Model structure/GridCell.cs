@@ -264,6 +264,23 @@ namespace Madingley
                         tempVector[0] = 2.0;
                         _CellEnvironment.Add("Realm", tempVector);
 
+                        tempVector = new double[12] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+                        _CellEnvironment.Add("Original picoNPP", tempVector);
+                        _CellEnvironment.Add("Original nanoNPP", tempVector);
+                        _CellEnvironment.Add("Original microNPP", tempVector);
+                        _CellEnvironment.Add("micro_to_pico", tempVector);
+                        _CellEnvironment.Add("DMicro", tempVector);
+                        _CellEnvironment.Add("DPico", tempVector);
+                        _CellEnvironment.Add("DNano", tempVector);
+
+                        tempVector = new double[3] { 0, 0, 0 };
+                        _CellEnvironment.Add("Remaining Biomass", tempVector);
+
+                        tempVector = new double[2] { 0, 0 };
+                        _CellEnvironment.Add("Bloom Start", tempVector);
+                        _CellEnvironment.Add("Bloom End", tempVector);
+                       
+
                         _CellEnvironment.Add("NPP", _CellEnvironment["OceanNPP"]);
                         _CellEnvironment.Add("DiurnalTemperatureRange", _CellEnvironment["OceanDTR"]);
                         if (_CellEnvironment.ContainsKey("Temperature"))
@@ -288,6 +305,7 @@ namespace Madingley
                         tempVector = new double[1];
                         tempVector[0] = 2.0;
                         _CellEnvironment.Add("Realm", tempVector);
+
 
                         _CellEnvironment.Add("NPP", _CellEnvironment["LandNPP"]);
                         _CellEnvironment.Add("DiurnalTemperatureRange", _CellEnvironment["LandDTR"]);

@@ -222,6 +222,7 @@ namespace Madingley
             {
                 _BiomassesEaten[i] = new double[gridCellStocks[i].Count];
                 _PotentialBiomassesEaten[i] = new double[gridCellStocks[i].Count];
+
             }
 
             // Loop over functional groups that can be eaten
@@ -344,9 +345,19 @@ namespace Madingley
 
                     // Remove the biomass eaten from the autotroph stock
                     gridCellStocks[FunctionalGroup][i].TotalBiomass -= _BiomassesEaten[FunctionalGroup][i];
+                    switch(gridCellStocks[FunctionalGroup][i].StockName)
+                    {
+                        case "picophytoplankton":
+                            cellEnvironment["Remaining Biomass"][0] = gridCellStocks[FunctionalGroup][i].TotalBiomass;
+                            break;
+                        case "nanophyoplankton":
+                            cellEnvironment["Remaining Biomass"][1] = gridCellStocks[FunctionalGroup][i].TotalBiomass;
+                            break;
+                        case "Microphyoplankton":
+                            cellEnvironment["Remaining Biomass"][0] = gridCellStocks[FunctionalGroup][i].TotalBiomass;
+                            break;
 
-
-
+                    }
                     // If track processes has been specified, then track flow between primary producers and herbivores
                     if((trackProcesses.TrackProcesses) && (currentTimestep >= initialisation.TimeStepToStartProcessTrackers))
                     {

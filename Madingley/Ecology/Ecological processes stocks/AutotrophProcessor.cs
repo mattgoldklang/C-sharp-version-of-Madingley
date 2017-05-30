@@ -31,6 +31,9 @@ namespace Madingley
         /// Factor to convert NPP from units per m^2 to units per km^2
         /// </summary>
         private const double _MsqToKmSqConversion = 1000000.0;
+
+        private double bloom_start;
+        private double bloom_end;
         /// <summary>
         /// Get the factor to convert NPP from units per m^2 to units per km^2
         /// </summary>
@@ -64,58 +67,208 @@ namespace Madingley
         /// <param name="specificLocations">Whether the model is being run for specific locations</param>
         /// <param name="currentMonth">The current month in the model run</param>
         public void ConvertNPPToAutotroph(FunctionalGroupDefinitions cohortDefinitions, FunctionalGroupDefinitions stockDefinitions,
-            SortedList<string,double[]> cellEnvironment, GridCellStockHandler gridCellStockHandler, int[] 
+            SortedList<string, double[]> cellEnvironment, GridCellStockHandler gridCellStockHandler, int[]
             actingStock, string terrestrialNPPUnits, string oceanicNPPUnits, uint currentTimestep, string GlobalModelTimeStepUnit,
-            ProcessTracker trackProcesses, FunctionalGroupTracker functionalTracker, GlobalProcessTracker globalTracker, string outputDetail, bool specificLocations,uint currentMonth)
+            ProcessTracker trackProcesses, FunctionalGroupTracker functionalTracker, GlobalProcessTracker globalTracker, string outputDetail, bool specificLocations, uint currentMonth)
         {
             double NPP = new double();
+            double mortality = new double();
+            double sinking = new double();
+            double K = new double();
+            double original_npp = new double();
+            double dpico = new double();
+            double pchange = new double();
+            double micro_to_pico = new double();
+            double SST = new double();
+            double newT = new double();
+            Boolean temp = new bool();
+            double[] bloom_values_micro = new double[12];
+            double[] bloom_values_nano = new double[12];
+            double left_overs = new double();
+            double sinking_rate = new double();
+            double dn = new double();
+            int[] bloom_start = new int[2];
+            int[] bloom_end = new int[2];
+            double impact_years = new double();
+            double multiplier = new double();
+
 
             // Check that this is an ocean cell
-            if(cellEnvironment["Realm"][0] == 2.0)
+            if (cellEnvironment["Realm"][0] == 2.0)
             {
+                micro_to_pico = cellEnvironment["microNPP"][currentMonth] / cellEnvironment["picoNPP"][currentMonth];
+                micro_to_pico = cellEnvironment["micro_to_pico"][currentMonth];
+                temp = true;
+                impact_years = 100;
+                //Calculates the bloom phenology of Micro production using the Hopkins et al 2015 method
+                if (currentTimestep == 0)
+                {
+                    for (int m = 0; m < 12; m++)
+                    {
+                        bloom_values_micro[m] = cellEnvironment["microNPP"][m];
+                        bloom_values_nano[m] = cellEnvironment["nanoNPP"][m];
+                        cellEnvironment["Original microNPP"][m] = cellEnvironment["microNPP"][m];
+                        cellEnvironment["Original nanoNPP"][m] = cellEnvironment["nanoNPP"][m];
+                        cellEnvironment["Original picoNPP"][m] = cellEnvironment["picoNPP"][m];
+                    }
+                    
+                    double bloom_max = bloom_values_micro.Max();
+                    int peak_month = bloom_values_micro.ToList().IndexOf(bloom_max);
+                    List<double> prepeak = new List<double>();
+                    List<double> postpeak = new List<double>();
+                    for (int m = 0; m < 12; m++)
+                    {
+                        if (m < peak_month) prepeak.Add(bloom_values_micro[m]);
+                        else if (m > peak_month) postpeak.Add(bloom_values_micro[m]);
+                    }
+                    double pre_min = prepeak.Min();
+                    double post_min = postpeak.Min();
+                    double pre_range = (0.05 * (bloom_max - pre_min)) + pre_min;
+                    double post_range = (0.05 * (bloom_max - post_min)) + post_min;
+                    bloom_start[0] = prepeak.FindIndex(item => item > pre_range);
+                    if (Convert.IsDBNull(bloom_start[0]))
+                    {
+                         bloom_start[0] = prepeak.Count();
+                    }
+                    bloom_end[0] = postpeak.FindIndex(item => item < post_range) + prepeak.Count() + 1;
+                    if (Convert.IsDBNull(bloom_end[0]))
+                    {
+                         bloom_end[0] = prepeak.Count() + 2;
+                    }
+                    cellEnvironment["Bloom Start"][0] = bloom_start[0];
+                    cellEnvironment["Bloom End"][0] = bloom_end[0];
+
+                    double bloom_max_n = bloom_values_nano.Max();
+                    int peak_month_n = bloom_values_nano.ToList().IndexOf(bloom_max_n);
+                    List<double> prepeak_n = new List<double>();
+                    List<double> postpeak_n = new List<double>();
+                    for (int m = 0; m < 12; m++)
+                    {
+                        if (m < peak_month_n) prepeak_n.Add(bloom_values_nano[m]);
+                        else if (m > peak_month_n) postpeak_n.Add(bloom_values_nano[m]);
+                    }
+                    double pre_min_n = prepeak_n.Min();
+                    double post_min_n = postpeak_n.Min();
+                    double pre_range_n = (0.05 * (bloom_max_n - pre_min_n)) + pre_min_n;
+                    double post_range_n = (0.05 * (bloom_max_n - post_min_n)) + post_min_n;
+                    bloom_start[1] = prepeak.FindIndex(item => item > pre_range_n);
+                    if (Convert.IsDBNull(bloom_start[1]))
+                    {
+                        bloom_start[1] = prepeak_n.Count();
+                    }
+                    bloom_end[1] = postpeak.FindIndex(item => item < post_range_n) + prepeak.Count() + 1;
+                    if (Convert.IsDBNull(bloom_end[1]))
+                    {
+                        bloom_end[1] = prepeak_n.Count() + 2;
+                    }
+                    cellEnvironment["Bloom Start"][1] = bloom_start[1];
+                    cellEnvironment["Bloom End"][1] = bloom_end[1];
+                }
+
                 switch (gridCellStockHandler[actingStock].StockName)
                 {
                     case "picophytoplankton":
 
+                        original_npp = cellEnvironment["Original picoNPP"][currentMonth];
+                        left_overs = cellEnvironment["Remaining Biomass"][0];
+                        if (currentTimestep < 600)
                         // Get picophytoplankton NPP from cell environment
-                        NPP = cellEnvironment["picoNPP"][currentMonth];
+                        {
+                            NPP = cellEnvironment["picoNPP"][currentMonth];
+                            K = original_npp;
+                            // If picophytoplankton NPP is a missing value then set to zero
+                            if (NPP == cellEnvironment["Missing Value"][0])
+                            {
+                                NPP = 0.0;
+                                K = 0.001;
+                                original_npp = 0;
+                            }
 
-                        // If picophytoplankton NPP is a missing value then set to zero
-                        if (NPP == cellEnvironment["Missing Value"][0]) NPP = 0.0;
+
+                        }
+
+                        else
+                        {
+                            NPP = cellEnvironment["picoNPP"][currentMonth];
+                            K = cellEnvironment["Original picoNPP"][currentMonth] + cellEnvironment["DMicro"][currentMonth];
+                            multiplier = (((double)currentTimestep + 1 - (impact_years * 12)) / (2400))*.302;
+                            dpico = (NPP * multiplier);
+                            NPP = NPP + dpico + cellEnvironment["DMicro"][currentMonth] + cellEnvironment["DNano"][currentMonth];
+                            cellEnvironment["DMicro"][currentMonth] += dpico*0.5;
+                            cellEnvironment["DNano"][currentMonth] += dpico*0.5;
+
+                        }
 
                         break;
 
                     case "nanophytoplankton":
 
+                        // Get the original NPP value for this month;
+                        original_npp = cellEnvironment["Original nanoNPP"][currentMonth];
+                        left_overs = cellEnvironment["Remaining Biomass"][1];
                         // Get nanophytoplankton NPP from cell environment
                         NPP = cellEnvironment["nanoNPP"][currentMonth];
-
+                        cellEnvironment["Original nanoNPP"][currentMonth] = NPP;
+                        K = original_npp;
                         // If nanophytoplankton NPP is a missing value then set to zero
                         if (NPP == cellEnvironment["Missing Value"][0]) NPP = 0.0;
+                        if (temp == true)
+                        {
+                            newT = cellEnvironment["Temperature"][currentMonth];
+                            SST = cellEnvironment["Original Temperature"][currentMonth];
+                            if (newT < 12) pchange = -0.1;
+                            else if (cellEnvironment["Bloom Start"][1] <= currentMonth && currentMonth <= cellEnvironment["Bloom End"][1])
+                            {
+                                pchange = (cellEnvironment["nanoNPP"][currentMonth] - cellEnvironment["nanoNPP"][(int)cellEnvironment["Bloom Start"][1]]) * ((newT - SST) / SST) * 0.75;
+                            }
+                            else pchange = 0.002;
+                        }
+                        else pchange = 0;
+                        cellEnvironment["DNano"][currentMonth] += NPP * pchange;
+                        NPP = NPP - cellEnvironment["DNano"][currentMonth];
 
                         break;
+           
 
                     case "microphytoplankton":
 
-                        // Get microphytoplankton NPP from cell environment
+                        left_overs = cellEnvironment["Remaining Biomass"][2];
                         NPP = cellEnvironment["microNPP"][currentMonth];
-
-                        // If microphytoplankton NPP is a missing value then set to zero
+                        cellEnvironment["Original microNPP"][currentMonth] = NPP;
+                        K = original_npp;
+                        // If nanophytoplankton NPP is a missing value then set to zero
                         if (NPP == cellEnvironment["Missing Value"][0]) NPP = 0.0;
+                        if (temp == true && currentTimestep >= 600)
+                        {
+                            newT = cellEnvironment["Temperature"][currentMonth];
+                            SST = cellEnvironment["Original Temperature"][currentMonth];
+                            if (newT < 12) pchange = -0.1;
+                            else if (cellEnvironment["Bloom Start"][0] <= currentMonth && currentMonth <= cellEnvironment["Bloom End"][0])
+                            {
+                                pchange = (cellEnvironment["microNPP"][currentMonth] - cellEnvironment["microNPP"][(int)cellEnvironment["Bloom Start"][0]]) * ((newT - SST) / SST) * 0.75;
+                            }
+                            else pchange = 0.002;
+                        }
+                        else pchange = 0;
+                        cellEnvironment["DMicro"][currentMonth] += NPP * pchange;
+                        NPP = NPP - cellEnvironment["DMicro"][currentMonth];
 
-                        break;
-
-                    default:
-                        Debug.Fail("Can't find phytoplankton name in stocks");
-                        Console.WriteLine("Can't find phytoplankton name in stocks");
                         break;
                 }
 
                 // Check that the units of oceanic NPP are gC per m2 per day
                 Debug.Assert(oceanicNPPUnits == "gC/m2/day", "Oceanic NPP data are not in the correct units for this formulation of the model");
 
+                if (NPP == cellEnvironment["Missing Value"][0]) NPP = 0.0;
+
+               // if (K <= 0) K = 0.000001;
+
                 // Convert to g/cell/month
                 NPP *= _MsqToKmSqConversion;
+
+                // Calculate Carrying Capacity 
+                K *= _MsqToKmSqConversion * _PhytoplanktonConversionRatio
+                                * cellEnvironment["Cell Area"][0] * Utilities.ConvertTimeUnits(GlobalModelTimeStepUnit, "day");
 
                 // Multiply by cell area to get g/cell/day
                 NPP *= cellEnvironment["Cell Area"][0];
@@ -123,9 +276,25 @@ namespace Madingley
                 // Convert to g wet matter, assuming carbon content of phytoplankton is 10% of wet matter
                 NPP *= _PhytoplanktonConversionRatio;
 
-                // Finally convert to g/cell/month and add to the stock totalbiomass
+                // Convert to g/cell/month and add to the stock totalbiomass
                 NPP *= Utilities.ConvertTimeUnits(GlobalModelTimeStepUnit, "day");
-                gridCellStockHandler[actingStock].TotalBiomass += NPP;
+
+                //Calculate in grid biomass of current stock
+
+               // K *= 1;
+
+                //Incorporate carrying capacity 
+               // if (currentTimestep >= 500)
+               // {
+               //     dn = NPP *((K-left_overs)/K);
+               // }
+                dn = NPP;
+
+                mortality = (left_overs + dn) * 0.1;
+
+                sinking = (left_overs + dn) * sinking_rate;
+
+                gridCellStockHandler[actingStock].TotalBiomass += (dn - mortality);
 
                 if (trackProcesses.TrackProcesses && (outputDetail == "high") && specificLocations)
                 {
@@ -136,7 +305,7 @@ namespace Madingley
                 if (trackProcesses.TrackProcesses)
                 {
                     functionalTracker.RecordFGFlow((uint)cellEnvironment["LatIndex"][0], (uint)cellEnvironment["LonIndex"][0],
-                        stockDefinitions.GetTraitNames("stock name", actingStock[0]), "autotroph net production", NPP, 
+                        stockDefinitions.GetTraitNames("stock name", actingStock[0]), "autotroph net production", NPP,
                         cellEnvironment["Realm"][0] == 2.0);
                 }
 
@@ -148,9 +317,12 @@ namespace Madingley
 
                 // If the biomass of the autotroph stock has been made less than zero (i.e. because of negative NPP) then reset to zero
                 if (gridCellStockHandler[actingStock].TotalBiomass < 0.0)
+                {
                     gridCellStockHandler[actingStock].TotalBiomass = 0.0;
-            }
+                    Debug.Assert(gridCellStockHandler[actingStock].TotalBiomass >= 0.0, "stock negative");
+                }
 
+            }
             // Else if neither on land or in the ocean
             else
             {
@@ -158,7 +330,7 @@ namespace Madingley
                 // Set the autotroph biomass to zero
                 gridCellStockHandler[actingStock].TotalBiomass = 0.0;
             }
-            Debug.Assert(gridCellStockHandler[actingStock].TotalBiomass >= 0.0, "stock negative");
         }
     }
 }
+

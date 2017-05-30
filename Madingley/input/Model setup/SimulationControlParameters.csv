@@ -1,12 +1,12 @@
 Parameter,Value
 Timestep Units,Month
-Length of simulation (years),1
-Burn-in (years),0
-Impact duration (years),0
+Length of simulation (years),150
+Burn-in (years),50
+Impact duration (years),100
 Recovery duration (years),0
 Top Latitude,44
-Bottom Latitude,42
-Leftmost Longitude,-46
+Bottom Latitude,41
+Leftmost Longitude,-47
 Rightmost Longitude,-44
 Grid Cell Size,1
 Read State,
@@ -16,7 +16,7 @@ Plankton size threshold,1
 Draw Randomly,yes
 Extinction Threshold,1
 Maximum Number Of Cohorts,1000
-Run Cells In Parallel,yes
+Run Cells In Parallel,no
 Run Simulations In Parallel,no
 Run Single Realm,Marine
 Impact Cell Index,all
