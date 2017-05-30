@@ -279,7 +279,9 @@ namespace Madingley
                         tempVector = new double[2] { 0, 0 };
                         _CellEnvironment.Add("Bloom Start", tempVector);
                         _CellEnvironment.Add("Bloom End", tempVector);
-                       
+
+                        tempVector = new double[1] { 0 };
+                        _CellEnvironment.Add("multiplier", tempVector);
 
                         _CellEnvironment.Add("NPP", _CellEnvironment["OceanNPP"]);
                         _CellEnvironment.Add("DiurnalTemperatureRange", _CellEnvironment["OceanDTR"]);

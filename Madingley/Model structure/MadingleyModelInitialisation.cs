@@ -31,7 +31,6 @@ namespace Madingley
         /// The number of time steps to be run in the simulations
         /// </summary>
         private uint _NumTimeSteps;
-        /// <summary>
         /// Get and set the number of time steps to be run in the simulations
         /// </summary>
         public uint NumTimeSteps

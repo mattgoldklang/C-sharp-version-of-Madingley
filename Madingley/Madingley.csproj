@@ -208,6 +208,7 @@
     <Compile Include="Impacts\Fisheries\LWAllometries.cs" />
     <Compile Include="Impacts\Harvesting.cs" />
     <Compile Include="Impacts\ImpactsSpatialHandler.cs" />
+    <Compile Include="Impacts\OceanAcidification.cs" />
     <Compile Include="Model structure\ApplyEcology.cs" />
     <Compile Include="Ecology\Ecological processes stocks\Ecological processes cohorts\Eating implementations\Technical code\IEatingImplementation.cs" />
     <Compile Include="Ecology\Ecological processes stocks\Ecological processes cohorts\Technical code\IEcologicalProcessAcrossGridCells.cs" />
@@ -353,68 +354,9 @@
     <None Include="input\Model setup\SimulationControlParameters.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="input\ModelStates\ModelState_11400.nc">
+    <None Include="input\ModelStates\ModelState_2390.nc">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="input\ModelStates\ModelState_11410.nc" />
-    <None Include="input\ModelStates\ModelState_11420.nc" />
-    <None Include="input\ModelStates\ModelState_11430.nc" />
-    <None Include="input\ModelStates\ModelState_11440.nc" />
-    <None Include="input\ModelStates\ModelState_11450.nc" />
-    <None Include="input\ModelStates\ModelState_11460.nc" />
-    <None Include="input\ModelStates\ModelState_11470.nc" />
-    <None Include="input\ModelStates\ModelState_11480.nc" />
-    <None Include="input\ModelStates\ModelState_11490.nc" />
-    <None Include="input\ModelStates\ModelState_11500.nc" />
-    <None Include="input\ModelStates\ModelState_11510.nc" />
-    <None Include="input\ModelStates\ModelState_11520.nc" />
-    <None Include="input\ModelStates\ModelState_11530.nc" />
-    <None Include="input\ModelStates\ModelState_11540.nc" />
-    <None Include="input\ModelStates\ModelState_11550.nc" />
-    <None Include="input\ModelStates\ModelState_11560.nc" />
-    <None Include="input\ModelStates\ModelState_11570.nc" />
-    <None Include="input\ModelStates\ModelState_11580.nc" />
-    <None Include="input\ModelStates\ModelState_11590.nc" />
-    <None Include="input\ModelStates\ModelState_11600.nc" />
-    <None Include="input\ModelStates\ModelState_11610.nc" />
-    <None Include="input\ModelStates\ModelState_11620.nc" />
-    <None Include="input\ModelStates\ModelState_11630.nc" />
-    <None Include="input\ModelStates\ModelState_11640.nc" />
-    <None Include="input\ModelStates\ModelState_11650.nc" />
-    <None Include="input\ModelStates\ModelState_11660.nc" />
-    <None Include="input\ModelStates\ModelState_11670.nc" />
-    <None Include="input\ModelStates\ModelState_11680.nc" />
-    <None Include="input\ModelStates\ModelState_11690.nc" />
-    <None Include="input\ModelStates\ModelState_11700.nc" />
-    <None Include="input\ModelStates\ModelState_11710.nc" />
-    <None Include="input\ModelStates\ModelState_11720.nc" />
-    <None Include="input\ModelStates\ModelState_11730.nc" />
-    <None Include="input\ModelStates\ModelState_11740.nc" />
-    <None Include="input\ModelStates\ModelState_11750.nc" />
-    <None Include="input\ModelStates\ModelState_11760.nc" />
-    <None Include="input\ModelStates\ModelState_11770.nc" />
-    <None Include="input\ModelStates\ModelState_11780.nc" />
-    <None Include="input\ModelStates\ModelState_11790.nc" />
-    <None Include="input\ModelStates\ModelState_11800.nc" />
-    <None Include="input\ModelStates\ModelState_11810.nc" />
-    <None Include="input\ModelStates\ModelState_11820.nc" />
-    <None Include="input\ModelStates\ModelState_11830.nc" />
-    <None Include="input\ModelStates\ModelState_11840.nc" />
-    <None Include="input\ModelStates\ModelState_11850.nc" />
-    <None Include="input\ModelStates\ModelState_11860.nc" />
-    <None Include="input\ModelStates\ModelState_11870.nc" />
-    <None Include="input\ModelStates\ModelState_11880.nc" />
-    <None Include="input\ModelStates\ModelState_11890.nc" />
-    <None Include="input\ModelStates\ModelState_11900.nc" />
-    <None Include="input\ModelStates\ModelState_11910.nc" />
-    <None Include="input\ModelStates\ModelState_11920.nc" />
-    <None Include="input\ModelStates\ModelState_11930.nc" />
-    <None Include="input\ModelStates\ModelState_11940.nc" />
-    <None Include="input\ModelStates\ModelState_11950.nc" />
-    <None Include="input\ModelStates\ModelState_11960.nc" />
-    <None Include="input\ModelStates\ModelState_11970.nc" />
-    <None Include="input\ModelStates\ModelState_11980.nc" />
-    <None Include="input\ModelStates\ModelState_11990.nc" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

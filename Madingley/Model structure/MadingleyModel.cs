@@ -286,6 +286,16 @@ namespace Madingley
         public Tuple<string, double, double> TemperatureScenario
         { get { return _TemperatureScenario; } }
 
+        //Get the scenario of OA to use 
+        /// <summary>
+        /// </summary>
+        private Tuple<string, double, double> _OAScenario;
+        /// <summary>
+        /// OA scenario to use
+        /// </summary>
+        public Tuple<string, double, double> OAScenario
+        { get { return _OAScenario; } }
+
         /// <summary>
         /// The scenario of direct animal harvesting to use
         /// </summary>
@@ -312,6 +322,9 @@ namespace Madingley
 
         // An instance of the climate change impacts class
         ClimateChange ClimateChangeSimulator;
+
+        // An instance of the OA impacts class
+        OA OAsimulator;
 
         // An instance of the direct harvesting impacts class
         Harvesting HarvestingSimulator;
@@ -425,6 +438,9 @@ namespace Madingley
 
             // Initialise the climate change impacts class
             ClimateChangeSimulator = new ClimateChange();
+
+            //Initialise the OA impacts class
+            OAsimulator = new OA();
 
             // Initialise the harvesting impacts class
             HarvestingSimulator = new Harvesting(EcosystemModelGrid.Lats, EcosystemModelGrid.Lons, (float)EcosystemModelGrid.LatCellSize);
@@ -663,6 +679,11 @@ namespace Madingley
                 _TemperatureScenario, CurrentTimeStep, CurrentMonth, NumBurninSteps, NumImpactSteps,
                 ((initialisation.ImpactCellIndices.Contains((uint)cellIndex) || initialisation.ImpactAll)));
 
+            //Apply any OA impacts 
+            OAsimulator.ApplyOAScenario(EcosystemModelGrid.GetCellEnvironment(_CellList[cellIndex][0], _CellList[cellIndex][1]),
+                _OAScenario, CurrentTimeStep, CurrentMonth, NumBurninSteps, NumTimeSteps, NumImpactSteps,
+                ((initialisation.ImpactCellIndices.Contains((uint)cellIndex) || initialisation.ImpactAll)));
+
             // Create a temporary internal copy of the grid cell cohorts
             GridCellCohortHandler WorkingGridCellCohorts = EcosystemModelGrid.GetGridCellCohorts(_CellList[cellIndex][0], _CellList[cellIndex][1]);
 
@@ -735,6 +756,7 @@ namespace Madingley
             EnviroStack = initialisation.EnviroStack;
             _HumanNPPScenario = scenarioParameters.scenarioParameters.ElementAt(scenarioIndex).Item3["npp"];
             _TemperatureScenario = scenarioParameters.scenarioParameters.ElementAt(scenarioIndex).Item3["temperature"];
+            _OAScenario = scenarioParameters.scenarioParameters.ElementAt(scenarioIndex).Item3["ocean acidification"];
             _HarvestingScenario = scenarioParameters.scenarioParameters.ElementAt(scenarioIndex).Item3["harvesting"];
             OutputFilesSuffix = outputFilesSuffix;
             EnvironmentalDataUnits = initialisation.Units;
@@ -1173,7 +1195,7 @@ namespace Madingley
                         latCellIndex, lonCellIndex), EnvironmentalDataUnits, _HumanNPPScenario, CohortFunctionalGroupDefinitions, StockFunctionalGroupDefinitions,
                         CurrentTimeStep, NumBurninSteps, NumImpactSteps, initialisation.RecoveryTimeSteps, initialisation.InstantaneousTimeStep, initialisation.NumInstantaneousTimeStep, 
                         _GlobalModelTimeStepUnit, ProcessTrackers[cellIndex].TrackProcesses, ProcessTrackers[cellIndex],
-                        FGTracker, TrackGlobalProcesses, CurrentMonth,
+                        FGTracker, TrackGlobalProcesses, CurrentMonth, _TemperatureScenario,
                         InitialisationFileStrings["OutputDetail"], SpecificLocations, ((initialisation.ImpactCellIndices.Contains((uint)cellIndex) || (initialisation.ImpactAll))));
 
                 }

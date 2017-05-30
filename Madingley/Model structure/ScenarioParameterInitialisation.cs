@@ -127,6 +127,24 @@ namespace Madingley
                             }
                         }
                         break;
+                    case "ocean acidification":
+                        // Loop over scenarios and extract the temperature parameters for each
+                        for (int i = 0; i < _scenarioNumber; i++)
+                        {
+                            string[] pair = TempValues.GetValue(i).ToString().Split(' ');
+
+                            if (pair.Length > 2)
+                            {
+                                _scenarioParameters.ElementAt(i).Item3.Add
+                                    ("ocean acidification", new Tuple<string, double, double>(pair[0], Convert.ToDouble(pair[1]), Convert.ToDouble(pair[2])));
+                            }
+                            else
+                            {
+                                _scenarioParameters.ElementAt(i).Item3.Add
+                                    ("ocean acidification", new Tuple<string, double, double>(pair[0], Convert.ToDouble(pair[1]), -999));
+                            }
+                        }
+                        break;
                     case "harvesting":
                         // Loop over scenarios and exract the harvesting parameters for each
                         for (int i = 0; i < _scenarioNumber; i++)

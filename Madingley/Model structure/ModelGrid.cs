@@ -1889,7 +1889,7 @@ namespace Madingley
         /// <returns>A sorted list containing environmental data layer names and values</returns>
         public SortedList<string, double[]> GetCellEnvironment(uint cellLatIndex, uint cellLonIndex)
         {
-            return InternalGrid[cellLatIndex, cellLonIndex].CellEnvironment;
+            return  InternalGrid[cellLatIndex, cellLonIndex].CellEnvironment;
         }
 
         /// <summary>

@@ -68,14 +68,14 @@ namespace Madingley
             SortedList<string, string> environmentalDataUnits, Tuple<string, double, double> humanNPPScenario,
             FunctionalGroupDefinitions madingleyCohortDefinitions, FunctionalGroupDefinitions madingleyStockDefinitions, 
             uint currentTimeStep, uint burninSteps, uint impactSteps,uint recoverySteps, uint instantStep, uint numInstantSteps, string globalModelTimeStepUnit, Boolean trackProcesses, 
-            ProcessTracker tracker, FunctionalGroupTracker functionalTracker, GlobalProcessTracker globalTracker, uint currentMonth, 
+            ProcessTracker tracker, FunctionalGroupTracker functionalTracker, GlobalProcessTracker globalTracker, uint currentMonth, Tuple<string, double, double> TemperatureScenario,
             string outputDetail, bool specificLocations, Boolean impactCell)
         {
             if (madingleyStockDefinitions.GetTraitNames("Realm", actingStock[0]) == "marine")
             {
                 // Run the autotroph processor
-                MarineNPPtoAutotrophStock.ConvertNPPToAutotroph(madingleyCohortDefinitions, madingleyStockDefinitions, cellEnvironment, gridCellStocks, actingStock, environmentalDataUnits["LandNPP"], 
-                    environmentalDataUnits["OceanNPP"], currentTimeStep,globalModelTimeStepUnit,tracker, functionalTracker, globalTracker ,outputDetail,specificLocations,currentMonth);
+                MarineNPPtoAutotrophStock.ConvertNPPToAutotroph(madingleyCohortDefinitions, madingleyStockDefinitions, cellEnvironment, gridCellStocks, actingStock, environmentalDataUnits["LandNPP"],
+                    environmentalDataUnits["OceanNPP"], TemperatureScenario, burninSteps, currentTimeStep,globalModelTimeStepUnit,tracker, functionalTracker, globalTracker ,outputDetail,specificLocations,currentMonth);
             }
             else if (madingleyStockDefinitions.GetTraitNames("Realm", actingStock[0]) == "terrestrial")
             {
