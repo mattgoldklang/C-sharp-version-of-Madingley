@@ -86,6 +86,9 @@ namespace Madingley
             // Extract the biomass deltas from the sorted list of all deltas
             Dictionary<string, double> deltaBiomass = deltas["biomass"];
 
+            // Update biomass pool of respiring biomass
+            cellEnvironment["Respiring Biomass Pool Per Timestep"][0] += deltas["biomass"]["respiring biomass"];
+
             if (tracker.TrackProcesses && (currentTimestep >= initialisation.TimeStepToStartProcessTrackers))
             {
                 // Calculate net growth of individuals in this cohort
@@ -117,8 +120,11 @@ namespace Madingley
             // Loop over all biomass deltas
             foreach (string key in KeyStrings)
             {
-                // Update net biomass change
-                NetBiomass += deltaBiomass[key];
+                if (key != "respiring biomass")
+                {                // Update net biomass change
+                    NetBiomass += deltaBiomass[key];
+                } else
+                    ;
             }
 
             double BiomassCheck=0.0;

@@ -82,6 +82,8 @@ namespace Madingley
             uint currentTimestep, uint currentMonth)
         {
 
+            // Add in the total biomass which is respiring to the appropriate delta
+            deltas["biomass"]["respiring biomass"] += gridCellCohorts[actingCohort].IndividualBodyMass * gridCellCohorts[actingCohort].CohortAbundance;
 
             // Calculate metabolic loss for an individual and add the value to the delta biomass for metabolism
             deltas["biomass"]["metabolism"] = -CalculateIndividualMetabolicRate(gridCellCohorts[actingCohort].IndividualBodyMass,

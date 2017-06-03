@@ -1168,10 +1168,11 @@ namespace Madingley
             return InternalGrid[latIndex, lonIndex].GridCellCohorts[functionalGroup].ElementAt(positionInList);
         }
 
-        // Reset the per time step respiratory pool
+        // Reset the per time step respiratory and biomass pools
         public void ResetGridCellPerTimestepCO2Pool(uint latIndex, uint lonIndex)
         {
             InternalGrid[latIndex, lonIndex].SetEnviroLayer("Respiratory CO2 Pool Per Timestep", 0, 0.0);
+            InternalGrid[latIndex, lonIndex].SetEnviroLayer("Respiring Biomass Pool Per Timestep", 0, 0.0);
         }
        
 

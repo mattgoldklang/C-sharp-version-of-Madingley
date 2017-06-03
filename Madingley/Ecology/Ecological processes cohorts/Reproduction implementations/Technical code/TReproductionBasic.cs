@@ -107,8 +107,14 @@ namespace Madingley
             
             foreach (var Biomass in deltas["biomass"])
             {
-                // Add the delta biomass to net biomass
-                BodyMassIncludingChangeThisTimeStep += Biomass.Value;
+
+                if (Biomass.Key != "respiring biomass")
+                {
+                    // Add the delta biomass to net biomass
+                    BodyMassIncludingChangeThisTimeStep += Biomass.Value;
+                }
+                else
+                    ;
 
             }
 
@@ -276,8 +282,11 @@ namespace Madingley
             // Loop over all items in the biomass deltas
             foreach (var Biomass in deltas["biomass"])
             {
-                // Add the delta biomass to net biomass
-                NetBiomassFromOtherEcologicalFunctionsThisTimeStep += Biomass.Value;
+                if (Biomass.Key != "respiring biomass")
+                {
+                    // Add the delta biomass to net biomass
+                    NetBiomassFromOtherEcologicalFunctionsThisTimeStep += Biomass.Value;
+                }
             }
 
             // If individual body mass after the addition of the net biomass from processes this time step will yield a body mass 
