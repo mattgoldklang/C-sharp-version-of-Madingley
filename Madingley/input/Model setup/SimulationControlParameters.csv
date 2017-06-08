@@ -1,9 +1,9 @@
 Parameter,Value
 Timestep Units,Month
-Length of simulation (years),400
+Length of simulation (years),300
 Burn-in (years),200
 Impact duration (years),100
-Recovery duration (years),100
+Recovery duration (years),0
 Top Latitude,44
 Bottom Latitude,42
 Leftmost Longitude,-47

@@ -134,8 +134,6 @@ namespace Madingley
             int MinFG = 0;
             int MinC = 0;
 
-
-
             for (int i = 0; i < numberIndices; i++)
             {
                 MinMass = 1E9;

@@ -118,10 +118,19 @@ namespace Madingley
             double NetBiomass = 0.0;
 
             // Loop over all biomass deltas
+
             foreach (string key in KeyStrings)
+
             {
-                // Update net biomass change
-                NetBiomass += deltaBiomass[key];
+                if (key != "respiring biomass")
+                {                // Update net biomass change
+
+                    NetBiomass += deltaBiomass[key];
+
+                }
+                else
+                    ;
+
             }
 
             double BiomassCheck=0.0;
