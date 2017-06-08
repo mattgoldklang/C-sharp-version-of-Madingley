@@ -8,7 +8,7 @@ using System.Diagnostics;
 namespace Madingley
 {
     /// <summary>
-    /// Adjusts cell climate parameters to simulate the impacts of climate change
+    /// Adjusts cell climate parameters to simulate the impacts of Ocean Acidification
     /// </summary>
     class OA
     {

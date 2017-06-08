@@ -1167,7 +1167,13 @@ namespace Madingley
         {
             return InternalGrid[latIndex, lonIndex].GridCellCohorts[functionalGroup].ElementAt(positionInList);
         }
+        public void ResetGridCellPerTimestepCO2Pool(uint latIndex, uint lonIndex)
+        {
 
+            InternalGrid[latIndex, lonIndex].SetEnviroLayer("Respiratory CO2 Pool Per Timestep", 0, 0.0);
+            InternalGrid[latIndex, lonIndex].SetEnviroLayer("Respiring Biomass Pool Per Timestep", 0, 0.0);
+       
+        }
         // NOTE TO SELF: These need more error checking, and also the access levels more tightly controlled
         /// <summary>
         /// Remove an individual cohort from a functionall group; necessary due to dispersal moving cohorts from one cell to another
