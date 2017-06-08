@@ -602,7 +602,14 @@ namespace Madingley
         /// <param name="deltaType">The type of delta to set the value for: 'biomass', 'abundance', 'reproductivebiomass', 'organicpool' or 'respiratoryCO2pool</param>
         /// <param name="ecologicalProcess">The ecological process to set the value for</param>
         /// <param name="setValue">Value to set</param>
-        /// <returns>Whether the delta type and ecological process were found within the cell deltas</returns>
+        /// <returns>Whether the delta type and ecological process were found within the cell 
+        /// 
+        /// 
+        /// 
+        /// 
+        /// 
+        /// 
+        /// </returns>
         public bool SetDelta(string deltaType, string ecologicalProcess, double setValue)
         {
             // If the specified ecological and process exist in the cell deltas, then set the value and return true; otherwise, return false

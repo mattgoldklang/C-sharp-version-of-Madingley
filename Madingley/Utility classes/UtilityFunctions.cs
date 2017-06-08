@@ -66,10 +66,10 @@ namespace Madingley
                     RandomOrderIndices[SwapIndex] = Temp;
                 }
             }
-
+            
             // Return the randomly ordered vector of cohort indices
             return RandomOrderIndices;
-
+          
         }
 
         /// <summary>
@@ -91,7 +91,7 @@ namespace Madingley
             {
                 OrderedCohorts[ii] = ii;
             }
-
+            
             // Copy the ordered vector of cohorts to the vector for the non-randomly reordered cohorts
             OrderedCohorts.CopyTo(RandomOrderCohorts, 0);
             // Declare and initialise an instance of Ranodm for random number generation, using the current time step as a deterministic seed to 
@@ -134,6 +134,8 @@ namespace Madingley
             int MinFG = 0;
             int MinC = 0;
 
+
+
             for (int i = 0; i < numberIndices; i++)
             {
                 MinMass = 1E9;
@@ -170,7 +172,7 @@ namespace Madingley
         public uint GetCurrentMonth(uint currentTimestep, string modelTimestepUnits)
         {
             uint Month;
-
+            
             double DaysInYear = 360.0;
             double MonthsInYear = 12.0;
             double DaysInWeek = 7.0;
@@ -184,14 +186,14 @@ namespace Madingley
                     Month = currentTimestep % 12;
                     break;
                 case "week":
-                    Month = (uint)Math.Floor(currentTimestep / ((DaysInYear / MonthsInYear) / DaysInWeek)) % 12;
+                    Month = (uint)Math.Floor(currentTimestep / ((DaysInYear/MonthsInYear)/DaysInWeek)) % 12;
                     break;
                 case "day":
                     Month = (uint)Math.Floor(currentTimestep / (DaysInYear / MonthsInYear)) % 12;
                     break;
                 default:
                     Debug.Fail("Requested model time units not currently supported");
-                    Month = 100;
+                    Month =  100;
                     break;
 
             }
@@ -221,23 +223,23 @@ namespace Madingley
                     switch (toUnit.ToLower())
                     {
                         case "year":
-                            ConversionValue = 1.0;
+                            ConversionValue =  1.0;
                             break;
                         case "month":
-                            ConversionValue = MonthsInYear;
+                            ConversionValue =  MonthsInYear;
                             break;
                         case "bimonth":
-                            ConversionValue = MonthsInYear * 2;
+                            ConversionValue = MonthsInYear*2;
                             break;
                         case "week":
-                            ConversionValue = DaysInYear / DaysInWeek;
+                            ConversionValue = DaysInYear/DaysInWeek;
                             break;
                         case "day":
-                            ConversionValue = DaysInYear;
+                            ConversionValue =  DaysInYear;
                             break;
                         default:
                             Debug.Fail("Requested combination of time units not currently supported");
-                            ConversionValue = 0;
+                            ConversionValue =  0;
                             break;
                     }
                     break;
@@ -245,16 +247,16 @@ namespace Madingley
                     switch (toUnit.ToLower())
                     {
                         case "year":
-                            ConversionValue = 1.0 / MonthsInYear;
+                            ConversionValue =  1.0 / MonthsInYear;
                             break;
                         case "month":
-                            ConversionValue = 1.0;
+                            ConversionValue =  1.0;
                             break;
                         case "bimonth":
                             ConversionValue = 2.0;
                             break;
                         case "week":
-                            ConversionValue = (DaysInYear / MonthsInYear) / DaysInWeek;
+                            ConversionValue = (DaysInYear/MonthsInYear)/DaysInWeek;
                             break;
                         case "day":
                             ConversionValue = (DaysInYear / MonthsInYear);
@@ -264,7 +266,7 @@ namespace Madingley
                             break;
                         default:
                             Debug.Fail("Requested combination of time units not currently supported");
-                            ConversionValue = 0;
+                            ConversionValue =  0;
                             break;
                     }
                     break;
@@ -272,7 +274,7 @@ namespace Madingley
                     switch (toUnit.ToLower())
                     {
                         case "year":
-                            ConversionValue = 1.0 / (MonthsInYear * 2);
+                            ConversionValue = 1.0 / (MonthsInYear*2);
                             break;
                         case "month":
                             ConversionValue = 1 / 2.0;
@@ -300,13 +302,13 @@ namespace Madingley
                     switch (toUnit.ToLower())
                     {
                         case "year":
-                            ConversionValue = DaysInWeek / DaysInYear;
+                            ConversionValue = DaysInWeek/DaysInYear;
                             break;
                         case "month":
-                            ConversionValue = DaysInWeek / (DaysInYear / MonthsInYear);
+                            ConversionValue = DaysInWeek/(DaysInYear / MonthsInYear);
                             break;
                         case "bimonth":
-                            ConversionValue = DaysInWeek / (DaysInYear / (MonthsInYear * 2));
+                            ConversionValue = DaysInWeek / (DaysInYear / (MonthsInYear*2));
                             break;
                         case "week":
                             ConversionValue = 1.0;
@@ -327,7 +329,7 @@ namespace Madingley
                     switch (toUnit.ToLower())
                     {
                         case "year":
-                            ConversionValue = 1.0 / DaysInYear;
+                            ConversionValue =  1.0 / DaysInYear;
                             break;
                         case "month":
                             ConversionValue = 1.0 / (DaysInYear / MonthsInYear);
@@ -339,17 +341,17 @@ namespace Madingley
                             ConversionValue = 1.0 / DaysInWeek;
                             break;
                         case "day":
-                            ConversionValue = 1.0;
+                            ConversionValue =  1.0;
                             break;
                         default:
                             Debug.Fail("Requested combination of time units not currently supported");
-                            ConversionValue = 0;
+                            ConversionValue =  0;
                             break;
                     }
                     break;
                 default:
                     Debug.Fail("Requested combination of time units not currently supported");
-                    ConversionValue = 0;
+                    ConversionValue =  0;
                     break;
             }
 
@@ -399,7 +401,7 @@ namespace Madingley
             return ValueLocation;
 
         }
-
+        
         /// <summary>Converts values per square km to per square degree, given cell latitude</summary>
         /// <param name="valueToConvert">The value per square km</param>
         /// <param name="latitude">The latitude of the grid cell</param>
@@ -409,7 +411,7 @@ namespace Madingley
             // Convert the value to per sqaure degree using the cosine of latitude and assuming cell dimensions of 110km by 110km at the Equator
             return valueToConvert * 110000.0 * 110000.0 * Math.Cos(DegreesToRadians(latitude));
         }
-
+        
         /// <summary>
         /// Calculates the probability of a particular value under a log-normal distribution with specified mean and standard deviation
         /// </summary>
@@ -422,7 +424,7 @@ namespace Madingley
             // Calculate the mean of the log-normal distribution in log space
             double meanLog = Math.Log(meanIdentity);
             // Calculate and return the probability of the specified value under the specified log-normal distribution
-            return (1 / Math.Sqrt(2 * Math.PI * Math.Pow(standardDeviation, 2))) * Math.Exp(-(Math.Pow(Math.Log(xValue) - meanLog, 2) / (2 * Math.Pow(standardDeviation, 2))));
+            return (1 / Math.Sqrt(2*Math.PI * Math.Pow(standardDeviation,2)))*Math.Exp(-(Math.Pow(Math.Log(xValue)-meanLog,2)/(2*Math.Pow(standardDeviation,2))));
         }
 
         /// <summary>
@@ -466,13 +468,13 @@ namespace Madingley
             double Flattening = 1 - Math.Cos(DegreesToRadians(AngularEccentricity));
 
             // Temporary value to save computations
-            double TempVal = Math.Pow((EquatorialRadius * Math.Cos(latitudeRad)), 2) + Math.Pow((PolarRadius * Math.Sin(latitudeRad)), 2);
+            double TempVal = Math.Pow((EquatorialRadius * Math.Cos(latitudeRad)),2) + Math.Pow((PolarRadius * Math.Sin(latitudeRad)),2);
 
             // Meridional radius of curvature
-            double MPhi = Math.Pow(EquatorialRadius * PolarRadius, 2) / Math.Pow(TempVal, 1.5);
-
+            double MPhi = Math.Pow(EquatorialRadius * PolarRadius,2) / Math.Pow(TempVal,1.5);
+            
             // Normal radius of curvature
-            double NPhi = Math.Pow(EquatorialRadius, 2) / Math.Sqrt(TempVal);
+            double NPhi = Math.Pow(EquatorialRadius,2) / Math.Sqrt(TempVal);
 
             // Length of latitude (km)
             double LatitudeLength = Math.PI / 180 * MPhi / 1000;

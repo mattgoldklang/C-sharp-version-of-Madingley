@@ -308,7 +308,6 @@ namespace Madingley
 
             return MetabolicLoss / TotalBiomass;
         }
-
         /// <summary>
         /// Calculates the arithmetic community weighted mean body mass
         /// </summary>

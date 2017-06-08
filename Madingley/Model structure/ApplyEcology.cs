@@ -118,19 +118,13 @@ namespace Madingley
             double NetBiomass = 0.0;
 
             // Loop over all biomass deltas
-
             foreach (string key in KeyStrings)
-
             {
                 if (key != "respiring biomass")
                 {                // Update net biomass change
-
                     NetBiomass += deltaBiomass[key];
-
-                }
-                else
+                } else
                     ;
-
             }
 
             double BiomassCheck=0.0;
@@ -247,6 +241,7 @@ namespace Madingley
             // Loop over all keys in the respiratory pool deltas sorted list
             foreach (var key in KeyStrings)
             {
+            
                 // Check that the delta value is not negative
                 Debug.Assert(DeltaRespiratoryPool[key] >= 0.0, "A delta value for the respiratory CO2 pool is negative");
                 // Update the respiratory CO2 pool
