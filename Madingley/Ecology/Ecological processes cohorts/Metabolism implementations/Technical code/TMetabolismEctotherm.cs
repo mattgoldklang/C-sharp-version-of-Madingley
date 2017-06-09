@@ -22,7 +22,7 @@ namespace Madingley
         /// <summary>
         /// Get the scalar to convert from the time units used by this metabolism implementation to the global model time step units
         /// </summary>
-        public double DeltaT { get { return _DeltaT; } }
+        public double DeltaT { get {  return _DeltaT;  } }
 
         /// <summary>
         /// Constant to convert temperature in degrees Celsius to temperature in Kelvin

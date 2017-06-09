@@ -1018,7 +1018,7 @@ namespace Madingley
                     CohortFunctionalGroupDefinitions, StockFunctionalGroupDefinitions);
 
                 // Create initial grid outputs
-                GridOutputs.InitialOutputs(EcosystemModelGrid, CohortFunctionalGroupDefinitions, StockFunctionalGroupDefinitions, _CellList, initialisation, 0);
+                GridOutputs.InitialOutputs(EcosystemModelGrid, CohortFunctionalGroupDefinitions, StockFunctionalGroupDefinitions, _CellList, initialisation,0);
             }
 
         }
@@ -1246,9 +1246,7 @@ namespace Madingley
             // Create a jagged array indexed by functional groups to hold cohort indices
             CohortIndices = new uint[CohortFunctionalGroupDefinitions.GetNumberOfFunctionalGroups()][];
 
-            RandomCohortOrder = Utilities.MassOrderedIndices(workingGridCellCohorts, CohortIndices, TotalCohortNumber);
-
-            /* Loop over functional groups
+            // Loop over functional groups
             for (int ll = 0; ll < CohortFunctionalGroupDefinitions.GetNumberOfFunctionalGroups(); ll++)
             {
                 // Dimension the number of columns in each row of the jagged array to equal number of gridCellCohorts in each functional group
@@ -1272,7 +1270,7 @@ namespace Madingley
 
             RandomCohortOrder = Utilities.MassOrderedIndices(workingGridCellCohorts, CohortIndices, TotalCohortNumber);
 
-            //if (DrawRandomly)
+            /*if (DrawRandomly)
             //{
             //    // Randomly order the cohort indices
             //    RandomCohortOrder = Utilities.RandomlyOrderedIndices(TotalCohortNumber);

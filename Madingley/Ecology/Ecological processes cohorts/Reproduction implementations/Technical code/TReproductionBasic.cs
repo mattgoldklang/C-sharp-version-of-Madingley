@@ -135,9 +135,9 @@ namespace Madingley
             CurrentMassRatio = (BodyMassIncludingChangeThisTimeStep + ReproductiveMassIncludingChangeThisTimeStep) / gridCellCohorts[actingCohort].AdultMass;
 
             // Must have enough mass to hit reproduction threshold criterion, and either (1) be in breeding season, or (2) be a marine cell (no breeding season in marine cells)
-            if ((CurrentMassRatio > _MassRatioThreshold) && ((cellEnvironment["Breeding Season"][currentMonth] == 1.0) || ((cellEnvironment["Realm"][0] == 2.0))))
+            if((CurrentMassRatio > _MassRatioThreshold) && ((cellEnvironment["Breeding Season"][currentMonth] == 1.0) || ((cellEnvironment["Realm"][0] == 2.0))))
             {
-                switch (madingleyCohortDefinitions.GetTraitNames("reproductive strategy", gridCellCohorts[actingCohort].FunctionalGroupIndex))
+                switch(madingleyCohortDefinitions.GetTraitNames("reproductive strategy", gridCellCohorts[actingCohort].FunctionalGroupIndex))
                 {
                     case "iteroparity":
                         // Iteroparous organisms do not allocate any of their current non-reproductive biomass to reproduction
@@ -199,7 +199,7 @@ namespace Madingley
                 }
 
                 // Create the offspring cohort
-                if (madingleyCohortDefinitions.GetTraitNames("reproductive strategy", gridCellCohorts[actingCohort].FunctionalGroupIndex) == "cell division")
+                if(madingleyCohortDefinitions.GetTraitNames("reproductive strategy", gridCellCohorts[actingCohort].FunctionalGroupIndex) == "cell division")
                 {
                     // Set the number of new cohorts to be produced
                     float numberOfCohorts = 2.0f;
@@ -208,7 +208,7 @@ namespace Madingley
                     _OffspringCohortAbundance = _OffspringCohortAbundance / numberOfCohorts;
 
                     // Loop over the number of new cohorts to create the offspring cohorts
-                    for (int i = 0; i < (int)numberOfCohorts; i++)
+                    for(int i = 0; i < (int)numberOfCohorts; i++)
                     {
                         OffspringCohort = new Cohort((byte)actingCohort[0], OffspringJuvenileAndAdultBodyMasses[0], OffspringJuvenileAndAdultBodyMasses[1], OffspringJuvenileAndAdultBodyMasses[0],
                                                     _OffspringCohortAbundance, Math.Exp(gridCellCohorts[actingCohort].LogOptimalPreyBodySizeRatio),
