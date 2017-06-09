@@ -122,6 +122,16 @@ namespace Madingley
                         if (m < peak_month) prepeak.Add(bloom_values_micro[m]);
                         else if (m > peak_month) postpeak.Add(bloom_values_micro[m]);
                     }
+                    if(prepeak.Count < 1)
+                    {
+                        peak_month = 6;
+                        bloom_max = bloom_values_micro[6];
+                        for (int m = 0; m < 12; m++)
+                        {
+                            if (m < peak_month) prepeak.Add(bloom_values_micro[m]);
+                            else if (m > peak_month) postpeak.Add(bloom_values_micro[m]);
+                        }
+                    }
                     double pre_min = prepeak.Min();
                     double post_min = postpeak.Min();
                     double pre_range = (0.05 * (bloom_max - pre_min)) + pre_min;
@@ -148,6 +158,16 @@ namespace Madingley
                         if (m < peak_month_n) prepeak_n.Add(bloom_values_nano[m]);
                         else if (m > peak_month_n) postpeak_n.Add(bloom_values_nano[m]);
                     }
+                    if (prepeak_n.Count < 1)
+                    {
+                        peak_month_n = 6;
+                        bloom_max_n = bloom_values_micro[6];
+                        for (int m = 0; m < 12; m++)
+                        {
+                            if (m < peak_month_n) prepeak_n.Add(bloom_values_nano[m]);
+                            else if (m > peak_month_n) postpeak.Add(bloom_values_nano[m]);
+                        }
+                    }
                     double pre_min_n = prepeak_n.Min();
                     double post_min_n = postpeak_n.Min();
                     double pre_range_n = (0.05 * (bloom_max_n - pre_min_n)) + pre_min_n;
@@ -164,8 +184,6 @@ namespace Madingley
                     }
                     cellEnvironment["Bloom Start"][1] = bloom_start[1];
                     cellEnvironment["Bloom End"][1] = bloom_end[1];
-                    Console.WriteLine(bloom_start[1]);
-                    Console.WriteLine(bloom_end[1]);
                 }
 
                 switch (gridCellStockHandler[actingStock].StockName)
@@ -187,16 +205,16 @@ namespace Madingley
                         NPP = NPP + dpico + cellEnvironment["DMicro"][currentMonth] + cellEnvironment["DNano"][currentMonth];
                         cellEnvironment["DMicro"][currentMonth] += dpico*0.5;
                         cellEnvironment["DNano"][currentMonth] += dpico*0.5;
-                        if (temperatureScenario.Item1 == "escalating" && currentTimestep >= burninSteps)
-                        {
-                            newT = cellEnvironment["Temperature"][currentMonth];
-                            SST = cellEnvironment["Original Temperature"][currentMonth];
-                            dSST = (newT - SST);
-                            exponent = 0.11 * newT - 0.47;
-                            new_n_t = .25328 * Math.Pow(10, exponent) * dSST;
-                            new_npp = ((NPPi / total_npp) + new_n_t) * total_npp;
-                            NPP += new_npp;
-                        }
+                        //if (temperatureScenario.Item1 == "escalating" && currentTimestep >= burninSteps)
+                        //{
+                          //  newT = cellEnvironment["Temperature"][currentMonth];
+                           // SST = cellEnvironment["Original Temperature"][currentMonth];
+                           // dSST = (newT - SST);
+                           // exponent = 0.11 * newT - 0.47;
+                             //new_n_t = .25328 * Math.Pow(10, exponent) * dSST;
+                            //new_npp = ((NPPi / total_npp) + new_n_t) * total_npp;
+                            //NPP += new_npp;
+                        //}
 
                         break;
 

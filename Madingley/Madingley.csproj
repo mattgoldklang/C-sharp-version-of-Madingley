@@ -354,9 +354,7 @@
     <None Include="input\Model setup\SimulationControlParameters.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="input\ModelStates\ModelState_2390.nc">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <None Include="input\ModelStates\ModelState_23400.nc" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
