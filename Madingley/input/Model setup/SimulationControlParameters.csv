@@ -1,16 +1,16 @@
 Parameter,Value
 Timestep Units,Month
-Length of simulation (years),200
-Burn-in (years),25
+Length of simulation (years),400
+Burn-in (years),250
 Impact duration (years),100
 Recovery duration (years),0
-Top Latitude,46
-Bottom Latitude,40
-Leftmost Longitude,-48
-Rightmost Longitude,-44
+Top Latitude,48
+Bottom Latitude,44
+Leftmost Longitude,-36
+Rightmost Longitude,-32
 Grid Cell Size,1
 Read State,
-Specific Location File,SpecificLocations.csv
+Specific Location File,
 Locations to Track File,
 Plankton size threshold,1
 Draw Randomly,yes
@@ -21,4 +21,4 @@ Run Simulations In Parallel,no
 Run Single Realm,Marine
 Impact Cell Index,all
 Dispersal only,no
-Dispersal only type,advectio
+Dispersal only type,advection
