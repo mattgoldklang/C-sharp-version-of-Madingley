@@ -74,9 +74,12 @@ namespace Madingley
                     // according to the number of time-steps that have elapsed since the spin-up ended
                     if (currentTimestep > burninSteps)
                     {
-                        cellEnvironment["Temperature"][currentMonth] = Math.Min((cellEnvironment["Original Temperature"][currentMonth] + 5.0),
-                            cellEnvironment["Temperature"][currentMonth] + ((((currentTimestep - burninSteps) / 12) + 1) *
-                            cellEnvironment["dSST"][currentMonth]));
+                        cellEnvironment["Temperature"][currentMonth] = cellEnvironment["Original Temperature"][currentMonth] + ((((currentTimestep - burninSteps) / 12) + 1) *
+                            cellEnvironment["dSST"][currentMonth]);
+                        if(cellEnvironment["Realm"][0] == 2)
+                        {
+                            cellEnvironment["dplarge"][currentMonth] = (cellEnvironment["Temperature"][currentMonth] - cellEnvironment["Original Temperature"][currentMonth]) * -0.05;
+                        }
                         // cellEnvironment["Temperature"][currentMonth] += gridCellStocks[actingStock].TotalBiomass *
                         //     (Math.Min(5.0, (((currentTimestep - burninSteps) / 12.0) * humanNPPScenario.Item2)));
                     }

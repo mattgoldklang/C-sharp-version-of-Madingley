@@ -34,7 +34,7 @@ namespace Madingley
                     if ((currentTimestep >= (burninSteps + 1)) && (currentTimestep <= (burninSteps + 12)))
                     {
                         // Implemenent growth rate change for picoplankton given Dutkiewicz et al 2015. 
-                        cellEnvironment["multiplier"][0] = (((double)currentTimestep + (double)burninSteps)/(double)NumTimeSteps) * 0.302;
+                        cellEnvironment["multiplier"][0] = ((currentTimestep- burninSteps)/12 + 1) * 0.00302;
                     }
                     else
                     {
