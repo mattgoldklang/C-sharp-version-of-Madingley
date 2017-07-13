@@ -31,13 +31,14 @@ namespace Madingley
                 else if (OAScenario.Item1 == "yes")
                 {
                     // Check to see whether this time step is at the transition between burn-in and impact
-                    if ((currentTimestep >= (burninSteps + 1)) && (currentTimestep <= (burninSteps + 12)))
+                    if (currentTimestep >= 1 && currentTimestep <= (burninSteps + impactSteps))
                     {
                         // Implemenent growth rate change for picoplankton given Dutkiewicz et al 2015. 
-                        cellEnvironment["multiplier"][0] = ((currentTimestep- burninSteps)/12 + 1) * 0.00302;
+                        cellEnvironment["multiplier"][0] = ((currentTimestep - burninSteps) / 12 + 1) * 0.00302;
                     }
-                    else
+                    else if ((currentTimestep - burninSteps) >= impactSteps)
                     {
+                        cellEnvironment["multiplier"][0] = .302;
                     }
                 }
                 else

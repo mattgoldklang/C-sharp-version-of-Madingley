@@ -9,7 +9,8 @@ namespace Madingley
 {
     /// <summary>
     /// Adjusts cell climate parameters to simulate the impacts of climate change
-    /// </summary>
+    /// </summary> 
+  
     class ClimateChange
     {
         /// <summary>
@@ -18,11 +19,11 @@ namespace Madingley
         public ClimateChange()
         {
         }
-
         public void ApplyTemperatureScenario(SortedList<string, double[]> cellEnvironment,
             Tuple<string, double, double> temperatureScenario, uint currentTimestep, uint currentMonth, uint burninSteps,
             uint impactSteps, Boolean impactCell)
         {
+
             if (impactCell)
             {
                 if (temperatureScenario.Item1 == "no")
@@ -65,20 +66,28 @@ namespace Madingley
                     if (currentTimestep == 0)
                     {
                         cellEnvironment.Add("Original Temperature", new double[12]);
+                        cellEnvironment.Add("Original NO3", new double[12]);
                         for (int m = 0; m < 12; m++)
                         {
                             cellEnvironment["Original Temperature"][m] = cellEnvironment["Temperature"][m];
+                            cellEnvironment["Original NO3"][m] = cellEnvironment["NO3"][m];
                         }
                     }
                     // If the spin-up period has been completed, then increment cell temperature
                     // according to the number of time-steps that have elapsed since the spin-up ended
-                    if (currentTimestep > burninSteps)
+                    if (currentTimestep >= burninSteps && currentTimestep <= (burninSteps + impactSteps))
                     {
                         cellEnvironment["Temperature"][currentMonth] = cellEnvironment["Original Temperature"][currentMonth] + ((((currentTimestep - burninSteps) / 12) + 1) *
                             cellEnvironment["dSST"][currentMonth]);
-                        if(cellEnvironment["Realm"][0] == 2)
+                        cellEnvironment["NO3"][currentMonth] = cellEnvironment["Original NO3"][currentMonth] + ((((currentTimestep - burninSteps) / 12) + 1) *
+                            cellEnvironment["dNO3"][currentMonth]);
+
+                        if (cellEnvironment["Realm"][0] == 2)
                         {
-                            cellEnvironment["dplarge"][currentMonth] = (cellEnvironment["Temperature"][currentMonth] - cellEnvironment["Original Temperature"][currentMonth]) * -0.05;
+                        }
+                        else
+                        {
+                           
                         }
                         // cellEnvironment["Temperature"][currentMonth] += gridCellStocks[actingStock].TotalBiomass *
                         //     (Math.Min(5.0, (((currentTimestep - burninSteps) / 12.0) * humanNPPScenario.Item2)));

@@ -6,6 +6,8 @@ Local,input/Data/Original/Land,NPP,.nc,NPP,nc,LandNPP,Y,month,gC/m2/day
 Local,input/Data/Original/Ocean,OceanNPP,.nc,NPP,nc,OceanNPP,Y,month,gC/m2/day
 Local,input/Data/Original/Ocean,micro_npp,.nc,microNPP,nc,microNPP,Y,month,gC/m2/day
 Local,input/Data/Original/Ocean,dSST,.nc,dSST,nc,dSST,Y,month,dT
+Local,input/Data/Original/Ocean,NO3,.nc,NO3,nc,NO3,Y,month,dT
+Local,input/Data/Original/Ocean,dNO3,.nc,dNO3,nc,dNO3,Y,month,dT
 Local,input/Data/Original/Ocean,nano_npp,.nc,nanoNPP,nc,nanoNPP,Y,month,gC/m2/day
 Local,input/Data/Original/Ocean,pico_npp,.nc,picoNPP,nc,picoNPP,Y,month,gC/m2/day
 Local,input/Data/Original/Ocean,KennedyetalDTR_monthly_climatology,.nc,DTR,nc,OceanDTR,Y,month,degC

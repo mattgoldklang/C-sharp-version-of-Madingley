@@ -154,6 +154,7 @@ namespace Madingley
             double[] tempVector13;
             double[] tempVector14;
             double[] tempVector15;
+            double[] tempVectorA;
 
             // Initialise deltas sorted list
             _Deltas = new Dictionary<string, Dictionary<string, double>>();
@@ -318,11 +319,11 @@ namespace Madingley
                         tempVector9 = new double[12] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
                         _CellEnvironment.Add("DPico", tempVector9);
 
-                        tempVector10= new double[12] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-                        _CellEnvironment.Add("DNano", tempVector10);
+                        tempVectorA= new double[12] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+                        _CellEnvironment.Add("DNano", tempVectorA);
 
                         tempVector15 = new double[12] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-                        _CellEnvironment.Add("n_total NPP", tempVector10);
+                        _CellEnvironment.Add("n_total NPP", tempVector15);
 
                         tempVector11 = new double[3] { 0, 0, 0 };
                         _CellEnvironment.Add("Remaining Biomass", tempVector11);
