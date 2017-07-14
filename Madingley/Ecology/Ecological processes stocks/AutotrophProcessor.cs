@@ -172,8 +172,6 @@ namespace Madingley
                 {
                     N0 = cellEnvironment["Original NO3"][currentMonth];
                     Ni = cellEnvironment["NO3"][currentMonth];
-                    N0 *= Utilities.ConvertTimeUnits(GlobalModelTimeStepUnit, "second");
-                    Ni *= Utilities.ConvertTimeUnits(GlobalModelTimeStepUnit, "second");
                     T0 = cellEnvironment["Original Temperature"][currentMonth];
                     Ti = cellEnvironment["Temperature"][currentMonth];
                     Pico0 = 1.145 - (0.021 * N0) - (6.936 * Math.Pow(10, -6) * T0);
@@ -226,7 +224,7 @@ namespace Madingley
                                 new_n_t = NPPi + (((NPPi - (pchange * cellEnvironment["n_total NPP"][currentMonth])) / (pchange - 1)) * cellEnvironment["n_total NPP"][currentMonth]);
                             } */
                             //Trejos et al ratio calc 
-                            pchange = (Picoi - Pico0) / Pico0;
+                            pchange = (Picoi - Pico0) / Math.Abs(Pico0);
                             n_prod = NPP + (NPP*pchange);
                             dpico = n_prod * cellEnvironment["multiplier"][0];
                             NPP = n_prod + dpico;
@@ -247,7 +245,7 @@ namespace Madingley
                         if (NPP == cellEnvironment["Missing Value"][0]) NPP = 0.0;
                         if (temperatureScenario.Item1 == "escalating" && currentTimestep >= burninSteps)
                         {
-                            pchange = (Nanoi - Nano0) / Nano0;
+                            pchange = (Nanoi - Nano0) / Math.Abs(Nano0);
                             n_prod = NPP + (NPP * pchange);
                             NPP = n_prod;
                             /*n_ratio =  NPPi / cellEnvironment["n_total NPP"][currentMonth];
