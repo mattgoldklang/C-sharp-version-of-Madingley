@@ -316,15 +316,15 @@ namespace Madingley
         {
             if(stockName == "picophytoplankton")
             {
-                return 1E-9 * Math.Exp(4.6025 * GetUniform());
+                return 1E-8 * Math.Exp(4.6025 * GetUniform());
             }
             if(stockName == "nanophytoplankton")
             {
-                return 1E-7 * Math.Exp(4.6025 * GetUniform());
+                return 1E-6 * Math.Exp(4.6025 * GetUniform());
             }
             if(stockName == "microphytoplankton")
             {
-                return 1E-5 * Math.Exp(4.6025 * GetUniform());
+                return 1E-4 * Math.Exp(4.6025 * GetUniform());
             }
             else
             {
@@ -339,20 +339,20 @@ namespace Madingley
 
             if (stockName == "picophytoplankton")
             {
-                double minSize = 1E-9;
-                double maxSize = 1E-7;
+                double minSize = 1E-8;
+                double maxSize = 1E-6;
                 return GetUniform() * (maxSize - minSize) + minSize;
             }
             if(stockName == "nanophytoplankton")
             {
-                double minSize = 1E-7;
-                double maxSize = 1E-5;
+                double minSize = 1E-6;
+                double maxSize = 1E-4;
                 return GetUniform() * (maxSize - minSize) + minSize;
             }
             if(stockName == "microphytoplankton")
             {
-                double minSize = 1E-5;
-                double maxSize = 1E-3;
+                double minSize = 1E-4;
+                double maxSize = 1E-2;
                 return GetUniform() * (maxSize - minSize) + minSize;
             }
             else
