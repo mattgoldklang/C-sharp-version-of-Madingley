@@ -288,6 +288,27 @@ namespace Madingley
         }
 
         /// <summary>
+        /// Calculate the ecosystem metabolism for an individual grid cell. This is the amount of respiration per gram of biomass in the grid cell; i.e. the units are g C / g / time-step. A value of 
+        /// one would indicate that metabolic cost is exactly equivalent to total respiring biomass.
+        /// </summary>
+        /// <param name="ecosystemModelGrid">The model grid</param>
+        /// <param name="cellIndices">The list of indices of cells to be run in the current simulation</param>
+        /// <param name="cellIndex">The index of the current cell within the list of cells to be run</param>
+        /// <returns></returns>
+        public double CalculateBiomassWeightedSystemMetabolism(ModelGrid ecosystemModelGrid, List<uint[]> cellIndices, int cellIndex)
+        {
+            double MetabolicLoss = 0.0;
+            double TotalBiomass = 0.0;
+
+            // Retrieve the metabolic loss this timestep
+            bool varExists;
+            MetabolicLoss = ecosystemModelGrid.GetEnviroLayer("Respiratory CO2 Pool Per Timestep", 0, cellIndices[cellIndex][0], cellIndices[cellIndex][1], out varExists);
+            TotalBiomass = ecosystemModelGrid.GetEnviroLayer("Respiring Biomass Pool Per Timestep", 0, cellIndices[cellIndex][0], cellIndices[cellIndex][1], out varExists);
+
+
+            return MetabolicLoss / TotalBiomass;
+        }
+        /// <summary>
         /// Calculates the arithmetic community weighted mean body mass
         /// </summary>
         /// <param name="ecosystemModelGrid">The model grid</param>

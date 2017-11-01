@@ -117,31 +117,51 @@ namespace Madingley
 
         }
 
-        ///// <summary>
-        ///// Generate a size based order in which cohorts will be subjected to ecological processes
-        ///// </summary>
-        ///// 
-        //public uint SizeOrderedCohorts(uint cohortNumber, GridCellCohortHandler gridCellCohorts)
-        //{
-        //    // A vector to hold indices of cohorts in size order
-        //    uint[] SizeOrderedCohorts = new uint[cohortNumber];
-
-        //    // A tuble to hold cohort information and body mass
-        //    List<Tuple<double, int, int[]>> CohortSizes = new List<Tuple<double, int, int[]>>();
-
-            
-
-        //    for(int i = 0; i < gridCellCohorts.Count; i++)
-        //    {
-                
-        //    }
+        /// <summary>
+        /// Returns a list of cohort indices ordered by the cohort body size (smallest first)
+        /// </summary>
+        /// <param name="gridCellCohorts">the current grid cell cohorts</param>
+        /// <param name="cohortIndices">The list of cohort indices ordered from the first cohort in the first functional
+        /// group and incrementing along the cohorts in each functional group</param>
+        /// <param name="numberIndices">The total number of cohorts</param>
+        /// <returns>A list of indices for the cohorts in order of increasing body size</returns>
+        public uint[] MassOrderedIndices(GridCellCohortHandler gridCellCohorts, uint[][] cohortIndices, uint numberIndices)
+        {
+            // A vector to hold indices of cohorts in order
+            uint[] MassOrderedIndices = new uint[numberIndices];
+            double MinMass = 1E9;
+            double AboveMinMass = 0;
+            int MinFG = 0;
+            int MinC = 0;
 
 
-            
 
+            for (int i = 0; i < numberIndices; i++)
+            {
+                MinMass = 1E9;
+                for (int ll = 0; ll < gridCellCohorts.Count; ll++)
+                {
+                    // Loop over gridCellCohorts in the functional group
+                    for (int kk = 0; kk < gridCellCohorts[ll].Count(); kk++)
+                    {
+                        //Check if this cohort is the smallest
+                        if (gridCellCohorts[ll][kk].IndividualBodyMass < MinMass &&
+                            gridCellCohorts[ll][kk].IndividualBodyMass > AboveMinMass)
+                        {
+                            MinFG = ll;
+                            MinC = kk;
+                            MinMass = gridCellCohorts[ll][kk].IndividualBodyMass;
+                        }
+                    }
+                }
 
-        //    return -1;
-        //}
+                MassOrderedIndices[i] = cohortIndices[MinFG][MinC];
+                AboveMinMass = MinMass;
+            }
+
+            return MassOrderedIndices;
+
+        }
 
         /// <summary>
         /// Get the month corresponding to the current time step

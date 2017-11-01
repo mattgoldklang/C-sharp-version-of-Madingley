@@ -94,7 +94,6 @@ namespace Madingley
         /// Total NPP incoming from the marine model
         /// </summary>
         private double TotalIncomingNPP;
-        private double micro_to_pico;
 
         /// <summary>
         /// Total densities of all cohorts within each combination of cohort traits
@@ -666,11 +665,12 @@ namespace Madingley
                 DataConverter.AddVariable(BasicOutputMemory, "Min Trophic Index", "dimensionless", 1, TimeDimension, ecosystemModelGrid.GlobalMissingValue, TimeSteps);
                 DataConverter.AddVariable(BasicOutputMemory, "Geometric Mean Bodymass", "g", 1, TimeDimension, ecosystemModelGrid.GlobalMissingValue, TimeSteps);
                 DataConverter.AddVariable(BasicOutputMemory, "Arithmetic Mean Bodymass", "g", 1, TimeDimension, ecosystemModelGrid.GlobalMissingValue, TimeSteps);
+                DataConverter.AddVariable(BasicOutputMemory, "Ecosystem Metabolism Per Unit Biomass", "gC / g", 1, TimeDimension, ecosystemModelGrid.GlobalMissingValue, TimeSteps);
+
             }
 
             if (marineCell)
             {
-                DataConverter.AddVariable(BasicOutputMemory, "micro_to_pico", "dimensionless", 1, TimeDimension, ecosystemModelGrid.GlobalMissingValue, TimeSteps);
                 foreach (string TraitValue in CohortTraitIndicesMarine.Keys)
                 {
 
@@ -685,7 +685,7 @@ namespace Madingley
 
                 if (TrackMarineSpecifics)
                 {
-                    // Add a variable to keep track of the NPP incoming from the VGPM model and track Micro/Pico
+                    // Add a variable to keep track of the NPP incoming from the VGPM model
                     DataConverter.AddVariable(BasicOutputMemory, "Incoming NPP", "gC / m^2 / day", 1, TimeDimension, ecosystemModelGrid.GlobalMissingValue, TimeSteps);
                 }
             }
@@ -1059,11 +1059,6 @@ namespace Madingley
                 bool varExists;
                 TotalIncomingNPP = ecosystemModelGrid.GetEnviroLayer("NPP", month, cellIndices[cellIndex][0], cellIndices[cellIndex][1], out varExists);
             }
-            if(MarineCell)
-            {
-                bool varExists;
-                micro_to_pico = ecosystemModelGrid.GetEnviroLayer("micro_to_pico", month, cellIndices[cellIndex][0], cellIndices[cellIndex][1], out varExists);
-            }
         }
 
         /// <summary>
@@ -1341,15 +1336,15 @@ namespace Madingley
                     DataConverter.ValueToSDS1D(Metrics.CalculateGeometricCommunityMeanBodyMass(ecosystemModelGrid, cellIndices, cellIndex),
                                                 "Geometric Mean Bodymass", "Time step", ecosystemModelGrid.GlobalMissingValue,
                                                 BasicOutputMemory, 0);
-
+                    DataConverter.ValueToSDS1D(Metrics.CalculateBiomassWeightedSystemMetabolism(ecosystemModelGrid, cellIndices, cellIndex),
+                                                "Ecosystem Metabolism Per Unit Biomass", "Time step", ecosystemModelGrid.GlobalMissingValue,
+                                                BasicOutputMemory, 0);
                 }
 
                 if (MarineCell && TrackMarineSpecifics)
                 {
                     DataConverter.ValueToSDS1D(TotalIncomingNPP, "Incoming NPP", "Time step", ecosystemModelGrid.GlobalMissingValue,
                         BasicOutputMemory, 0);
-                    DataConverter.ValueToSDS1D(micro_to_pico, "micro_to_pico", "Time step", ecosystemModelGrid.GlobalMissingValue,
-                       BasicOutputMemory, 0);
                 }
 
                 // File outputs for high detail level
@@ -1438,7 +1433,7 @@ namespace Madingley
             TimeStepConsoleOutputs(currentTimestep, timeStepTimer);
 
             // Generate the file outputs for the current time step
-            TimeStepFileOutputs(ecosystemModelGrid, cohortFunctionalGroupDefinitions, currentTimestep, marineCell, cellIndices,cellNumber);
+            TimeStepFileOutputs(ecosystemModelGrid, cohortFunctionalGroupDefinitions, currentTimestep, marineCell, cellIndices,cellNumber, initialisation);
 
         }
 
@@ -1546,7 +1541,7 @@ namespace Madingley
         /// <param name="cellIndices">The list of all cells to run the model for</param>
         /// <param name="cellIndex">The index of the current cell in the list of all cells to run the model for</param>
         private void TimeStepFileOutputs(ModelGrid ecosystemModelGrid, FunctionalGroupDefinitions cohortFunctionalGroupDefinitions, 
-            uint currentTimeStep, Boolean MarineCell, List<uint[]> cellIndices, int cellIndex)
+            uint currentTimeStep, Boolean MarineCell, List<uint[]> cellIndices, int cellIndex, MadingleyModelInitialisation initialisation)
         {
             Console.WriteLine("Writing grid cell ouputs to file...\n");
             //Write the low level outputs first
@@ -1596,7 +1591,7 @@ namespace Madingley
                 }
 
                 // If ouputting ecosystem metrics has been specified then add these metrics to the output
-                if (OutputMetrics)
+                if ((OutputMetrics) && (currentTimeStep >= initialisation.TimeStepToStartProcessTrackers))
                 {
                     DataConverter.ValueToSDS1D(Metrics.CalculateMeanTrophicLevelCell(ecosystemModelGrid, cellIndices, cellIndex),
                                                 "Mean Trophic Level", "Time step", ecosystemModelGrid.GlobalMissingValue,
@@ -1642,6 +1637,10 @@ namespace Madingley
                     DataConverter.ValueToSDS1D(Metrics.CalculateGeometricCommunityMeanBodyMass(ecosystemModelGrid, cellIndices, cellIndex),
                                                 "Geometric Mean Bodymass", "Time step", ecosystemModelGrid.GlobalMissingValue,
                                                 BasicOutputMemory, (int)currentTimeStep + 1);
+                    DataConverter.ValueToSDS1D(Metrics.CalculateBiomassWeightedSystemMetabolism(ecosystemModelGrid, cellIndices, cellIndex),
+                                                "Ecosystem Metabolism Per Unit Biomass", "Time step", ecosystemModelGrid.GlobalMissingValue,
+                                                BasicOutputMemory, (int)currentTimeStep + 1);
+                    
                 }
 
                 if (TrackMarineSpecifics && MarineCell)

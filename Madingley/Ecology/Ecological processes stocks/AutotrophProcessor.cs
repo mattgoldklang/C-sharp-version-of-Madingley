@@ -31,6 +31,7 @@ namespace Madingley
         /// Factor to convert NPP from units per m^2 to units per km^2
         /// </summary>
         private const double _MsqToKmSqConversion = 1000000.0;
+
         /// <summary>
         /// Get the factor to convert NPP from units per m^2 to units per km^2
         /// </summary>
@@ -70,18 +71,25 @@ namespace Madingley
         {
             double NPP = new double();
             double mortality = new double();
-            double plarge = new double();
-            double dplarge = new double();
-            double new_n_t = new double();
+            double dmicro = 0.0;
+            double dnano = 0.0;
             double sinking = new double();
             double dpico = new double();
-            double total_npp = new double();
             double pchange = new double();
+            double n_prod = new double();
             double NPPi = new double();
-            double micro_to_pico = new double();
-            double SST = new double();
-            double newT = new double();
-            double dSST = new double();
+            double N0 = new double();
+            double Ni = new double();
+            double T0 = new double();
+            double Ti = new double();
+            double Pico0 = new double();
+            double Picoi = new double();
+            double Nano0 = new double();
+            double Nanoi = new double();
+            double Micro0 = new double();
+            double Microi = new double();
+            double totalNPP0 = new double();
+            double totalNPPi = new double();
             double[] bloom_values_micro = new double[12];
             double[] bloom_values_nano = new double[12];
             double left_overs = new double();
@@ -89,20 +97,13 @@ namespace Madingley
             double dn = new double();
             int[] bloom_start = new int[2];
             int[] bloom_end = new int[2];
-            double multiplier = new double();
-            double exponent = new double();
-            double new_npp = new double();
 
 
             // Check that this is an ocean cell
             if (cellEnvironment["Realm"][0] == 2.0)
             {
-                micro_to_pico = cellEnvironment["microNPP"][currentMonth] / cellEnvironment["picoNPP"][currentMonth];
-                micro_to_pico = cellEnvironment["micro_to_pico"][currentMonth];
-                total_npp = cellEnvironment["microNPP"][currentMonth] + cellEnvironment["nanoNPP"][currentMonth] + cellEnvironment["picoNPP"][currentMonth];
-
                 //Calculates the bloom phenology of Micro production using the Hopkins et al 2015 method
-                if (currentTimestep == 0)
+               /*(currentTimestep == 0)
                 {
                     for (int m = 0; m < 12; m++)
                     {
@@ -111,6 +112,7 @@ namespace Madingley
                         cellEnvironment["Original microNPP"][m] = cellEnvironment["microNPP"][m];
                         cellEnvironment["Original nanoNPP"][m] = cellEnvironment["nanoNPP"][m];
                         cellEnvironment["Original picoNPP"][m] = cellEnvironment["picoNPP"][m];
+                        cellEnvironment["totalNPP"][m] = cellEnvironment["microNPP"][m] + cellEnvironment["nanoNPP"][m] + cellEnvironment["picoNPP"][m];
                     }
                     
                     double bloom_max = bloom_values_micro.Max();
@@ -121,16 +123,6 @@ namespace Madingley
                     {
                         if (m < peak_month) prepeak.Add(bloom_values_micro[m]);
                         else if (m > peak_month) postpeak.Add(bloom_values_micro[m]);
-                    }
-                    if(prepeak.Count < 1)
-                    {
-                        peak_month = 6;
-                        bloom_max = bloom_values_micro[6];
-                        for (int m = 0; m < 12; m++)
-                        {
-                            if (m < peak_month) prepeak.Add(bloom_values_micro[m]);
-                            else if (m > peak_month) postpeak.Add(bloom_values_micro[m]);
-                        }
                     }
                     double pre_min = prepeak.Min();
                     double post_min = postpeak.Min();
@@ -158,16 +150,6 @@ namespace Madingley
                         if (m < peak_month_n) prepeak_n.Add(bloom_values_nano[m]);
                         else if (m > peak_month_n) postpeak_n.Add(bloom_values_nano[m]);
                     }
-                    if (prepeak_n.Count < 1)
-                    {
-                        peak_month_n = 6;
-                        bloom_max_n = bloom_values_micro[6];
-                        for (int m = 0; m < 12; m++)
-                        {
-                            if (m < peak_month_n) prepeak_n.Add(bloom_values_nano[m]);
-                            else if (m > peak_month_n) postpeak.Add(bloom_values_nano[m]);
-                        }
-                    }
                     double pre_min_n = prepeak_n.Min();
                     double post_min_n = postpeak_n.Min();
                     double pre_range_n = (0.05 * (bloom_max_n - pre_min_n)) + pre_min_n;
@@ -184,8 +166,26 @@ namespace Madingley
                     }
                     cellEnvironment["Bloom Start"][1] = bloom_start[1];
                     cellEnvironment["Bloom End"][1] = bloom_end[1];
-                }
+                }*/
 
+                if (currentTimestep >=  burninSteps)
+                {
+                    N0 = cellEnvironment["Original NO3"][currentMonth];
+                    Ni = cellEnvironment["NO3"][currentMonth];
+                    T0 = cellEnvironment["Original Temperature"][currentMonth];
+                    Ti = cellEnvironment["Temperature"][currentMonth];
+                    Pico0 = 1.145 - (0.021 * N0) - (6.936 * Math.Pow(10, -6) * T0);
+                    Picoi = 1.145 - (0.021 * Ni) - (6.936 * Math.Pow(10, -6) * Ti);
+                    Nano0 = 1.146 - (0.013 * N0) - (.064 * T0);
+                    Nanoi = 1.146 - (0.013 * Ni) - (.064 * Ti);
+                    Micro0 = .804 - (0.002 * N0) - (.077 * T0);
+                    Microi = .804 - (0.002 * Ni) - (.077 * Ti);
+                    totalNPP0 = Pico0 + Nano0 + Micro0;
+                    totalNPPi = Picoi + Nanoi + Microi;
+                    pchange = (totalNPPi - totalNPP0) / totalNPP0;
+                    cellEnvironment["totalNPP"][currentMonth] = cellEnvironment["totalNPP"][currentMonth] + (pchange * cellEnvironment["totalNPP"][currentMonth]);
+
+                }
                 switch (gridCellStockHandler[actingStock].StockName)
                 {
                     case "picophytoplankton":
@@ -193,29 +193,45 @@ namespace Madingley
                         left_overs = cellEnvironment["Remaining Biomass"][0];
                         // Get picophytoplankton NPP from cell environment
                         NPP = cellEnvironment["picoNPP"][currentMonth];
-                        NPPi = cellEnvironment["picoNPP"][currentMonth];
-                         // If picophytoplankton NPP is a missing value then set to zero
+                        NPPi = cellEnvironment["Original picoNPP"][currentMonth];
+                        // If picophytoplankton NPP is a missing value then set to zero
                         if (NPP == cellEnvironment["Missing Value"][0])
                         {
                             NPP = 0.0;
                         }
-                        NPP = cellEnvironment["picoNPP"][currentMonth];
-                        multiplier = cellEnvironment["multiplier"][0];
-                        dpico = (NPP * multiplier);
-                        NPP = NPP + dpico + cellEnvironment["DMicro"][currentMonth] + cellEnvironment["DNano"][currentMonth];
-                        cellEnvironment["DMicro"][currentMonth] += dpico*0.5;
-                        cellEnvironment["DNano"][currentMonth] += dpico*0.5;
-                        //if (temperatureScenario.Item1 == "escalating" && currentTimestep >= burninSteps)
-                        //{
-                          //  newT = cellEnvironment["Temperature"][currentMonth];
-                           // SST = cellEnvironment["Original Temperature"][currentMonth];
-                           // dSST = (newT - SST);
-                           // exponent = 0.11 * newT - 0.47;
-                             //new_n_t = .25328 * Math.Pow(10, exponent) * dSST;
-                            //new_npp = ((NPPi / total_npp) + new_n_t) * total_npp;
-                            //NPP += new_npp;
-                        //}
-
+                       /* if (currentTimestep >  burninSteps)
+                        {
+                            dpico = cellEnvironment["Original picoNPP"][currentMonth] * cellEnvironment["multiplier"][0];
+                            dnano = (cellEnvironment["Original nanoNPP"][currentMonth] / (cellEnvironment["Original microNPP"][currentMonth] + cellEnvironment["Original nanoNPP"][currentMonth])) * dpico;
+                            dmicro = (cellEnvironment["Original microNPP"][currentMonth] / (cellEnvironment["Original nanoNPP"][currentMonth] + cellEnvironment["Original microNPP"][currentMonth])) * dpico;
+                            if (cellEnvironment["Original microNPP"][currentMonth] < cellEnvironment["DMicro"][currentMonth]) dmicro = 0;
+                            if (cellEnvironment["Original nanoNPP"][currentMonth] < cellEnvironment["DNano"][currentMonth]) dnano = 0;
+                            cellEnvironment["DMicro"][currentMonth] = dmicro;
+                            cellEnvironment["DNano"][currentMonth] = dnano;
+                            cellEnvironment["DPico"][currentMonth] = dpico;
+                        }*/
+                        if (temperatureScenario.Item1 == "escalating" && currentTimestep >= burninSteps)
+                        {
+                            /*exponent1 = (0.11 * cellEnvironment["Original Temperature"][currentMonth]) - 0.47;
+                            exponent2 = (0.11 * cellEnvironment["Temperature"][currentMonth]) - 0.47;
+                            n_ratio = NPP / cellEnvironment["totalNPP"][currentMonth];
+                            starting_t = Math.Pow(10, exponent1);
+                            new_n_t = Math.Pow(10, exponent2);
+                            pchange = (new_n_t - starting_t) / starting_t;
+                            n_prod = (n_ratio + (n_ratio * pchange)) * cellEnvironment["totalNPP"][currentMonth];
+                           /* if (n_ratio != pchange)
+                            {
+                                new_n_t = NPPi + (((NPPi - (pchange * cellEnvironment["n_total NPP"][currentMonth])) / (pchange - 1)) * cellEnvironment["n_total NPP"][currentMonth]);
+                            } */
+                            //Trejos et al ratio calc 
+                            pchange = (Picoi - Pico0) / Math.Abs(Pico0);
+                            n_prod = NPP + (NPP*pchange);
+                            dpico = n_prod * cellEnvironment["multiplier"][0];
+                            NPP = n_prod + dpico;
+                            
+                         }
+                        cellEnvironment["Original picoNPP"][currentMonth] = NPP;
+                      
                         break;
 
                     case "nanophytoplankton":
@@ -224,60 +240,59 @@ namespace Madingley
                         left_overs = cellEnvironment["Remaining Biomass"][1];
                         // Get nanophytoplankton NPP from cell environment
                         NPP = cellEnvironment["nanoNPP"][currentMonth];
+                        NPPi = cellEnvironment["Original nanoNPP"][currentMonth];
                         // If nanophytoplankton NPP is a missing value then set to zero
                         if (NPP == cellEnvironment["Missing Value"][0]) NPP = 0.0;
                         if (temperatureScenario.Item1 == "escalating" && currentTimestep >= burninSteps)
                         {
-                            newT = cellEnvironment["Temperature"][currentMonth];
-                            SST = cellEnvironment["Original Temperature"][currentMonth];
-                            dSST = newT - SST;
-                            if (newT < 12) pchange = -0.1;
-                            else
+                            pchange = (Nanoi - Nano0) / Math.Abs(Nano0);
+                            n_prod = NPP + (NPP * pchange);
+                            NPP = n_prod;
+                            /*n_ratio =  NPPi / cellEnvironment["n_total NPP"][currentMonth];
+                            if (n_ratio != pchange)
                             {
-                                plarge = NPP / total_npp;
-                                dplarge = plarge + -0.05 * dSST;
-                                new_n_t = total_npp * dplarge;
-                                pchange = (NPP - new_n_t) / NPP;
-                                if (cellEnvironment["Bloom Start"][1] <= currentMonth && currentMonth <= cellEnvironment["Bloom End"][1])
-                                {
-                                    pchange = 1.5 * pchange;
-                                }
-                                else pchange = 0.25 * pchange;
+                                n_prod = ((pchange * cellEnvironment["n_total NPP"][currentMonth])) / (pchange - 1);
                             }
+                            else n_prod = 0;*/
+                            // NPP = (cellEnvironment["totalNPP"][currentMonth] * pchange);  // cellEnvironment["DNano"][currentMonth];
+                            if (NPP < 0) NPP = 0;
+                            /*if (cellEnvironment["Bloom Start"][1] <= currentMonth && currentMonth <= cellEnvironment["Bloom End"][1])
+                            {
+                                pchange = 1 * pchange;
+                            }*/
+ 
                         }
-                        else pchange = 0;
-                        cellEnvironment["DNano"][currentMonth] += NPP * pchange;
-                        NPP = NPP - cellEnvironment["DNano"][currentMonth];
+                        cellEnvironment["Original nanoNPP"][currentMonth] = NPP;
 
                         break;
           
                     case "microphytoplankton":
 
                         NPP = cellEnvironment["microNPP"][currentMonth];
+                        left_overs = cellEnvironment["Remaining Biomass"][2];
+                        NPPi = cellEnvironment["Original microNPP"][currentMonth];
                         // If nanophytoplankton NPP is a missing value then set to zero
                         if (NPP == cellEnvironment["Missing Value"][0]) NPP = 0.0;
-                        if (temperatureScenario.Item1 == "escalating" && currentTimestep >= burninSteps)
+                          if (temperatureScenario.Item1 == "escalating" && currentTimestep >= burninSteps)
                         {
-                            newT = cellEnvironment["Temperature"][currentMonth];
-                            SST = cellEnvironment["Original Temperature"][currentMonth];
-                            dSST = newT - SST;
-                            if (newT < 12) pchange = -0.1;
-                            else
+                            pchange = (Microi - Micro0) / Math.Abs(Micro0);
+                            n_prod = NPP + (NPP * pchange);
+                            NPP = n_prod;
+                            /*n_ratio = NPPi / cellEnvironment["n_total NPP"][currentMonth];
+                            if (n_ratio != pchange)
                             {
-                                plarge = NPP / total_npp;
-                                dplarge = plarge + -0.05 * dSST;
-                                new_n_t = total_npp * dplarge;
-                                pchange = (NPP - new_n_t) / NPP;
-                                if (cellEnvironment["Bloom Start"][0] <= currentMonth && currentMonth <= cellEnvironment["Bloom End"][0])
-                                {
-                                    pchange = 1.5 * pchange;
-                                }
-                                else pchange = 0.25 * pchange;
+                                n_prod = ((pchange * cellEnvironment["n_total NPP"][currentMonth])) / (pchange - 1);
                             }
+                            else n_prod = 0;*/
+                            //NPP = (cellEnvironment["totalNPP"][currentMonth] * pchange); // cellEnvironment["DNano"][currentMonth];
+                            if (NPP < 0) NPP = 0;
+                            /*if (cellEnvironment["Bloom Start"][1] <= currentMonth && currentMonth <= cellEnvironment["Bloom End"][1])
+                            {
+                                pchange = 1 * pchange;
+                            }*/
+
                         }
-                        else pchange = 0;
-                        cellEnvironment["DMicro"][currentMonth] += NPP * pchange;
-                        NPP = NPP - cellEnvironment["DMicro"][currentMonth];
+                        cellEnvironment["Original microNPP"][currentMonth] = NPP;
 
                         break;
                 }
@@ -310,7 +325,7 @@ namespace Madingley
                // }
                 dn = NPP;
 
-                mortality = (left_overs + dn) * 0.1;
+                mortality = (left_overs * 0.1);
 
                 sinking = (left_overs + dn) * sinking_rate;
 

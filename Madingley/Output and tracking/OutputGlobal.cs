@@ -27,11 +27,11 @@ namespace Madingley
         /// A dataset to store the basic outputs to file
         /// </summary>
         private DataSet BasicOutput;
-        
+
         /// <summary>
         /// The time steps in this model simulation
         /// </summary>
-        private float[] TimeSteps; 
+        private float[] TimeSteps;
 
         /// <summary>
         /// The path to the output folder
@@ -77,6 +77,11 @@ namespace Madingley
         /// The total biomass in the respiratory pool
         /// </summary>
         private double RespiratoryPoolOut;
+
+        /// <summary>
+        /// The total biomass in the respiratory pool per timestep
+        /// </summary>
+        private double RespiratoryPoolOutPerTimestep;
 
         /// <summary>
         /// Total number of cohorts in the grid cell
@@ -147,7 +152,7 @@ namespace Madingley
         /// <param name="numTimeSteps">The number of time steps in the model run</param>
         /// <param name="ecosystemModelGrid">The model grid</param>
         /// <param name="outputFilesSuffix">The suffix to be applied to all output files</param>
-        public void SetupOutputs(uint numTimeSteps,ModelGrid ecosystemModelGrid, string outputFilesSuffix)
+        public void SetupOutputs(uint numTimeSteps, ModelGrid ecosystemModelGrid, string outputFilesSuffix)
         {
             Console.WriteLine("Setting up global outputs...\n");
 
@@ -174,6 +179,7 @@ namespace Madingley
             DataConverter.AddVariable(BasicOutput, "Total living biomass", "Kg / km^2", 1, TimeDimension, ecosystemModelGrid.GlobalMissingValue, TimeSteps);
             DataConverter.AddVariable(BasicOutput, "Organic matter pool", "Kg / km^2", 1, TimeDimension, ecosystemModelGrid.GlobalMissingValue, TimeSteps);
             DataConverter.AddVariable(BasicOutput, "Respiratory CO2 pool", "Kg / km^2", 1, TimeDimension, ecosystemModelGrid.GlobalMissingValue, TimeSteps);
+            DataConverter.AddVariable(BasicOutput, "Respiratory CO2 pool Per Timestep", "Kg / km^2", 1, TimeDimension, ecosystemModelGrid.GlobalMissingValue, TimeSteps);
             DataConverter.AddVariable(BasicOutput, "Number of cohorts extinct", "", 1, TimeDimension, ecosystemModelGrid.GlobalMissingValue, TimeSteps);
             DataConverter.AddVariable(BasicOutput, "Number of cohorts produced", "", 1, TimeDimension, ecosystemModelGrid.GlobalMissingValue, TimeSteps);
             DataConverter.AddVariable(BasicOutput, "Number of cohorts combined", "", 1, TimeDimension, ecosystemModelGrid.GlobalMissingValue, TimeSteps);
@@ -192,7 +198,7 @@ namespace Madingley
         /// <param name="globalDiagnosticVariables">Global diagnostic variables</param>
         /// <param name="initialisation">The Madingley Model initialisation</param>
         public void CalculateOutputs(FunctionalGroupDefinitions cohortFunctionalGroupDefinitions, FunctionalGroupDefinitions
-            stockFunctionalGroupDefinitions, ModelGrid ecosystemModelGrid, List<uint[]> cellIndices, SortedList<string,double>
+            stockFunctionalGroupDefinitions, ModelGrid ecosystemModelGrid, List<uint[]> cellIndices, SortedList<string, double>
             globalDiagnosticVariables, MadingleyModelInitialisation initialisation)
         {
             // Get all cohort functional group indices in the model
@@ -220,6 +226,7 @@ namespace Madingley
 
             // Get total respiratory pool biomass
             RespiratoryPoolOut = ecosystemModelGrid.GetEnviroGridTotal("Respiratory CO2 Pool", 0, cellIndices);
+            RespiratoryPoolOutPerTimestep = ecosystemModelGrid.GetEnviroGridTotal("Respiratory CO2 Pool Per Timestep", 0, cellIndices);
 
             // Get total of all biomass
             TotalBiomass = TotalLivingBiomass + RespiratoryPoolOut + OrganicPoolOut;
@@ -243,12 +250,12 @@ namespace Madingley
         /// <param name="cellIndices">The list of indices of active cells in the model grid</param>
         /// <param name="globalDiagnosticVariables">A list of global diagnostic variables</param>
         /// <param name="initialisation">The Madingley Model initialisation</param>
-        public void InitialOutputs(ModelGrid ecosystemModelGrid, FunctionalGroupDefinitions cohortFunctionalGroupDefinitions, 
-            FunctionalGroupDefinitions stockFunctionalGroupDefinitions, List<uint[]> cellIndices, 
-            SortedList<string,double> globalDiagnosticVariables, MadingleyModelInitialisation initialisation)
+        public void InitialOutputs(ModelGrid ecosystemModelGrid, FunctionalGroupDefinitions cohortFunctionalGroupDefinitions,
+            FunctionalGroupDefinitions stockFunctionalGroupDefinitions, List<uint[]> cellIndices,
+            SortedList<string, double> globalDiagnosticVariables, MadingleyModelInitialisation initialisation)
         {
             // Calculate the output variables
-            CalculateOutputs(cohortFunctionalGroupDefinitions, stockFunctionalGroupDefinitions, ecosystemModelGrid, cellIndices, 
+            CalculateOutputs(cohortFunctionalGroupDefinitions, stockFunctionalGroupDefinitions, ecosystemModelGrid, cellIndices,
                 globalDiagnosticVariables, initialisation);
 
             // Generate the initial console outputs
@@ -299,6 +306,8 @@ namespace Madingley
                 BasicOutput, 0);
             DataConverter.ValueToSDS1D(RespiratoryPoolOut, "Respiratory CO2 pool", "Time step", ecosystemModelGrid.GlobalMissingValue,
                 BasicOutput, 0);
+            DataConverter.ValueToSDS1D(RespiratoryPoolOutPerTimestep, "Respiratory CO2 pool Per Timestep", "Time step", ecosystemModelGrid.GlobalMissingValue,
+    BasicOutput, 0);
 
             // Write out the total number of cohorts and stocks to the relevant one-dimensional output variables
             DataConverter.ValueToSDS1D(TotalNumberOfCohorts, "Number of cohorts in model", "Time step", ecosystemModelGrid.
@@ -331,9 +340,9 @@ namespace Madingley
         /// <param name="cellIndices">List of indices of active cells in the model grid</param>
         /// <param name="globalDiagnosticVariables">The global diagnostic variables for the model run</param>
         /// <param name="initialisation">The Madingley Model initialisation</param>
-        public void TimeStepOutputs(ModelGrid ecosystemModelGrid, uint currentTimeStep, uint currentMonth, StopWatch timeStepTimer, 
-            FunctionalGroupDefinitions cohortFunctionalGroupDefinitions, FunctionalGroupDefinitions stockFunctionalGroupDefinitions, 
-            List<uint[]> cellIndices, SortedList<string,double> globalDiagnosticVariables, MadingleyModelInitialisation initialisation)
+        public void TimeStepOutputs(ModelGrid ecosystemModelGrid, uint currentTimeStep, uint currentMonth, StopWatch timeStepTimer,
+            FunctionalGroupDefinitions cohortFunctionalGroupDefinitions, FunctionalGroupDefinitions stockFunctionalGroupDefinitions,
+            List<uint[]> cellIndices, SortedList<string, double> globalDiagnosticVariables, MadingleyModelInitialisation initialisation)
         {
             // Calculate the output variables for this time step
             CalculateOutputs(cohortFunctionalGroupDefinitions, stockFunctionalGroupDefinitions, ecosystemModelGrid, cellIndices,
@@ -376,6 +385,7 @@ namespace Madingley
                 {
                     Console.WriteLine("Total biomass (all) = " + String.Format("{0:E}", TotalBiomass / 1000) + " kg");
                     Console.WriteLine("Respiratory pool biomass = " + String.Format("{0:E}", RespiratoryPoolOut / 1000) + " kg");
+                    Console.WriteLine("Respiratory pool biomass per timestep = " + String.Format("{0:E}", RespiratoryPoolOutPerTimestep / 1000) + " kg");
                     Console.WriteLine("Organic pool biomass = " + String.Format("{0:E}", OrganicPoolOut / 1000) + " kg");
 
                 }
@@ -398,6 +408,8 @@ namespace Madingley
             DataConverter.ValueToSDS1D(OrganicPoolOut, "Organic matter pool", "Time step",
                 ecosystemModelGrid.GlobalMissingValue, BasicOutput, (int)currentTimeStep + 1);
             DataConverter.ValueToSDS1D(RespiratoryPoolOut, "Respiratory CO2 pool", "Time step",
+                ecosystemModelGrid.GlobalMissingValue, BasicOutput, (int)currentTimeStep + 1);
+            DataConverter.ValueToSDS1D(RespiratoryPoolOutPerTimestep, "Respiratory CO2 pool Per Timestep", "Time step",
                 ecosystemModelGrid.GlobalMissingValue, BasicOutput, (int)currentTimeStep + 1);
             DataConverter.ValueToSDS1D(TotalNumberOfCohorts, "Number of cohorts in model", "Time step",
                 ecosystemModelGrid.GlobalMissingValue, BasicOutput, (int)currentTimeStep + 1);

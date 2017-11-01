@@ -26,8 +26,8 @@ namespace Madingley
         /// An instance of the simple random number generator class
         /// </summary>
         private NonStaticSimpleRNG RandomNumberGenerator = new NonStaticSimpleRNG();
-        
-        #endregion 
+
+        #endregion
 
         /// <summary>
         /// Constructor for reproduction: assigns all parameter values
@@ -75,9 +75,9 @@ namespace Madingley
         /// <param name="partial">Thread-locked variables</param>
         /// <param name="iteroparous">Whether the acting cohort is iteroparous, as opposed to semelparous</param>
         /// <param name="currentMonth">The current model month</param>
-        public void RunReproductionEvents(GridCellCohortHandler gridCellCohorts, GridCellStockHandler gridCellStocks, 
-            int[] actingCohort, SortedList<string, double[]> cellEnvironment, Dictionary<string, Dictionary<string, double>> 
-            deltas, FunctionalGroupDefinitions madingleyCohortDefinitions, FunctionalGroupDefinitions madingleyStockDefinitions, 
+        public void RunReproductionEvents(GridCellCohortHandler gridCellCohorts, GridCellStockHandler gridCellStocks,
+            int[] actingCohort, SortedList<string, double[]> cellEnvironment, Dictionary<string, Dictionary<string, double>>
+            deltas, FunctionalGroupDefinitions madingleyCohortDefinitions, FunctionalGroupDefinitions madingleyStockDefinitions,
             uint currentTimestep, ProcessTracker tracker, ref ThreadLockedParallelVariables partial, bool iteroparous, uint currentMonth)
         {
             // Adult non-reproductive biomass lost by semelparous organisms
@@ -104,11 +104,17 @@ namespace Madingley
 
             // Calculate the biomass of an individual in this cohort including changes this time step from other ecological processes  
             BodyMassIncludingChangeThisTimeStep = 0.0;
-            
+
             foreach (var Biomass in deltas["biomass"])
             {
-                // Add the delta biomass to net biomass
-                BodyMassIncludingChangeThisTimeStep += Biomass.Value;
+
+                if (Biomass.Key != "respiring biomass")
+                {
+                    // Add the delta biomass to net biomass
+                    BodyMassIncludingChangeThisTimeStep += Biomass.Value;
+                }
+                else
+                    ;
 
             }
 
@@ -119,7 +125,7 @@ namespace Madingley
 
             foreach (var ReproBiomass in deltas["reproductivebiomass"])
             {
-		        // Add the delta reproductive biomass to net biomass
+                // Add the delta reproductive biomass to net biomass
                 ReproductiveMassIncludingChangeThisTimeStep += ReproBiomass.Value;
             }
 
@@ -127,9 +133,9 @@ namespace Madingley
 
             // Get the current ratio of total individual mass (including reproductive potential) to adult body mass
             CurrentMassRatio = (BodyMassIncludingChangeThisTimeStep + ReproductiveMassIncludingChangeThisTimeStep) / gridCellCohorts[actingCohort].AdultMass;
-            
+
             // Must have enough mass to hit reproduction threshold criterion, and either (1) be in breeding season, or (2) be a marine cell (no breeding season in marine cells)
-            if ((CurrentMassRatio > _MassRatioThreshold) && ((cellEnvironment["Breeding Season"][currentMonth] == 1.0) || ((cellEnvironment["Realm"][0] == 2.0))))
+            if((CurrentMassRatio > _MassRatioThreshold) && ((cellEnvironment["Breeding Season"][currentMonth] == 1.0) || ((cellEnvironment["Realm"][0] == 2.0))))
             {
                 switch(madingleyCohortDefinitions.GetTraitNames("reproductive strategy", gridCellCohorts[actingCohort].FunctionalGroupIndex))
                 {
@@ -170,7 +176,7 @@ namespace Madingley
 
                 // Get the adult and juvenile masses of the offspring cohort
                 OffspringJuvenileAndAdultBodyMasses = GetOffspringCohortProperties(gridCellCohorts, actingCohort, madingleyCohortDefinitions);
-                
+
                 // Update cohort abundance in case juvenile mass has been altered through 'evolution'
                 _OffspringCohortAbundance = (_OffspringCohortAbundance * gridCellCohorts[actingCohort].JuvenileMass) / OffspringJuvenileAndAdultBodyMasses[0];
 
@@ -259,9 +265,9 @@ namespace Madingley
         /// <param name="madingleyStockDefinitions">The definitions of stock functional groups in the model</param>
         /// <param name="currentTimestep">The current model time step</param>
         /// <param name="tracker">An instance of ProcessTracker to hold diagnostics for reproduction</param>
-        public void RunReproductiveMassAssignment(GridCellCohortHandler gridCellCohorts, GridCellStockHandler gridCellStocks, 
-            int[] actingCohort, SortedList<string, double[]> cellEnvironment, Dictionary<string, Dictionary<string, double>> deltas, 
-            FunctionalGroupDefinitions madingleyCohortDefinitions, FunctionalGroupDefinitions madingleyStockDefinitions, 
+        public void RunReproductiveMassAssignment(GridCellCohortHandler gridCellCohorts, GridCellStockHandler gridCellStocks,
+            int[] actingCohort, SortedList<string, double[]> cellEnvironment, Dictionary<string, Dictionary<string, double>> deltas,
+            FunctionalGroupDefinitions madingleyCohortDefinitions, FunctionalGroupDefinitions madingleyStockDefinitions,
             uint currentTimestep, ProcessTracker tracker)
         {
             // Biomass per individual in each cohort to be assigned to reproductive potential
@@ -276,14 +282,17 @@ namespace Madingley
             // Loop over all items in the biomass deltas
             foreach (var Biomass in deltas["biomass"])
             {
-                // Add the delta biomass to net biomass
-                NetBiomassFromOtherEcologicalFunctionsThisTimeStep += Biomass.Value;
+                if (Biomass.Key != "respiring biomass")
+                {
+                    // Add the delta biomass to net biomass
+                    NetBiomassFromOtherEcologicalFunctionsThisTimeStep += Biomass.Value;
+                }
             }
 
             // If individual body mass after the addition of the net biomass from processes this time step will yield a body mass 
             // greater than the adult body mass for this cohort, then assign the surplus to reproductive potential
             if ((gridCellCohorts[actingCohort].IndividualBodyMass + NetBiomassFromOtherEcologicalFunctionsThisTimeStep) > gridCellCohorts[actingCohort].AdultMass)
-            {                
+            {
                 // Calculate the biomass for each individual in this cohort to be assigned to reproductive potential
                 _BiomassToAssignToReproductivePotential = gridCellCohorts[actingCohort].IndividualBodyMass + NetBiomassFromOtherEcologicalFunctionsThisTimeStep -
                     gridCellCohorts[actingCohort].AdultMass;

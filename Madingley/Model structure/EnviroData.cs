@@ -458,8 +458,8 @@ namespace Madingley
             Int16[] tempInt16Vector;
 
             // Vectors of possible names of the dimension variables to search in the files for
-            string[] LonSearchStrings = new string[] { "lon", "Lon", "longitude", "Longitude", "lons", "Lons", "long", "Long", "longs", "Longs", "longitudes", "Longitudes", "x", "X" };
-            string[] LatSearchStrings = new string[] { "lat", "Lat", "latitude", "Latitude", "lats", "Lats", "latitudes", "Latitudes", "y", "Y" };
+            string[] LonSearchStrings = new string[] { "rlon","lon", "Lon", "longitude", "Longitude", "lons", "Lons", "long", "Long", "longs", "Longs", "longitudes", "Longitudes", "x", "X", "rlon" };
+            string[] LatSearchStrings = new string[] { "rlat","lat", "Lat", "latitude", "Latitude", "lats", "Lats", "latitudes", "Latitudes", "y", "Y", "rlat" };
             string[] MonthSearchStrings = new string[] { "month", "Month", "months", "Months", "Time", "time" };
 
             //Integer counter for iterating through search strings
@@ -678,7 +678,7 @@ namespace Madingley
                                 Debug.Fail("Cannot find any variables that look like latitude dimensions");
                             }
 
-                            // Loop over possible names for the latitude dimension until a match in the data file is found
+                            // Loop over possible names for the longitude dimension until a match in the data file is found
                             kk = 0;
                             while ((kk < LonSearchStrings.Length) && (!internalData.Variables.Contains(LonSearchStrings[kk]))) kk++;
 
@@ -704,7 +704,15 @@ namespace Madingley
                                 {
                                     // Read the dimension data directly into the vector of dimension values
                                     _Lons = internalData.GetData<double[]>(LonSearchStrings[kk]);
+                                    if(_Lons.Min() < -180)
+                                    {
+                                        for (int jj = 0; jj < _Lons.Length; jj++)
+                                        {
+                                            _Lons[jj] = (double)_Lons[jj] + 100;
+                                        }
+                                    }
                                 }
+                                    
                                 else
                                 {
                                     // Data format unrecognized, so throw an error
@@ -727,7 +735,7 @@ namespace Madingley
                                 // Get the number of months in the temporal dimension
                                 _NumTimes = (uint)internalData.Dimensions[MonthSearchStrings[kk]].Length;
                                 // Check that the number of months is 12
-                                Debug.Assert(_NumTimes == 12, "Number of time intervals in an environmental data file with specified monthly temporal resolution is not equal to 12");
+                                // Debug.Assert(_NumTimes == 12, "Number of time intervals in an environmental data file with specified monthly temporal resolution is not equal to 12");
                                 // Read in the values of the temporal dimension from the file
                                 // Check which format the temporal dimension data are in; if unrecognized, then throw an error
                                 if (internalData.Variables[MonthSearchStrings[kk]].TypeOfData.Name.ToString().ToLower() == "single")
@@ -1316,7 +1324,7 @@ namespace Madingley
             }
 
             // Possible names for the latitude dimension in the NetCDF file
-            SearchStrings = new string[] { "lat", "Lat", "latitude", "Latitude", "lats", "Lats", "latitudes", "Latitudes", "y", "Y" };
+            SearchStrings = new string[] {"rlat", "lat", "Lat", "latitude", "Latitude", "lats", "Lats", "latitudes", "Latitudes", "y", "Y" };
             // Check which position the latitude dimension is in in the NetCDF file and add this to the vector of positions. If the latitude dimension cannot be
             // found then throw an error
             if (SearchStrings.Contains(internalData.Dimensions[0].Name.ToString()))
@@ -1333,7 +1341,7 @@ namespace Madingley
             }
 
             // Possible names for the longitude dimension in the netCDF file
-            SearchStrings = new string[] { "lon", "Lon", "longitude", "Longitude", "lons", "Lons", "long", "Long", "longs", "Longs", "longitudes", "Longitudes", "x", "X" };
+            SearchStrings = new string[] {"rlon", "lon", "Lon", "longitude", "Longitude", "lons", "Lons", "long", "Long", "longs", "Longs", "longitudes", "Longitudes", "x", "X" };
             // Check which position the latitude dimension is in in the NetCDF file and add this to the vector of positions. If the latitude dimension cannot be
             // found then throw an error
             if (SearchStrings.Contains(internalData.Dimensions[0].Name.ToString()))
@@ -1487,7 +1495,7 @@ namespace Madingley
             }
 
             // Possible names for the latitude dimension in the NetCDF file
-            SearchStrings = new string[] { "lat", "Lat", "latitude", "Latitude", "lats", "Lats", "latitudes", "Latitudes", "y" };
+            SearchStrings = new string[] {"rlat", "lat", "Lat", "latitude", "Latitude", "lats", "Lats", "latitudes", "Latitudes", "y" };
             // Check which position the latitude dimension is in in the NetCDF file and add this to the vector of positions. If the latitude dimension cannot be
             // found then throw an error
             if (SearchStrings.Contains(internalData.Dimensions[0].Name.ToString()))
@@ -1508,7 +1516,7 @@ namespace Madingley
             }
 
             // Possible names for the longitude dimension in the netCDF file
-            SearchStrings = new string[] { "lon", "Lon", "longitude", "Longitude", "lons", "Lons", "long", "Long", "longs", "Longs", "longitudes", "Longitudes", "x" };
+            SearchStrings = new string[] {"rlon", "lon", "Lon", "longitude", "Longitude", "lons", "Lons", "long", "Long", "longs", "Longs", "longitudes", "Longitudes", "x" };
             // Check which position the latitude dimension is in in the NetCDF file and add this to the vector of positions. If the latitude dimension cannot be
             // found then throw an error
             if (SearchStrings.Contains(internalData.Dimensions[0].Name.ToString()))
@@ -1529,7 +1537,7 @@ namespace Madingley
             }
 
             // Possible names for the monthly temporal dimension in the netCDF file
-            SearchStrings = new string[] {"time", "month", "Month", "months", "Months" };
+            SearchStrings = new string[] {"month", "Month", "months", "Months", "time", "Time" };
             // Check which position the temporal dimension is in in the NetCDF file and add this to the vector of positions. If the temporal dimension cannot be
             // found then throw an error
             if (SearchStrings.Contains(internalData.Dimensions[0].Name.ToString()))

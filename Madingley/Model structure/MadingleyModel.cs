@@ -1018,7 +1018,7 @@ namespace Madingley
                     CohortFunctionalGroupDefinitions, StockFunctionalGroupDefinitions);
 
                 // Create initial grid outputs
-                GridOutputs.InitialOutputs(EcosystemModelGrid, CohortFunctionalGroupDefinitions, StockFunctionalGroupDefinitions, _CellList, initialisation);
+                GridOutputs.InitialOutputs(EcosystemModelGrid, CohortFunctionalGroupDefinitions, StockFunctionalGroupDefinitions, _CellList, initialisation,0);
             }
 
         }
@@ -1207,7 +1207,8 @@ namespace Madingley
             GridCellCohortHandler workingGridCellCohorts, GridCellStockHandler workingGridCellStocks, string outputDetail, int cellIndex, 
             MadingleyModelInitialisation initialisation)
         {
-
+            // Reset the per timestep CO2 pool
+            EcosystemModelGrid.ResetGridCellPerTimestepCO2Pool(latCellIndex, lonCellIndex);
 
             // Local instances of classes
             EcologyCohort MadingleyEcologyCohort = new EcologyCohort();
@@ -1267,17 +1268,19 @@ namespace Madingley
 
             }
 
-            if (DrawRandomly)
-            {
-                // Randomly order the cohort indices
-                RandomCohortOrder = Utilities.RandomlyOrderedIndices(TotalCohortNumber);
-            }
-            else
-            {
-                RandomCohortOrder = Utilities.NonRandomlyOrderedCohorts(TotalCohortNumber, CurrentTimeStep);
-            }
+            RandomCohortOrder = Utilities.MassOrderedIndices(workingGridCellCohorts, CohortIndices, TotalCohortNumber);
 
-            // Diagnostic biological variables don't need to be reset every cohort, but rather every grid cell
+            /*if (DrawRandomly)
+            //{
+            //    // Randomly order the cohort indices
+            //    RandomCohortOrder = Utilities.RandomlyOrderedIndices(TotalCohortNumber);
+            //}
+            //else
+            //{
+            //    RandomCohortOrder = Utilities.NonRandomlyOrderedCohorts(TotalCohortNumber, CurrentTimeStep);
+            //}
+
+            Diagnostic biological variables don't need to be reset every cohort, but rather every grid cell */
             EcosystemModelParallelTempval2 = 0;
 
             // Initialise eating formulations

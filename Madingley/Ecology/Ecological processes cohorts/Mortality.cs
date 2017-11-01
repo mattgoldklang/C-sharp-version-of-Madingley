@@ -17,7 +17,7 @@ namespace Madingley
         /// The available implementations of the mortality process
         /// </summary>
         private SortedList<string, IMortalityImplementation> Implementations;
-        
+
         #endregion
 
         /// <summary>
@@ -39,8 +39,8 @@ namespace Madingley
 
             // Add the starvation mortality implementation to the list of implementations
             StarvationMortality StarvationMortalityImplementation = new StarvationMortality(globalModelTimeStepUnit);
-            Implementations.Add("basic starvation mortality", StarvationMortalityImplementation);           
-       
+            Implementations.Add("basic starvation mortality", StarvationMortalityImplementation);
+
         }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace Madingley
         /// <param name="madingleyStockDefinitions">The definitions for stock functional groups in the model</param>
         /// <param name="implementationKey">The name of the implementation of mortality to initialize</param>
         public void InitializeEcologicalProcess(GridCellCohortHandler gridCellCohorts, GridCellStockHandler gridCellStocks,
-            FunctionalGroupDefinitions madingleyCohortDefinitions, FunctionalGroupDefinitions madingleyStockDefinitions, 
+            FunctionalGroupDefinitions madingleyCohortDefinitions, FunctionalGroupDefinitions madingleyStockDefinitions,
             string implementationKey)
         {
 
@@ -75,26 +75,26 @@ namespace Madingley
         /// <param name="outputDetail">The level output detail being used for the current model run</param>
         /// <param name="currentMonth">The current model month</param>
         /// <param name="initialisation">The Madingley Model initialisation</param>
-        public void RunEcologicalProcess(GridCellCohortHandler gridCellCohorts, GridCellStockHandler gridCellStocks, 
+        public void RunEcologicalProcess(GridCellCohortHandler gridCellCohorts, GridCellStockHandler gridCellStocks,
             int[] actingCohort, SortedList<string, double[]> cellEnvironment, Dictionary<string, Dictionary<string, double>> deltas,
-            FunctionalGroupDefinitions madingleyCohortDefinitions, FunctionalGroupDefinitions madingleyStockDefinitions, 
+            FunctionalGroupDefinitions madingleyCohortDefinitions, FunctionalGroupDefinitions madingleyStockDefinitions,
             uint currentTimestep, ProcessTracker trackProcesses, FunctionalGroupTracker functionalTracker, CohortTracker cohortTracker,
             ref ThreadLockedParallelVariables partial, Boolean specificLocations, string outputDetail, uint currentMonth, MadingleyModelInitialisation initialisation)
         {
-            
-        // Variables to hold the mortality rates
-        double MortalityRateBackground;
-        double MortalityRateSenescence;
-        double MortalityRateStarvation;
 
-        // Variable to hold the total abundance lost to all forms of mortality
-        double MortalityTotal;
+            // Variables to hold the mortality rates
+            double MortalityRateBackground;
+            double MortalityRateSenescence;
+            double MortalityRateStarvation;
 
-        // Individual body mass including change this time step as a result of other ecological processes
-        double BodyMassIncludingChangeThisTimeStep;
+            // Variable to hold the total abundance lost to all forms of mortality
+            double MortalityTotal;
 
-        // Individual reproductive mass including change this time step as a result of other ecological processes
-        double ReproductiveMassIncludingChangeThisTimeStep;
+            // Individual body mass including change this time step as a result of other ecological processes
+            double BodyMassIncludingChangeThisTimeStep;
+
+            // Individual reproductive mass including change this time step as a result of other ecological processes
+            double ReproductiveMassIncludingChangeThisTimeStep;
 
             // Calculate the body mass of individuals in this cohort including mass gained through eating this time step, up to but not exceeding adult body mass for this cohort. 
             // Should be fine because these deductions are made in the reproduction implementation, but use Math.Min to double check.
@@ -104,11 +104,14 @@ namespace Madingley
             // Loop over all items in the biomass deltas
             foreach (var Biomass in deltas["biomass"])
             {
-                // Add the delta biomass to net biomass
-                BodyMassIncludingChangeThisTimeStep += Biomass.Value;
+                if (Biomass.Key != "respiring biomass")
+                {
+                    // Add the delta biomass to net biomass
+                    BodyMassIncludingChangeThisTimeStep += Biomass.Value;
+                }
             }
             BodyMassIncludingChangeThisTimeStep = Math.Min(gridCellCohorts[actingCohort].AdultMass, BodyMassIncludingChangeThisTimeStep + gridCellCohorts[actingCohort].IndividualBodyMass);
-            
+
             // Temporary variable to hold net reproductive biomass change of individuals in this cohort as a result of other ecological processes
             ReproductiveMassIncludingChangeThisTimeStep = 0.0;
 
@@ -157,8 +160,8 @@ namespace Madingley
             // the number of individuals that have died
             if (trackProcesses.TrackProcesses && (outputDetail == "high") && (!gridCellCohorts[actingCohort].Merged))
             {
-                trackProcesses.RecordMortality((uint)cellEnvironment["LatIndex"][0], (uint)cellEnvironment["LonIndex"][0],gridCellCohorts[actingCohort].BirthTimeStep, 
-                    currentTimestep, gridCellCohorts[actingCohort].IndividualBodyMass, gridCellCohorts[actingCohort].AdultMass, 
+                trackProcesses.RecordMortality((uint)cellEnvironment["LatIndex"][0], (uint)cellEnvironment["LonIndex"][0], gridCellCohorts[actingCohort].BirthTimeStep,
+                    currentTimestep, gridCellCohorts[actingCohort].IndividualBodyMass, gridCellCohorts[actingCohort].AdultMass,
                     gridCellCohorts[actingCohort].FunctionalGroupIndex,
                     gridCellCohorts[actingCohort].CohortID[0], MortalityTotal, "sen/bg/starv");
             }

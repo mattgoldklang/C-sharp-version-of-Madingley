@@ -167,40 +167,40 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Ecology\Ecological processes stocks\Ecological processes cohorts\Activity.cs" />
-    <Compile Include="Ecology\Ecological processes stocks\Ecological processes cohorts\Dispersal implementations\CommonDispersalMethods.cs" />
-    <Compile Include="Ecology\Ecological processes stocks\Ecological processes cohorts\Dispersal implementations\ResponsiveDispersal.cs" />
-    <Compile Include="Ecology\Ecological processes stocks\Ecological processes cohorts\Dispersal implementations\AdvectiveDispersal.cs" />
-    <Compile Include="Ecology\Ecological processes stocks\Ecological processes cohorts\Dispersal implementations\DiffusiveDispersal.cs" />
-    <Compile Include="Ecology\Ecological processes stocks\Ecological processes cohorts\Dispersal implementations\Technical code\TResponsiveDispersal.cs" />
-    <Compile Include="Ecology\Ecological processes stocks\Ecological processes cohorts\Dispersal implementations\Technical code\TAdvectiveDispersal.cs" />
-    <Compile Include="Ecology\Ecological processes stocks\Ecological processes cohorts\Dispersal implementations\Technical code\TDiffusiveDispersal.cs" />
-    <Compile Include="Ecology\Ecological processes stocks\Ecological processes cohorts\Dispersal.cs" />
-    <Compile Include="Ecology\Ecological processes stocks\Ecological processes cohorts\Dispersal implementations\Technical code\IDispersalImplementation.cs" />
-    <Compile Include="Ecology\Ecological processes stocks\Ecological processes cohorts\Eating implementations\RevisedHerbivory.cs" />
-    <Compile Include="Ecology\Ecological processes stocks\Ecological processes cohorts\Eating implementations\RevisedPredation.cs" />
-    <Compile Include="Ecology\Ecological processes stocks\Ecological processes cohorts\Eating implementations\Technical code\TRevisedPredation.cs" />
-    <Compile Include="Ecology\Ecological processes stocks\Ecological processes cohorts\Eating implementations\Technical code\TRevisedHerbivory.cs" />
+    <Compile Include="Ecology\Ecological processes cohorts\Activity.cs" />
+    <Compile Include="Ecology\Ecological processes cohorts\Dispersal implementations\CommonDispersalMethods.cs" />
+    <Compile Include="Ecology\Ecological processes cohorts\Dispersal implementations\ResponsiveDispersal.cs" />
+    <Compile Include="Ecology\Ecological processes cohorts\Dispersal implementations\AdvectiveDispersal.cs" />
+    <Compile Include="Ecology\Ecological processes cohorts\Dispersal implementations\DiffusiveDispersal.cs" />
+    <Compile Include="Ecology\Ecological processes cohorts\Dispersal implementations\Technical code\TResponsiveDispersal.cs" />
+    <Compile Include="Ecology\Ecological processes cohorts\Dispersal implementations\Technical code\TAdvectiveDispersal.cs" />
+    <Compile Include="Ecology\Ecological processes cohorts\Dispersal implementations\Technical code\TDiffusiveDispersal.cs" />
+    <Compile Include="Ecology\Ecological processes cohorts\Dispersal.cs" />
+    <Compile Include="Ecology\Ecological processes cohorts\Dispersal implementations\Technical code\IDispersalImplementation.cs" />
+    <Compile Include="Ecology\Ecological processes cohorts\Eating implementations\RevisedHerbivory.cs" />
+    <Compile Include="Ecology\Ecological processes cohorts\Eating implementations\RevisedPredation.cs" />
+    <Compile Include="Ecology\Ecological processes cohorts\Eating implementations\Technical code\TRevisedPredation.cs" />
+    <Compile Include="Ecology\Ecological processes cohorts\Eating implementations\Technical code\TRevisedHerbivory.cs" />
     <Compile Include="Ecology\EcologicalParameters.cs" />
-    <Compile Include="Ecology\Ecological processes stocks\Ecological processes cohorts\Metabolism implementations\MetabolismEctotherm.cs" />
-    <Compile Include="Ecology\Ecological processes stocks\Ecological processes cohorts\Metabolism implementations\MetabolismEndotherm.cs" />
-    <Compile Include="Ecology\Ecological processes stocks\Ecological processes cohorts\Metabolism implementations\Technical code\IMetabolismImplementation.cs" />
-    <Compile Include="Ecology\Ecological processes stocks\Ecological processes cohorts\Metabolism implementations\Technical code\TMetabolismEctotherm.cs" />
-    <Compile Include="Ecology\Ecological processes stocks\Ecological processes cohorts\Metabolism implementations\Technical code\TMetabolismEndotherm.cs" />
-    <Compile Include="Ecology\Ecological processes stocks\Ecological processes cohorts\Metabolism.cs" />
-    <Compile Include="Ecology\Ecological processes stocks\Ecological processes cohorts\Mortality implementations\BackgroundMortality.cs" />
-    <Compile Include="Ecology\Ecological processes stocks\Ecological processes cohorts\Eating.cs" />
-    <Compile Include="Ecology\Ecological processes stocks\Ecological processes cohorts\Mortality implementations\Technical code\IMortalityImplementation.cs" />
-    <Compile Include="Ecology\Ecological processes stocks\Ecological processes cohorts\Mortality implementations\SenescenceMortality.cs" />
-    <Compile Include="Ecology\Ecological processes stocks\Ecological processes cohorts\Mortality implementations\StarvationMortality.cs" />
-    <Compile Include="Ecology\Ecological processes stocks\Ecological processes cohorts\Mortality implementations\Technical code\TBackgroundMortality.cs" />
-    <Compile Include="Ecology\Ecological processes stocks\Ecological processes cohorts\Mortality implementations\Technical code\TSenescenceMortality.cs" />
-    <Compile Include="Ecology\Ecological processes stocks\Ecological processes cohorts\Mortality implementations\Technical code\TStarvationMortality.cs" />
-    <Compile Include="Ecology\Ecological processes stocks\Ecological processes cohorts\Mortality.cs" />
-    <Compile Include="Ecology\Ecological processes stocks\Ecological processes cohorts\Reproduction implementations\Technical code\IReproductionImplementation.cs" />
-    <Compile Include="Ecology\Ecological processes stocks\Ecological processes cohorts\Reproduction implementations\ReproductionBasic.cs" />
-    <Compile Include="Ecology\Ecological processes stocks\Ecological processes cohorts\Reproduction implementations\Technical code\TReproductionBasic.cs" />
-    <Compile Include="Ecology\Ecological processes stocks\Ecological processes cohorts\Technical code\IEcologicalProcessWithinGridCells.cs" />
+    <Compile Include="Ecology\Ecological processes cohorts\Metabolism implementations\MetabolismEctotherm.cs" />
+    <Compile Include="Ecology\Ecological processes cohorts\Metabolism implementations\MetabolismEndotherm.cs" />
+    <Compile Include="Ecology\Ecological processes cohorts\Metabolism implementations\Technical code\IMetabolismImplementation.cs" />
+    <Compile Include="Ecology\Ecological processes cohorts\Metabolism implementations\Technical code\TMetabolismEctotherm.cs" />
+    <Compile Include="Ecology\Ecological processes cohorts\Metabolism implementations\Technical code\TMetabolismEndotherm.cs" />
+    <Compile Include="Ecology\Ecological processes cohorts\Metabolism.cs" />
+    <Compile Include="Ecology\Ecological processes cohorts\Mortality implementations\BackgroundMortality.cs" />
+    <Compile Include="Ecology\Ecological processes cohorts\Eating.cs" />
+    <Compile Include="Ecology\Ecological processes cohorts\Mortality implementations\Technical code\IMortalityImplementation.cs" />
+    <Compile Include="Ecology\Ecological processes cohorts\Mortality implementations\SenescenceMortality.cs" />
+    <Compile Include="Ecology\Ecological processes cohorts\Mortality implementations\StarvationMortality.cs" />
+    <Compile Include="Ecology\Ecological processes cohorts\Mortality implementations\Technical code\TBackgroundMortality.cs" />
+    <Compile Include="Ecology\Ecological processes cohorts\Mortality implementations\Technical code\TSenescenceMortality.cs" />
+    <Compile Include="Ecology\Ecological processes cohorts\Mortality implementations\Technical code\TStarvationMortality.cs" />
+    <Compile Include="Ecology\Ecological processes cohorts\Mortality.cs" />
+    <Compile Include="Ecology\Ecological processes cohorts\Reproduction implementations\Technical code\IReproductionImplementation.cs" />
+    <Compile Include="Ecology\Ecological processes cohorts\Reproduction implementations\ReproductionBasic.cs" />
+    <Compile Include="Ecology\Ecological processes cohorts\Reproduction implementations\Technical code\TReproductionBasic.cs" />
+    <Compile Include="Ecology\Ecological processes cohorts\Technical code\IEcologicalProcessWithinGridCells.cs" />
     <Compile Include="Impacts\ClimateChange.cs" />
     <Compile Include="Impacts\Fisheries\ApplyFishingCatches.cs" />
     <Compile Include="Impacts\Fisheries\FishTraits.cs" />
@@ -210,8 +210,8 @@
     <Compile Include="Impacts\ImpactsSpatialHandler.cs" />
     <Compile Include="Impacts\OceanAcidification.cs" />
     <Compile Include="Model structure\ApplyEcology.cs" />
-    <Compile Include="Ecology\Ecological processes stocks\Ecological processes cohorts\Eating implementations\Technical code\IEatingImplementation.cs" />
-    <Compile Include="Ecology\Ecological processes stocks\Ecological processes cohorts\Technical code\IEcologicalProcessAcrossGridCells.cs" />
+    <Compile Include="Ecology\Ecological processes cohorts\Eating implementations\Technical code\IEatingImplementation.cs" />
+    <Compile Include="Ecology\Ecological processes cohorts\Technical code\IEcologicalProcessAcrossGridCells.cs" />
     <Compile Include="Ecology\Ecological processes stocks\AutotrophProcessor.cs" />
     <Compile Include="Model structure\CohortMerge.cs" />
     <Compile Include="Model structure\ApplyCrossGridCellEcology.cs" />
@@ -223,7 +223,7 @@
     <Compile Include="Model structure\Cohort.cs" />
     <Compile Include="Model structure\CreateSDSObject.cs" />
     <Compile Include="Model structure\FunctionalGroupDefinitions.cs" />
-    <Compile Include="Ecology\Ecological processes stocks\Ecological processes cohorts\Reproduction.cs" />
+    <Compile Include="Ecology\Ecological processes cohorts\Reproduction.cs" />
     <Compile Include="Model structure\GridCellStockHandler.cs" />
     <Compile Include="Impacts\HANPP.cs" />
     <Compile Include="Model structure\InputModelState.cs" />
@@ -296,6 +296,12 @@
     <None Include="input\Data\Original\Ocean\averaged_v_50y_top100m_monthly.nc">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="input\Data\Original\Ocean\dNO3.nc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="input\Data\Original\Ocean\dSST.nc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="input\Data\Original\Ocean\KennedyetalDTR_monthly_climatology.nc">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -303,6 +309,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="input\Data\Original\Ocean\nano_npp.nc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="input\Data\Original\Ocean\NO3.nc">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="input\Data\Original\Ocean\OceanNPP.nc">
@@ -354,7 +363,6 @@
     <None Include="input\Model setup\SimulationControlParameters.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="input\ModelStates\ModelState_23400.nc" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -390,7 +398,9 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="input\ModelStates\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

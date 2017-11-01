@@ -137,8 +137,24 @@ namespace Madingley
             // Initialise the utility functions
             Utilities = new UtilityFunctions();
 
-            // Temporary vector for holding initial values of grid cell properties
+            // Temporary vectors for holding initial values of grid cell properties
             double[] tempVector;
+            double[] tempVector1;
+            double[] tempVector2;
+            double[] tempVector3;
+            double[] tempVector4;
+            double[] tempVector5;
+            double[] tempVector6;
+            double[] tempVector7;
+            double[] tempVector8;
+            double[] tempVector9;
+            double[] tempVector10;
+            double[] tempVector11;
+            double[] tempVector12;
+            double[] tempVector13;
+            double[] tempVector14;
+            double[] tempVector15;
+            double[] tempVectorA;
 
             // Initialise deltas sorted list
             _Deltas = new Dictionary<string, Dictionary<string, double>>();
@@ -156,6 +172,7 @@ namespace Madingley
             DeltaBiomass.Add("predation", 0.0);
             DeltaBiomass.Add("herbivory", 0.0);
             DeltaBiomass.Add("reproduction", 0.0);
+            DeltaBiomass.Add("respiring biomass", 0.0);
 
             // Add delta biomass sorted list to deltas sorted list
             _Deltas.Add("biomass", DeltaBiomass);
@@ -209,6 +226,17 @@ namespace Madingley
             tempVector = new double[1];
             tempVector[0] = 0.0;
             _CellEnvironment.Add("Respiratory CO2 Pool", tempVector);
+
+            // Add a per time step respiratory CO2 pool to the cell environment with an initial value of 0
+            tempVector = new double[1];
+            tempVector[0] = 0.0;
+            _CellEnvironment.Add("Respiratory CO2 Pool Per Timestep", tempVector);
+
+            // Add a per time step biomass pool to the cell environment with an initial value of 0. This is used to track the total biomass that has respired this time-step (i.e. ignoring things that
+            // move in or out, and new cohorts which do not respire during the time stpe that they are products
+            tempVector = new double[1];
+            tempVector[0] = 0.0;
+            _CellEnvironment.Add("Respiring Biomass Pool Per Timestep", tempVector);
 
             // Add the grid cell area (in km2) to the cell environment with an initial value of 0
             tempVector = new double[1];
@@ -264,24 +292,50 @@ namespace Madingley
                         tempVector[0] = 2.0;
                         _CellEnvironment.Add("Realm", tempVector);
 
-                        tempVector = new double[12] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-                        _CellEnvironment.Add("Original picoNPP", tempVector);
-                        _CellEnvironment.Add("Original nanoNPP", tempVector);
-                        _CellEnvironment.Add("Original microNPP", tempVector);
-                        _CellEnvironment.Add("micro_to_pico", tempVector);
-                        _CellEnvironment.Add("DMicro", tempVector);
-                        _CellEnvironment.Add("DPico", tempVector);
-                        _CellEnvironment.Add("DNano", tempVector);
+                        tempVector1 = new double[12] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+                        _CellEnvironment.Add("Original picoNPP", tempVector1);
 
-                        tempVector = new double[3] { 0, 0, 0 };
-                        _CellEnvironment.Add("Remaining Biomass", tempVector);
+                        tempVector2 = new double[12] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+                        _CellEnvironment.Add("Original nanoNPP", tempVector2);
 
-                        tempVector = new double[2] { 0, 0 };
-                        _CellEnvironment.Add("Bloom Start", tempVector);
-                        _CellEnvironment.Add("Bloom End", tempVector);
+                        tempVector3 = new double[12] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+                        _CellEnvironment.Add("Original microNPP", tempVector3);
 
-                        tempVector = new double[1] { 0 };
-                        _CellEnvironment.Add("multiplier", tempVector);
+                        tempVector4 = new double[12] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+                        _CellEnvironment.Add("totalNPP", tempVector4);
+
+                        tempVector5 = new double[12] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+                        _CellEnvironment.Add("Nano to Total", tempVector5);
+
+                        tempVector6 = new double[12] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+                        _CellEnvironment.Add("Micro to Total", tempVector6);
+
+                        tempVector7 = new double[12] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+                        _CellEnvironment.Add("dplarge", tempVector7);
+
+                        tempVector8 = new double[12] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+                        _CellEnvironment.Add("DMicro", tempVector8);
+
+                        tempVector9 = new double[12] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+                        _CellEnvironment.Add("DPico", tempVector9);
+
+                        tempVectorA= new double[12] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+                        _CellEnvironment.Add("DNano", tempVectorA);
+
+                        tempVector15 = new double[12] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+                        _CellEnvironment.Add("n_total NPP", tempVector15);
+
+                        tempVector11 = new double[3] { 0, 0, 0 };
+                        _CellEnvironment.Add("Remaining Biomass", tempVector11);
+
+                        tempVector12 = new double[2] { 0, 0 };
+                        _CellEnvironment.Add("Bloom Start", tempVector12);
+
+                        tempVector14 = new double[2] { 0, 0 };
+                        _CellEnvironment.Add("Bloom End", tempVector14);
+
+                        tempVector13 = new double[1] { 0 };
+                        _CellEnvironment.Add("multiplier", tempVector13);
 
                         _CellEnvironment.Add("NPP", _CellEnvironment["OceanNPP"]);
                         _CellEnvironment.Add("DiurnalTemperatureRange", _CellEnvironment["OceanDTR"]);
@@ -590,7 +644,14 @@ namespace Madingley
         /// <param name="deltaType">The type of delta to set the value for: 'biomass', 'abundance', 'reproductivebiomass', 'organicpool' or 'respiratoryCO2pool</param>
         /// <param name="ecologicalProcess">The ecological process to set the value for</param>
         /// <param name="setValue">Value to set</param>
-        /// <returns>Whether the delta type and ecological process were found within the cell deltas</returns>
+        /// <returns>Whether the delta type and ecological process were found within the cell 
+        /// 
+        /// 
+        /// 
+        /// 
+        /// 
+        /// 
+        /// </returns>
         public bool SetDelta(string deltaType, string ecologicalProcess, double setValue)
         {
             // If the specified ecological and process exist in the cell deltas, then set the value and return true; otherwise, return false
