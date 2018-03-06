@@ -1,4 +1,2 @@
 label,npp,temperature,ocean acidification,harvesting,simulation number
-CC_OA,no 0.0 0,escalating 0.0,yes 0.0,no 0.0,1
-NoOA,no 0.0 0,escalating 0.0,no 0.0,no 0.0,1
-
+cc,no 0.0 0,escalating2 0.2 4,no 0.0,no 0.0,0

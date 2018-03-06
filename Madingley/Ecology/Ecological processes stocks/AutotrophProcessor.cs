@@ -103,72 +103,79 @@ namespace Madingley
             if (cellEnvironment["Realm"][0] == 2.0)
             {
                 //Calculates the bloom phenology of Micro production using the Hopkins et al 2015 method
-               /*(currentTimestep == 0)
-                {
-                    for (int m = 0; m < 12; m++)
-                    {
-                        bloom_values_micro[m] = cellEnvironment["microNPP"][m];
-                        bloom_values_nano[m] = cellEnvironment["nanoNPP"][m];
-                        cellEnvironment["Original microNPP"][m] = cellEnvironment["microNPP"][m];
-                        cellEnvironment["Original nanoNPP"][m] = cellEnvironment["nanoNPP"][m];
-                        cellEnvironment["Original picoNPP"][m] = cellEnvironment["picoNPP"][m];
-                        cellEnvironment["totalNPP"][m] = cellEnvironment["microNPP"][m] + cellEnvironment["nanoNPP"][m] + cellEnvironment["picoNPP"][m];
-                    }
-                    
-                    double bloom_max = bloom_values_micro.Max();
-                    int peak_month = bloom_values_micro.ToList().IndexOf(bloom_max);
-                    List<double> prepeak = new List<double>();
-                    List<double> postpeak = new List<double>();
-                    for (int m = 0; m < 12; m++)
-                    {
-                        if (m < peak_month) prepeak.Add(bloom_values_micro[m]);
-                        else if (m > peak_month) postpeak.Add(bloom_values_micro[m]);
-                    }
-                    double pre_min = prepeak.Min();
-                    double post_min = postpeak.Min();
-                    double pre_range = (0.05 * (bloom_max - pre_min)) + pre_min;
-                    double post_range = (0.05 * (bloom_max - post_min)) + post_min;
-                    bloom_start[0] = prepeak.FindIndex(item => item > pre_range);
-                    if (bloom_start[0] < 0 || Convert.IsDBNull(bloom_start[0]))
-                    {
-                         bloom_start[0] = prepeak.Count();
-                    }
-                    bloom_end[0] = postpeak.FindIndex(item => item < post_range) + prepeak.Count() + 1;
-                    if (bloom_end[0] < 0 || Convert.IsDBNull(bloom_end[0]))
-                    {
-                         bloom_end[0] = prepeak.Count() + 2;
-                    }
-                    cellEnvironment["Bloom Start"][0] = bloom_start[0];
-                    cellEnvironment["Bloom End"][0] = bloom_end[0];
+                /*(currentTimestep == 0)
+                 {
+                     for (int m = 0; m < 12; m++)
+                     {
+                         bloom_values_micro[m] = cellEnvironment["microNPP"][m];
+                         bloom_values_nano[m] = cellEnvironment["nanoNPP"][m];
+                         cellEnvironment["Original microNPP"][m] = cellEnvironment["microNPP"][m];
+                         cellEnvironment["Original nanoNPP"][m] = cellEnvironment["nanoNPP"][m];
+                         cellEnvironment["Original picoNPP"][m] = cellEnvironment["picoNPP"][m];
+                         cellEnvironment["totalNPP"][m] = cellEnvironment["microNPP"][m] + cellEnvironment["nanoNPP"][m] + cellEnvironment["picoNPP"][m];
+                     }
 
-                    double bloom_max_n = bloom_values_nano.Max();
-                    int peak_month_n = bloom_values_nano.ToList().IndexOf(bloom_max_n);
-                    List<double> prepeak_n = new List<double>();
-                    List<double> postpeak_n = new List<double>();
+                     double bloom_max = bloom_values_micro.Max();
+                     int peak_month = bloom_values_micro.ToList().IndexOf(bloom_max);
+                     List<double> prepeak = new List<double>();
+                     List<double> postpeak = new List<double>();
+                     for (int m = 0; m < 12; m++)
+                     {
+                         if (m < peak_month) prepeak.Add(bloom_values_micro[m]);
+                         else if (m > peak_month) postpeak.Add(bloom_values_micro[m]);
+                     }
+                     double pre_min = prepeak.Min();
+                     double post_min = postpeak.Min();
+                     double pre_range = (0.05 * (bloom_max - pre_min)) + pre_min;
+                     double post_range = (0.05 * (bloom_max - post_min)) + post_min;
+                     bloom_start[0] = prepeak.FindIndex(item => item > pre_range);
+                     if (bloom_start[0] < 0 || Convert.IsDBNull(bloom_start[0]))
+                     {
+                          bloom_start[0] = prepeak.Count();
+                     }
+                     bloom_end[0] = postpeak.FindIndex(item => item < post_range) + prepeak.Count() + 1;
+                     if (bloom_end[0] < 0 || Convert.IsDBNull(bloom_end[0]))
+                     {
+                          bloom_end[0] = prepeak.Count() + 2;
+                     }
+                     cellEnvironment["Bloom Start"][0] = bloom_start[0];
+                     cellEnvironment["Bloom End"][0] = bloom_end[0];
+
+                     double bloom_max_n = bloom_values_nano.Max();
+                     int peak_month_n = bloom_values_nano.ToList().IndexOf(bloom_max_n);
+                     List<double> prepeak_n = new List<double>();
+                     List<double> postpeak_n = new List<double>();
+                     for (int m = 0; m < 12; m++)
+                     {
+                         if (m < peak_month_n) prepeak_n.Add(bloom_values_nano[m]);
+                         else if (m > peak_month_n) postpeak_n.Add(bloom_values_nano[m]);
+                     }
+                     double pre_min_n = prepeak_n.Min();
+                     double post_min_n = postpeak_n.Min();
+                     double pre_range_n = (0.05 * (bloom_max_n - pre_min_n)) + pre_min_n;
+                     double post_range_n = (0.05 * (bloom_max_n - post_min_n)) + post_min_n;
+                     bloom_start[1] = prepeak.FindIndex(item => item > pre_range_n);
+                     if (bloom_start[1] < 0 || Convert.IsDBNull(bloom_start[1]) )
+                     {
+                         bloom_start[1] = prepeak_n.Count();
+                     }
+                     bloom_end[1] = postpeak.FindIndex(item => item < post_range_n) + prepeak.Count() + 1;
+                     if (bloom_end[1] < 0 || Convert.IsDBNull(bloom_end[1]))
+                     {
+                         bloom_end[1] = prepeak_n.Count() + 2;
+                     }
+                     cellEnvironment["Bloom Start"][1] = bloom_start[1];
+                     cellEnvironment["Bloom End"][1] = bloom_end[1];
+                 }*/
+
+                if(currentTimestep == 0)
+                { 
                     for (int m = 0; m < 12; m++)
                     {
-                        if (m < peak_month_n) prepeak_n.Add(bloom_values_nano[m]);
-                        else if (m > peak_month_n) postpeak_n.Add(bloom_values_nano[m]);
+                        cellEnvironment["NPP"][m] = cellEnvironment["picoNPP"][m] + cellEnvironment["nanoNPP"][m] + cellEnvironment["microNPP"][m];
                     }
-                    double pre_min_n = prepeak_n.Min();
-                    double post_min_n = postpeak_n.Min();
-                    double pre_range_n = (0.05 * (bloom_max_n - pre_min_n)) + pre_min_n;
-                    double post_range_n = (0.05 * (bloom_max_n - post_min_n)) + post_min_n;
-                    bloom_start[1] = prepeak.FindIndex(item => item > pre_range_n);
-                    if (bloom_start[1] < 0 || Convert.IsDBNull(bloom_start[1]) )
-                    {
-                        bloom_start[1] = prepeak_n.Count();
-                    }
-                    bloom_end[1] = postpeak.FindIndex(item => item < post_range_n) + prepeak.Count() + 1;
-                    if (bloom_end[1] < 0 || Convert.IsDBNull(bloom_end[1]))
-                    {
-                        bloom_end[1] = prepeak_n.Count() + 2;
-                    }
-                    cellEnvironment["Bloom Start"][1] = bloom_start[1];
-                    cellEnvironment["Bloom End"][1] = bloom_end[1];
-                }*/
-
-                if (currentTimestep >=  burninSteps)
+                }
+                if (currentTimestep >=  burninSteps && temperatureScenario.Item1 == "escalating")
                 {
                     N0 = cellEnvironment["Original NO3"][currentMonth];
                     Ni = cellEnvironment["NO3"][currentMonth];
@@ -183,7 +190,7 @@ namespace Madingley
                     totalNPP0 = Pico0 + Nano0 + Micro0;
                     totalNPPi = Picoi + Nanoi + Microi;
                     pchange = (totalNPPi - totalNPP0) / totalNPP0;
-                    cellEnvironment["totalNPP"][currentMonth] = cellEnvironment["totalNPP"][currentMonth] + (pchange * cellEnvironment["totalNPP"][currentMonth]);
+                    cellEnvironment["totalNPP"][currentMonth] = cellEnvironment["NPP"][currentMonth] + (pchange * cellEnvironment["totalNPP"][currentMonth]);
 
                 }
                 switch (gridCellStockHandler[actingStock].StockName)
@@ -273,7 +280,7 @@ namespace Madingley
                         NPPi = cellEnvironment["Original microNPP"][currentMonth];
                         // If nanophytoplankton NPP is a missing value then set to zero
                         if (NPP == cellEnvironment["Missing Value"][0]) NPP = 0.0;
-                          if (temperatureScenario.Item1 == "escalating" && currentTimestep >= burninSteps)
+                        if (temperatureScenario.Item1 == "escalating" && currentTimestep >= burninSteps)
                         {
                             pchange = (Microi - Micro0) / Math.Abs(Micro0);
                             n_prod = NPP + (NPP * pchange);
@@ -325,7 +332,7 @@ namespace Madingley
                // }
                 dn = NPP;
 
-                mortality = (left_overs * 0.1);
+                mortality = (left_overs * 0);
 
                 sinking = (left_overs + dn) * sinking_rate;
 

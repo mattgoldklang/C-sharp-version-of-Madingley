@@ -678,21 +678,24 @@ namespace Madingley
                 EcosystemModelGrid.GetCellEnvironment(_CellList[cellIndex][0], _CellList[cellIndex][1]),
                 _TemperatureScenario, CurrentTimeStep, CurrentMonth, NumBurninSteps, NumImpactSteps,
                 ((initialisation.ImpactCellIndices.Contains((uint)cellIndex) || initialisation.ImpactAll)));
-
-            //Apply any OA impacts 
-            OAsimulator.ApplyOAScenario(EcosystemModelGrid.GetCellEnvironment(_CellList[cellIndex][0], _CellList[cellIndex][1]),
-                _OAScenario, CurrentTimeStep, CurrentMonth, NumBurninSteps, NumTimeSteps, NumImpactSteps,
-                ((initialisation.ImpactCellIndices.Contains((uint)cellIndex) || initialisation.ImpactAll)));
-
+        
+           
             // Create a temporary internal copy of the grid cell cohorts
             GridCellCohortHandler WorkingGridCellCohorts = EcosystemModelGrid.GetGridCellCohorts(_CellList[cellIndex][0], _CellList[cellIndex][1]);
 
             // Create a temporary internal copy of the grid cell stocks
             GridCellStockHandler WorkingGridCellStocks = EcosystemModelGrid.GetGridCellStocks(_CellList[cellIndex][0], _CellList[cellIndex][1]);
 
+            //Apply any OA impacts 
+            OAsimulator.ApplyOAScenario(EcosystemModelGrid.GetCellEnvironment(_CellList[cellIndex][0], _CellList[cellIndex][1]),
+                _OAScenario, CurrentTimeStep, CurrentMonth, NumBurninSteps, NumTimeSteps, NumImpactSteps,
+                ((initialisation.ImpactCellIndices.Contains((uint)cellIndex) || initialisation.ImpactAll)));
+
             // Run stock ecology
             RunWithinCellStockEcology(_CellList[cellIndex][0], _CellList[cellIndex][1], WorkingGridCellStocks, cellIndex,
                 initialisation);
+
+
 
             // Run within cell ecology if we are not doing dispersal only
             if (dispersalOnly)
@@ -1313,7 +1316,19 @@ namespace Madingley
                             workingGridCellCohorts[ActingCohort].IndividualBodyMass,
                             EcosystemModelGrid.GetCellEnvironment(_CellList[cellIndex][0], _CellList[cellIndex][1])["Realm"][0] == 2.0);
                     }
-
+                    if(workingGridCellCohorts[ActingCohort].AdultMass < (800*.472) && workingGridCellCohorts[ActingCohort].AdultMass < (600 * .472))
+                    {
+                        if(workingGridCellCohorts[ActingCohort].JuvenileMass < 170 && workingGridCellCohorts[ActingCohort].JuvenileMass > 4.248)
+                        {
+                            if(workingGridCellCohorts[ActingCohort].BirthTimeStep < CurrentTimeStep - 36)
+                            {
+                                if(workingGridCellCohorts[ActingCohort].FunctionalGroupIndex == 6 && CurrentTimeStep > (NumTimeSteps - NumBurninSteps) && OAScenario.Item1 == "yes")
+                                {
+                                    workingGridCellCohorts[ActingCohort].ProportionTimeActive *= 1 - .001 * ((Math.Log((NumTimeSteps - NumImpactSteps) - (NumTimeSteps - CurrentTimeStep) / 6) + 2));
+                                }
+                            }
+                        }
+                    }
                     // Run ecology
                     MadingleyEcologyCohort.RunWithinCellEcology(workingGridCellCohorts, workingGridCellStocks,
                         ActingCohort, EcosystemModelGrid.GetCellEnvironment(latCellIndex, lonCellIndex),

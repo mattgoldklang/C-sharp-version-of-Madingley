@@ -22,6 +22,8 @@ namespace Madingley
         /// </summary>
         double[,,] HANPP;
 
+        double[,,] SST;
+        double[,,] NO3;
         /// <summary>
         /// An instance of the class to convert data between arrays and SDS objects
         /// </summary>
@@ -36,7 +38,6 @@ namespace Madingley
         /// A dataset to store the NPP outputs to file
         /// </summary>
         private DataSet NPPOutput;
-
         /// <summary>
         /// A dataset to store the NPP outputs to file
         /// </summary>
@@ -110,10 +111,11 @@ namespace Madingley
                 DataConverter.AddVariable(NPPOutput, "NPP_" + ii.ToString(), 3, GeographicalDimensions, -9999.0, outLats, outLons, TimeSteps);
                 DataConverter.AddVariable(HANPPOutput, "HANPP_"+ii.ToString(), 3, GeographicalDimensions, -9999.0, outLats, outLons, TimeSteps);
             }
-            
+          
+
             NPP = new double[numLats, numLons, numStocks];
             HANPP = new double[numLats, numLons, numStocks];
-
+     
             for (int ii = 0; ii < numLats; ii++)
             {
                 for (int jj = 0; jj < numLons; jj++)
@@ -122,6 +124,7 @@ namespace Madingley
                     {
                         NPP[ii, jj, kk] = -9999.0;
                         HANPP[ii, jj, kk] = -9999.0;
+          
                     }
                 }
                 

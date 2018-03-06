@@ -35,10 +35,47 @@ namespace Madingley
                     {
                         // Implemenent growth rate change for picoplankton given Dutkiewicz et al 2015. 
                         cellEnvironment["multiplier"][0] = ((currentTimestep - burninSteps) / 12 + 1) * 0.00302;
+
                     }
                     else if ((currentTimestep - burninSteps) >= impactSteps)
                     {
                         cellEnvironment["multiplier"][0] = .302;
+                    }
+                }
+                else if (OAScenario.Item1 == "microNPP" & OAScenario.Item1 == "nanoNPP" & OAScenario.Item1 == "picoNPP")
+                {
+
+                    if (currentTimestep == 0)
+                    {
+                        List<string> npps = new List<string>();
+                        npps.Add("microNPP");
+                        npps.Add("nanoNPP");
+                        npps.Add("picoNPP");
+                        npps.Remove(OAScenario.Item1);
+                        for (int m = 0; m < 12; m++)
+                        {
+                            cellEnvironment[OAScenario.Item1][m] += -cellEnvironment[OAScenario.Item1][m] * OAScenario.Item2;
+                            cellEnvironment[npps[0]][m] += 0.5 * OAScenario.Item2 * cellEnvironment[OAScenario.Item1][m];
+                            cellEnvironment[npps[1]][m] += 0.5 *OAScenario.Item2 * cellEnvironment[OAScenario.Item1][m];
+                        }
+
+                    }
+
+                }
+                else if (OAScenario.Item1 == "totalNPP")
+                {
+                    if (currentTimestep == 0)
+                    {
+                        List<string> npps = new List<string>();
+                        npps.Add("microNPP");
+                        npps.Add("nanoNPP");
+                        npps.Add("picoNPP");
+                        for (int m = 0; m < 12; m++)
+                        {
+                            cellEnvironment[npps[2]][m] *= OAScenario.Item2;
+                            cellEnvironment[npps[0]][m] *= OAScenario.Item2;
+                            cellEnvironment[npps[1]][m] *= OAScenario.Item2;
+                        }
                     }
                 }
                 else

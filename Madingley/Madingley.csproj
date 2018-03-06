@@ -296,10 +296,13 @@
     <None Include="input\Data\Original\Ocean\averaged_v_50y_top100m_monthly.nc">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="input\Data\Original\Ocean\dNO3.nc">
+    <None Include="input\Data\Original\Ocean\dNO3_GFDL.nc">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="input\Data\Original\Ocean\dSST.nc">
+    <None Include="input\Data\Original\Ocean\dSST_GFDL.nc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="input\Data\Original\Ocean\gridded_WOA_NO3.nc">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="input\Data\Original\Ocean\KennedyetalDTR_monthly_climatology.nc">

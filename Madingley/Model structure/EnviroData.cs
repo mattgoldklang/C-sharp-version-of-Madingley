@@ -659,7 +659,7 @@ namespace Madingley
                                     for (int jj = 0; jj < tempSingleVector.Length; jj++)
                                     {
                                         _Lats[jj] = (double)tempSingleVector[jj];
-                                    }
+                                    }                               
                                 }
                                 else if (internalData.Variables[LatSearchStrings[kk]].TypeOfData.Name.ToString().ToLower() == "double")
                                 {
@@ -935,8 +935,8 @@ namespace Madingley
         public double GetValue(double lat, double lon, uint timeInterval, out Boolean missingValue, double latCellSize, double lonCellSize)
         {
             // Check that the requested latitude and longitude are within the scope of the environmental variable
-            Debug.Assert(lat >= LatMin && lat < LatMin + (NumLats * LatStep), "Requested latitude is outside dataset latitude range: " + _ReadFileString);
-            Debug.Assert(lon >= LonMin && lon < LonMin + (NumLons * LonStep), "Requested longitude is outside dataset longitude range: " + _ReadFileString);
+            Debug.Assert(lat >= LatMin && lat < 65, "Requested latitude is outside dataset latitude range: " + _ReadFileString);
+            Debug.Assert(lon >= LonMin && lon < 65, "Requested longitude is outside dataset longitude range: " + _ReadFileString);
 
             // TEMPP DT
             Boolean invertedLat = false;

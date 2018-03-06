@@ -100,7 +100,6 @@ namespace Madingley
         /// </summary>
         public double KillRateConstant { get { return _KillRateConstant; } }
 
-
         /// <summary>
         /// Pre-calculate the maximum kill rate for a specific predator of 1 g on prey of an optimal size
         /// </summary>
@@ -114,7 +113,7 @@ namespace Madingley
             get { return _SpecificPredatorKillRateConstant; }
             set { _SpecificPredatorKillRateConstant = value; }
         }
-
+       
         /// <summary>
         /// The optimal ratio of prey to predator body masses for terrestrial animals
         /// </summary>

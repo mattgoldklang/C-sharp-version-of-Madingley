@@ -95,6 +95,16 @@ namespace Madingley
         /// </summary>
         private double TotalIncomingNPP;
 
+        ///<summary>
+        ///Temperature of grid cell
+        ///</summary>
+        private double SST;
+
+        ///<summary>
+        ///Nitrogen data of grid cell
+        ///</summary>
+        private double NO3;
+
         /// <summary>
         /// Total densities of all cohorts within each combination of cohort traits
         /// </summary>
@@ -687,6 +697,9 @@ namespace Madingley
                 {
                     // Add a variable to keep track of the NPP incoming from the VGPM model
                     DataConverter.AddVariable(BasicOutputMemory, "Incoming NPP", "gC / m^2 / day", 1, TimeDimension, ecosystemModelGrid.GlobalMissingValue, TimeSteps);
+                    DataConverter.AddVariable(BasicOutputMemory, "SST", "degreed C", 1, TimeDimension, ecosystemModelGrid.GlobalMissingValue, TimeSteps);
+                    DataConverter.AddVariable(BasicOutputMemory, "NO3", "mol/L", 1, TimeDimension, ecosystemModelGrid.GlobalMissingValue, TimeSteps);
+
                 }
             }
             else
@@ -1058,6 +1071,8 @@ namespace Madingley
             {
                 bool varExists;
                 TotalIncomingNPP = ecosystemModelGrid.GetEnviroLayer("NPP", month, cellIndices[cellIndex][0], cellIndices[cellIndex][1], out varExists);
+                SST = ecosystemModelGrid.GetEnviroLayer("Temperature", month, cellIndices[cellIndex][0], cellIndices[cellIndex][1], out varExists);
+                NO3 = ecosystemModelGrid.GetEnviroLayer("NO3", month, cellIndices[cellIndex][0], cellIndices[cellIndex][1], out varExists);
             }
         }
 
@@ -1344,6 +1359,10 @@ namespace Madingley
                 if (MarineCell && TrackMarineSpecifics)
                 {
                     DataConverter.ValueToSDS1D(TotalIncomingNPP, "Incoming NPP", "Time step", ecosystemModelGrid.GlobalMissingValue,
+                        BasicOutputMemory, 0);
+                    DataConverter.ValueToSDS1D(SST, "SST", "Time step", ecosystemModelGrid.GlobalMissingValue,
+                        BasicOutputMemory, 0);
+                    DataConverter.ValueToSDS1D(NO3, "NO3", "Time step", ecosystemModelGrid.GlobalMissingValue,
                         BasicOutputMemory, 0);
                 }
 
@@ -1646,6 +1665,10 @@ namespace Madingley
                 if (TrackMarineSpecifics && MarineCell)
                 {
                     DataConverter.ValueToSDS1D(TotalIncomingNPP, "Incoming NPP", "Time step", ecosystemModelGrid.GlobalMissingValue,
+                        BasicOutputMemory, (int)currentTimeStep + 1);
+                    DataConverter.ValueToSDS1D(SST, "SST", "Time step", ecosystemModelGrid.GlobalMissingValue,
+                        BasicOutputMemory, (int)currentTimeStep + 1);
+                    DataConverter.ValueToSDS1D(NO3, "NO3", "Time step", ecosystemModelGrid.GlobalMissingValue,
                         BasicOutputMemory, (int)currentTimeStep + 1);
                 }
 

@@ -115,6 +115,8 @@ namespace Madingley
         private double[,] Realm;
         private double[,] HANPP;
         private double[,] FrostDays;
+        private double[,] SST;
+        private double[,] NO3;
 
         private double[,] FracEvergreen;
         
@@ -152,6 +154,7 @@ namespace Madingley
         /// Instance of the class to calculate ecosystem metrics
         /// </summary>
         private EcosytemMetrics Metrics;
+        private uint currentMonth;
 
         public OutputGrid(string outputDetail, MadingleyModelInitialisation modelInitialisation)
         {
@@ -251,6 +254,9 @@ namespace Madingley
             string[] GeographicalDimensions = { "Latitude", "Longitude", "Time step" };
             DataConverter.AddVariable(GridOutput, "Biomass density", 3, GeographicalDimensions, 0, outLats, outLons, TimeSteps);
             DataConverter.AddVariable(GridOutput, "Abundance density", 3, GeographicalDimensions, 0, outLats, outLons, TimeSteps);
+            DataConverter.AddVariable(GridOutput, "SST", 3, GeographicalDimensions, 0, outLats, outLons, TimeSteps);
+            DataConverter.AddVariable(GridOutput, "NO3", 3, GeographicalDimensions, 0, outLats, outLons, TimeSteps);
+
 
             // Initialise the arrays that will be used for the grid-based outputs
             LogBiomassDensityGridCohorts = new double[ecosystemModelGrid.NumLatCells, ecosystemModelGrid.NumLonCells];
@@ -262,6 +268,8 @@ namespace Madingley
             FracEvergreen = new double[ecosystemModelGrid.NumLatCells, ecosystemModelGrid.NumLonCells];
             Realm = new double[ecosystemModelGrid.NumLatCells, ecosystemModelGrid.NumLonCells];
             HANPP = new double[ecosystemModelGrid.NumLatCells, ecosystemModelGrid.NumLonCells];
+            SST = new double[ecosystemModelGrid.NumLatCells, ecosystemModelGrid.NumLonCells];
+            NO3 = new double[ecosystemModelGrid.NumLatCells, ecosystemModelGrid.NumLonCells];
 
             // Temporary outputs for checking plant model
             DataConverter.AddVariable(GridOutput, "Fraction year frost", 3, GeographicalDimensions, ecosystemModelGrid.GlobalMissingValue, outLats, outLons, TimeSteps);
@@ -443,7 +451,7 @@ namespace Madingley
             // Temporary outputs to check plant model
 
             Realm = ecosystemModelGrid.GetEnviroGrid("Realm", 0);
-
+          
             FrostDays = ecosystemModelGrid.GetEnviroGrid("Fraction Year Frost", 0);
 
             for (int i = 0; i < ecosystemModelGrid.NumLatCells; i++)
@@ -455,6 +463,10 @@ namespace Madingley
             }
 
             HANPP = ecosystemModelGrid.GetEnviroGrid("HANPP", 0);
+            currentMonth = currentTimeStep % 12;
+            SST = ecosystemModelGrid.GetEnviroGrid("Temperature", currentMonth);
+            NO3 = ecosystemModelGrid.GetEnviroGrid("NO3", currentMonth);
+           
 
             if ((OutputMetrics) && (currentTimeStep >= initialisation.TimeStepToStartProcessTrackers))
             {
@@ -521,6 +533,11 @@ namespace Madingley
             // File outputs for medium and high detail levels
             if ((ModelOutputDetail == OutputDetailLevel.Medium) || (ModelOutputDetail == OutputDetailLevel.High))
             {
+                DataConverter.Array2DToSDS3D(SST, "SST", new string[] { "Latitude", "Longitude", "Time step" }, 0,
+                ecosystemModelGrid.GlobalMissingValue, GridOutput);
+                DataConverter.Array2DToSDS3D(NO3, "NO3", new string[] { "Latitude", "Longitude", "Time step" }, 0,
+                ecosystemModelGrid.GlobalMissingValue, GridOutput);
+
                 // Add the biomass grids for individual trait combinations to the file dataset
                 foreach (var Key in BiomassDensityGrid.Keys)
                 {
@@ -596,6 +613,11 @@ namespace Madingley
 
             if ((ModelOutputDetail == OutputDetailLevel.Medium) || (ModelOutputDetail == OutputDetailLevel.High))
             {
+                DataConverter.Array2DToSDS3D(SST, "SST", new string[]
+                   { "Latitude", "Longitude", "Time step" }, (int)currentTimeStep + 1, ecosystemModelGrid.GlobalMissingValue, GridOutput);
+                DataConverter.Array2DToSDS3D(NO3, "NO3", new string[]
+                      { "Latitude", "Longitude", "Time step" }, (int)currentTimeStep + 1, ecosystemModelGrid.GlobalMissingValue, GridOutput);
+
                 foreach (var TraitValue in BiomassDensityGrid.Keys)
                 {
                     // Add the biomass grids for individual trait combinations to the file dataset

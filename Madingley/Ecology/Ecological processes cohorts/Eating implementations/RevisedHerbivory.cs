@@ -252,6 +252,10 @@ namespace Madingley
                 _FeedingPreferenceStandardDeviation), 2)));
 
             // Calculate the individual herbivory rate
+            if(false)
+            {
+                _HerbivoryRateConstant = 0;
+            }
             return _HerbivoryRateConstant * Math.Pow(herbivoreIndividualMass, (_HerbivoryRateMassExponent)) * RelativeFeedingPreferenceHerb;
 
         }
