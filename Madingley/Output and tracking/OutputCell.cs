@@ -505,6 +505,31 @@ namespace Madingley
                     string[] TempString2 = new string[3] { "marine", "ectotherm", "mobile" };
                     int[] ZooplanktonIndices2 = cohortFunctionalGroupDefinitions.GetFunctionalGroupIndex(TempString, TempString2, true);
                     CohortTraitIndicesMarine.Add("Zooplankton (all)", ZooplanktonIndices2.Concat(ZooplanktonIndices1).ToArray());
+
+                    // Track all functional groups
+                    TempString = new string[1] {"Nanozooplankton"};
+                    CohortTraitValuesMarine.Add("Nanozooplankton", TempString);
+                    CohortTraitIndicesMarine.Add("Nanozooplankton", cohortFunctionalGroupDefinitions.GetFunctionalGroupIndex("group description", "Nanozooplankton", false));
+
+                    TempString = new string[1] { "Microzooplankton" };
+                    CohortTraitValuesMarine.Add("Microzooplankton", TempString);
+                    CohortTraitIndicesMarine.Add("Microzooplankton", cohortFunctionalGroupDefinitions.GetFunctionalGroupIndex("group description", "Microzooplankton", false));
+
+                    TempString = new string[1] { "Mesozooplankton" };
+                    CohortTraitValuesMarine.Add("Mesozooplankton", TempString);
+                    CohortTraitIndicesMarine.Add("Mesozooplankton", cohortFunctionalGroupDefinitions.GetFunctionalGroupIndex("group description", "Mesozooplankton", false));
+
+                    TempString = new string[1] { "Omnivorous ectotherms sem" };
+                    CohortTraitValuesMarine.Add("Omnivorous ectotherms sem", TempString);
+                    CohortTraitIndicesMarine.Add("Omnivorous ectotherms sem", cohortFunctionalGroupDefinitions.GetFunctionalGroupIndex("group description", "Omnivorous ectotherms sem", false));
+
+                    TempString = new string[1] { "Omnivorous ectotherms it" };
+                    CohortTraitValuesMarine.Add("Omnivorous ectotherms it", TempString);
+                    CohortTraitIndicesMarine.Add("Omnivorous ectotherms it", cohortFunctionalGroupDefinitions.GetFunctionalGroupIndex("group description", "Omnivorous ectotherms it", false));
+
+                    TempString = new string[1] { "Carnivorous ectotherms it" };
+                    CohortTraitValuesMarine.Add("Carnivorous ectotherms it", TempString);
+                    CohortTraitIndicesMarine.Add("Carnivorous ectotherms it", cohortFunctionalGroupDefinitions.GetFunctionalGroupIndex("group description", "Carnivorous ectotherms it", false));
                 }
 
                 // Add unique trait values to each of the lists that will contain output data arranged by trait value
