@@ -289,12 +289,12 @@ namespace Madingley
         /// The maximum number of cohorts per grid cell for each functional group
         /// </summary>
         /// 
-        private double[] _MaxNumberOfCohortsPerFG;
+        private int[] _MaxNumberOfCohortsPerFG;
 
         /// <summary>
         ///  Get and set the maximum number of cohorts per functional group
         /// </summary>
-        public double[] MaxNumberOfCohortsPerFG
+        public int[] MaxNumberOfCohortsPerFG
         {
             get { return _MaxNumberOfCohortsPerFG; }
             set { _MaxNumberOfCohortsPerFG = value; }
@@ -762,7 +762,6 @@ namespace Madingley
                         break;
                     case "maximum number of cohorts":
                         _MaxNumberOfCohorts = Convert.ToInt32(VarValues.GetValue(row));
-                        _MaxNumberOfCohortsPerFG = new double[] {100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 111, 111, 111, 111, 111, 111, 111, 111, 111 };
                         break;
                     case "read state":
                         if (VarValues.GetValue(row).ToString() != "")
@@ -874,6 +873,16 @@ namespace Madingley
                         _InitialisationFileStrings.Add("CohortFunctional", VarValues.GetValue(row).ToString());
                         // Open a the specified csv file and set up the cohort functional group definitions
                         _CohortFunctionalGroupDefinitions = new FunctionalGroupDefinitions(VarValues.GetValue(row).ToString(), outputPath);
+
+                        // Need to set up the maximum number of cohorts per FG here (for the merger); 
+
+                        
+                        _MaxNumberOfCohortsPerFG = new int[_CohortFunctionalGroupDefinitions.GetNumberOfFunctionalGroups()];
+                        for (int i = 0; i < _CohortFunctionalGroupDefinitions.GetNumberOfFunctionalGroups(); i++)
+                        {
+                            _MaxNumberOfCohortsPerFG[i] = (int)_CohortFunctionalGroupDefinitions.GetBiologicalPropertyOneFunctionalGroup("Initial number of GridCellCohorts", i);
+                        }
+                            
                         break;
                     case "stock functional group definitions file":
                         _InitialisationFileStrings.Add("StockFunctional", VarValues.GetValue(row).ToString());

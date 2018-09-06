@@ -381,7 +381,7 @@ namespace Madingley
         /// <summary>
         /// Merge cohorts until below a specified threshold number of cohorts in each grid cell
         /// </summary>
-        public int MergeToReachThresholdFast(GridCellCohortHandler gridCellCohorts, int[] TotalNumberOfCohortsPerFG, double[] TargetCohortThresholdPerFG)
+        public int MergeToReachThresholdFast(GridCellCohortHandler gridCellCohorts, int[] TotalNumberOfCohortsPerFG, int[] TargetCohortThresholdPerFG)
         {
             // How many cohorts to remove to reach the threshold
             int[] NumberToRemovePerFG = new int[gridCellCohorts.Count];
@@ -390,7 +390,7 @@ namespace Madingley
             for(int i = 0; i < gridCellCohorts.Count; i++)
             {
                 // todo(erik): the conversion to int should be handled when imported from definition file
-                NumberToRemovePerFG[i] = TotalNumberOfCohortsPerFG[i] - Convert.ToInt32(TargetCohortThresholdPerFG[i]);
+                NumberToRemovePerFG[i] = TotalNumberOfCohortsPerFG[i] - TargetCohortThresholdPerFG[i];
             }
 
             // Holds the pairwise distances between two cohorts; the cohort IDs of each cohort
