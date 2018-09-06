@@ -762,7 +762,7 @@ namespace Madingley
                         break;
                     case "maximum number of cohorts":
                         _MaxNumberOfCohorts = Convert.ToInt32(VarValues.GetValue(row));
-                        _MaxNumberOfCohortsPerFG = new double[] {125, 125, 125, 125, 125, 125, 125, 125, 111, 111, 111, 111, 111, 111, 111, 111, 111 };
+                        _MaxNumberOfCohortsPerFG = new double[] {100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 111, 111, 111, 111, 111, 111, 111, 111, 111 };
                         break;
                     case "read state":
                         if (VarValues.GetValue(row).ToString() != "")

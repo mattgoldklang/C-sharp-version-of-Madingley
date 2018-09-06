@@ -152,6 +152,13 @@ namespace Madingley
                 BasalMetabolicLosskJ = _NormalizationConstantBMR * Math.Pow(individualBodyMass, _BasalMetabolismMassExponent) *
                 Math.Exp(-(_ActivationEnergy / (_BoltzmannConstant * temperature)));
             }
+
+            //FieldMetabolicLosskJ = _NormalizationConstant * Math.Pow(individualBodyMass, _MetabolismMassExponent) *
+            //Math.Exp(-(_ActivationEnergy / (_BoltzmannConstant * temperature)));
+
+            //BasalMetabolicLosskJ = _NormalizationConstantBMR * Math.Pow(individualBodyMass, _BasalMetabolismMassExponent) *
+            //Math.Exp(-(_ActivationEnergy / (_BoltzmannConstant * temperature)));
+
             // Return metabolic loss in grams
             return ((proportionTimeActive * FieldMetabolicLosskJ) + ((1 - proportionTimeActive) * (BasalMetabolicLosskJ))) * _EnergyScalar;
             //return FieldMetabolicLosskJ * _EnergyScalar;

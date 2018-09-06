@@ -75,32 +75,11 @@ namespace Madingley
             {
                 switch (gridCellStockHandler[actingStock].StockName)
                 {
-                    case "picophytoplankton":
+                    case "oceannpp":
+                        // Get NPP from cell environment
+                        NPP = cellEnvironment["NPP"][currentMonth];
 
-                        // Get picophytoplankton NPP from cell environment
-                        NPP = cellEnvironment["picoNPP"][currentMonth];
-
-                        // If picophytoplankton NPP is a missing value then set to zero
-                        if (NPP == cellEnvironment["Missing Value"][0]) NPP = 0.0;
-
-                        break;
-
-                    case "nanophytoplankton":
-
-                        // Get nanophytoplankton NPP from cell environment
-                        NPP = cellEnvironment["nanoNPP"][currentMonth];
-
-                        // If nanophytoplankton NPP is a missing value then set to zero
-                        if (NPP == cellEnvironment["Missing Value"][0]) NPP = 0.0;
-
-                        break;
-
-                    case "microphytoplankton":
-
-                        // Get microphytoplankton NPP from cell environment
-                        NPP = cellEnvironment["microNPP"][currentMonth];
-
-                        // If microphytoplankton NPP is a missing value then set to zero
+                        // If NPP is a missing value then set to zero
                         if (NPP == cellEnvironment["Missing Value"][0]) NPP = 0.0;
 
                         break;

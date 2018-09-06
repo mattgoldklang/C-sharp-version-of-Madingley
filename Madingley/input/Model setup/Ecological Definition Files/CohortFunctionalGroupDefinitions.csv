@@ -1,12 +1,15 @@
 DEFINITION_Heterotroph/Autotroph,DEFINITION_Nutrition source,DEFINITION_Diet,DEFINITION_Realm,DEFINITION_Mobility,DEFINITION_Reproductive strategy,DEFINITION_Endo/Ectotherm,PROPERTY_Herbivory assimilation,PROPERTY_Carnivory assimilation,PROPERTY_Proportion suitable time active,PROPERTY_Minimum mass,PROPERTY_Maximum mass,PROPERTY_Initial number of GridCellCohorts,DEFINITION_group description
-Heterotroph,Carnivore,AllSpecial,Marine,Mobile,iteroparity,Endotherm,0,0.8,0.5,10000,10000000,0,Baleen whales
-Heterotroph,Carnivore,All,Marine,Mobile,iteroparity,Endotherm,0,0.8,0.5,100,1000000,0,Carnivorous endotherms it
-Heterotroph,Carnivore,All,Marine,Mobile,iteroparity,Ectotherm,0,0.8,0.5,1,100000,125,Carnivorous ectotherms it
-Heterotroph,Omnivore,All,Marine,Mobile,iteroparity,Ectotherm,0.8,0.8,0.5,0.00001,100000,125,Omnivorous ectotherms it
-Heterotroph,Omnivore,All,Marine,Planktonic,semelparity,Ectotherm,0.8,0.8,0.5,0.000001,10000,125,Omnivorous ectotherms sem
-Heterotroph,Omnivore,Planktivore,Marine,Planktonic,iteroparity,Ectotherm,0.8,0.8,0.5,0.01,1,125,Mesozooplankton
-Heterotroph,Omnivore,Planktivore,Marine,Planktonic,iteroparity,Ectotherm,0.8,0.8,0.5,0.0001,0.01,125,Microzooplankton
-Heterotroph,Herbivore,Planktivore,Marine,Planktonic,iteroparity,Ectotherm,0.8,0,0.5,0.000001,0.0001,125,Nanozooplankton
+Heterotroph,Omnivore,AllSpecial,Marine,Mobile,iteroparity,Endotherm,0,0.8,0.5,1.00E+05,1.50E+08,0,Baleen whales
+Heterotroph,Omnivore,All,Marine,Planktonic,iteroparity,Ectotherm,0.8,0.8,0.5,1.00E-08,1.00E-02,100,zooplankton small it
+Heterotroph,Omnivore,All,Marine,Planktonic,iteroparity,Ectotherm,0.8,0.8,0.5,1.00E-07,1.00E-01,100,zooplankton medium it
+Heterotroph,Omnivore,All,Marine,Planktonic,iteroparity,Ectotherm,0.8,0.8,0.5,1.00E-06,1.00E+00,100,zooplankton large it
+Heterotroph,Omnivore,All,Marine,Mobile,iteroparity,Ectotherm,0.8,0.8,0.5,1.00E-05,1.00E+01,100,Ecto omni small it
+Heterotroph,Omnivore,All,Marine,Mobile,iteroparity,Ectotherm,0.8,0.8,0.5,1.00E-04,1.00E+02,100,Ecto omni medium it
+Heterotroph,Omnivore,All,Marine,Mobile,iteroparity,Ectotherm,0.8,0.8,0.5,1.00E-03,1.00E+03,100,Ecto omni large it
+Heterotroph,Carnivore,All,Marine,Mobile,iteroparity,Ectotherm,0,0.8,0.5,1.00E+01,1.00E+04,100,Ecto carn it
+Heterotroph,Carnivore,All,Marine,Mobile,iteroparity,Endotherm,0,0.8,0.5,1.00E+02,1.00E+05,100,Mammals carn
+Heterotroph,Carnivore,All,Marine,Mobile,iteroparity,Ectotherm,0,0.8,0.5,1.00E+00,1.00E+06,0,Ecto carn it old
+Heterotroph,Carnivore,All,Marine,Mobile,Semelparity,Ectotherm,0,0.8,0.5,1.00E+01,2.00E+03,0,Ecto carn sem
 Heterotroph,Herbivore,All,Terrestrial,Mobile,iteroparity,Endotherm,0.5,0,0.5,1.5,5000000,111,itHerbEndo
 Heterotroph,Carnivore,All,Terrestrial,Mobile,iteroparity,Endotherm,0,0.8,0.5,3,700000,111,itCarnEndo
 Heterotroph,Omnivore,All,Terrestrial,Mobile,iteroparity,Endotherm,0.4,0.64,0.5,3,1500000,111,itOmnEndo

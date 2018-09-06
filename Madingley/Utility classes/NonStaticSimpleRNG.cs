@@ -310,55 +310,56 @@ namespace Madingley
             return u / (u + v);
         }
 
-        /// <summary>A random draw from the phytoplankton size distribution assuming traditional pico, nano and micro groups</summary>
+        /// <summary>
+        /// Proportion of NPP available
+        /// This will calculate the proportion of autotrophic biomass available to the cohort based on the cohort's 
+        /// optimum prey size and the current temperature.
+        /// Note that this is temporary solution and that this will be changed. Possibly according to the G3 data set.
+        /// </summary>
         /// 
-        public double getPhytoSize(string stockName)
+        public double GetProportionNPP(string stockname, double optPreySize, double temperature)
         {
-            if(stockName == "picophytoplankton")
+            if(stockname == "oceannpp")
             {
-                return 1E-8 * Math.Exp(4.6025 * GetUniform());
-            }
-            if(stockName == "nanophytoplankton")
-            {
-                return 1E-6 * Math.Exp(4.6025 * GetUniform());
-            }
-            if(stockName == "microphytoplankton")
-            {
-                return 1E-4 * Math.Exp(4.6025 * GetUniform());
+                double a;
+                double b;
+
+                if (temperature < 0)
+                {
+                    a = -0.036;
+                    b = 0.1012;
+                }
+                else if (temperature >= 0 && temperature < 5)
+                {
+                    a = -0.092;
+                    b = 0.0564;
+                }
+                else if (temperature >= 5 && temperature < 10)
+                {
+                    a = -0.147;
+                    b = 0.0296;
+                }
+                else if (temperature >= 10 && temperature < 15)
+                {
+                    a = -0.222;
+                    b = 0.0115;
+                }
+                else if (temperature >= 15 && temperature < 20)
+                {
+                    a = -0.283;
+                    b = 0.0051;
+                }
+                else
+                {
+                    a = -0.346;
+                    b = 0.0021;
+                }
+                return b * Math.Pow(optPreySize, a);
             }
             else
             {
-                Debug.Fail("No phytoplankton stock name defined.");
-                return -1;
-            }
-        }
-
-        public double getPhytoSizeUni(string stockName)
-        {
-            Random rnd = new Random();
-
-            if (stockName == "picophytoplankton")
-            {
-                double minSize = 1E-8;
-                double maxSize = 1E-6;
-                return GetUniform() * (maxSize - minSize) + minSize;
-            }
-            if(stockName == "nanophytoplankton")
-            {
-                double minSize = 1E-6;
-                double maxSize = 1E-4;
-                return GetUniform() * (maxSize - minSize) + minSize;
-            }
-            if(stockName == "microphytoplankton")
-            {
-                double minSize = 1E-4;
-                double maxSize = 1E-2;
-                return GetUniform() * (maxSize - minSize) + minSize;
-            }
-            else
-            {
-                Debug.Fail("No phytoplankton stock name defined. Please define name and size");
-                return -1;
+                Debug.Fail("Unknown or no phytoplankton stock name.");
+                return -1.0;
             }
         }
     }

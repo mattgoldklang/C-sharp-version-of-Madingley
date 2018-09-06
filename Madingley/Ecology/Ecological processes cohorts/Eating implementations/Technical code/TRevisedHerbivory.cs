@@ -255,10 +255,13 @@ namespace Madingley
         /// <param name="cellEnvironment">The environment in the current grid cell</param>
         /// <param name="madingleyCohortDefinitions">The functional group definitions for cohorts in the model</param>
         /// <param name="madingleyStockDefinitions">The functional group definitions for stocks  in the model</param>
-        public void GetEatingPotentialMarine(GridCellCohortHandler gridCellCohorts, GridCellStockHandler gridCellStocks, int[] actingCohort, SortedList<string, double[]> cellEnvironment, FunctionalGroupDefinitions madingleyCohortDefinitions, FunctionalGroupDefinitions madingleyStockDefinitions)
+        public void GetEatingPotentialMarine(GridCellCohortHandler gridCellCohorts, GridCellStockHandler gridCellStocks, 
+            int[] actingCohort, SortedList<string, double[]> cellEnvironment, FunctionalGroupDefinitions madingleyCohortDefinitions, 
+            FunctionalGroupDefinitions madingleyStockDefinitions, uint currentMonth, uint currentTimeStep)
         {
             // Set the total biomass eaten by the acting cohort to zero
             _TotalBiomassEatenByCohort = 0.0;
+            double temperature = cellEnvironment["Temperature"][currentMonth];
 
             // Get the individual body mass of the acting cohort
             _BodyMassHerbivore = gridCellCohorts[actingCohort].IndividualBodyMass;
@@ -292,7 +295,7 @@ namespace Madingley
                     _PhytoStockType = madingleyStockDefinitions.GetTraitNames("stock name", FunctionalGroup);
                     // Calculate the potential biomass eaten from this stock by the acting cohort
                     _PotentialBiomassesEaten[FunctionalGroup][i] = CalculatePotentialBiomassEatenMarine(EdibleMass, _BodyMassHerbivore,
-                        _HerbivoreLogOptimalPreyBodySizeRatio, _PhytoStockType);
+                        _HerbivoreLogOptimalPreyBodySizeRatio, _PhytoStockType, temperature);
 
                     // Add the time required to handle the potential biomass eaten from this stock to the cumulative total for all stocks
                     _TimeUnitsToHandlePotentialFoodItems += _PotentialBiomassesEaten[FunctionalGroup][i] *

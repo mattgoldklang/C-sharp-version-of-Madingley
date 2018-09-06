@@ -120,7 +120,7 @@ namespace Madingley
                     if (cellEnvironment["Realm"][0] == 2.0)
                         Implementations["revised herbivory"].GetEatingPotentialMarine
                         (gridCellCohorts, gridCellStocks, actingCohort, 
-                        cellEnvironment, madingleyCohortDefinitions, madingleyStockDefinitions);
+                        cellEnvironment, madingleyCohortDefinitions, madingleyStockDefinitions, currentMonth, currentTimestep);
                     else
 
                         Implementations["revised herbivory"].GetEatingPotentialTerrestrial
@@ -149,7 +149,7 @@ namespace Madingley
                     if (cellEnvironment["Realm"][0] == 2.0) 
                         Implementations["revised predation"].GetEatingPotentialMarine
                         (gridCellCohorts, gridCellStocks, actingCohort, 
-                        cellEnvironment, madingleyCohortDefinitions, madingleyStockDefinitions);
+                        cellEnvironment, madingleyCohortDefinitions, madingleyStockDefinitions, currentMonth, currentTimestep);
                     else
                         Implementations["revised predation"].GetEatingPotentialTerrestrial
                         (gridCellCohorts, gridCellStocks, actingCohort,
@@ -185,7 +185,7 @@ namespace Madingley
                         Implementations["revised herbivory"].GetEatingPotentialMarine
                         (gridCellCohorts, gridCellStocks, actingCohort, 
                         cellEnvironment, madingleyCohortDefinitions, 
-                        madingleyStockDefinitions);
+                        madingleyStockDefinitions, currentMonth, currentTimestep);
                     else
                         Implementations["revised herbivory"].GetEatingPotentialTerrestrial
                         (gridCellCohorts, gridCellStocks, actingCohort,
@@ -197,7 +197,7 @@ namespace Madingley
                         Implementations["revised predation"].GetEatingPotentialMarine
                         (gridCellCohorts, gridCellStocks, actingCohort, 
                         cellEnvironment, madingleyCohortDefinitions, 
-                        madingleyStockDefinitions);
+                        madingleyStockDefinitions, currentMonth, currentTimestep);
                     else
                         Implementations["revised predation"].GetEatingPotentialTerrestrial
                         (gridCellCohorts, gridCellStocks, actingCohort,
@@ -322,7 +322,7 @@ namespace Madingley
                     if (cellEnvironment["Realm"][0] == 2.0)
                         Implementations["revised herbivory"].GetEatingPotentialMarine
                         (gridCellCohorts, gridCellStocks, actingCohort,
-                        cellEnvironment, madingleyCohortDefinitions, madingleyStockDefinitions);
+                        cellEnvironment, madingleyCohortDefinitions, madingleyStockDefinitions, currentMonth, currentTimestep);
                     else
 
                         Implementations["revised herbivory"].GetEatingPotentialTerrestrial
@@ -354,7 +354,7 @@ namespace Madingley
                         Implementations["revised herbivory"].GetEatingPotentialMarine
                         (gridCellCohorts, gridCellStocks, actingCohort,
                         cellEnvironment, madingleyCohortDefinitions,
-                        madingleyStockDefinitions);
+                        madingleyStockDefinitions, currentMonth, currentTimestep);
                     else
                         Implementations["revised herbivory"].GetEatingPotentialTerrestrial
                         (gridCellCohorts, gridCellStocks, actingCohort,

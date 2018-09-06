@@ -305,7 +305,7 @@ namespace Madingley
         /// <param name="madingleyStockDefinitions">The functional group definitions for stocks  in the model</param>
         public void GetEatingPotentialMarine(GridCellCohortHandler gridCellCohorts, GridCellStockHandler gridCellStocks, int[] actingCohort, 
             SortedList<string, double[]> cellEnvironment, FunctionalGroupDefinitions madingleyCohortDefinitions, FunctionalGroupDefinitions 
-            madingleyStockDefinitions)
+            madingleyStockDefinitions, uint currentMonth, uint currentTimeStep)
         {
 
             BinnedPreyDensities = new double[gridCellCohorts.Count, NumberOfBins];

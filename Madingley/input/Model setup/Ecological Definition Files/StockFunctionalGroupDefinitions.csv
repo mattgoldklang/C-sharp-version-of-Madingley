@@ -1,6 +1,4 @@
 DEFINITION_Heterotroph/Autotroph,DEFINITION_Nutrition source,DEFINITION_Diet,DEFINITION_Realm,DEFINITION_Mobility,DEFINITION_Leaf strategy,DEFINITION_Stock name,PROPERTY_Herbivory assimilation,PROPERTY_Carnivory assimilation,PROPERTY_Proportion herbivory,PROPERTY_Individual mass
-Autotroph,Photosynthesis,,Marine,Planktonic,na,Picophytoplankton,,,,0.0001
-Autotroph,Photosynthesis,,Marine,Planktonic,na,Nanophytoplankton,,,,0.0001
-Autotroph,Photosynthesis,,Marine,Planktonic,na,Microphytoplankton,,,,0.0001
+Autotroph,Photosynthesis,,Marine,Planktonic,na,OceanNPP,,,,0.0001
 Autotroph,Photosynthesis,,Terrestrial,Sessile,Deciduous,Deciduous,,,,0
 Autotroph,Photosynthesis,,Terrestrial,Sessile,Evergreen,Evergreen,,,,0
