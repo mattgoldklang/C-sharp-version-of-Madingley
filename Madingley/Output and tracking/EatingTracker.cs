@@ -74,6 +74,8 @@ namespace Madingley
         {
             int fromIndex = 0;
             int toIndex = 0;
+
+            // 0 = autotrophs, 1 = non-planktonic herbivores, 2 = non-planktonic omnivores, 3 = non-planktonic carnivores, 4 = obligate zooplankton, 5 = non-obligate zooplankton, 6 = baleen whales
             if (initialisation.TrackMarineSpecifics && MarineCell)
             {
                 // Get the trophic level index of the functional group that mass is flowing from
@@ -304,6 +306,7 @@ namespace Madingley
             // Get the trophic level index of the functional group that mass is flowing to
             int toIndex = 0;
 
+            // 0 = autotrophs, 1 = non-planktonic herbivores, 2 = non-planktonic omnivores, 3 = non-planktonic carnivores, 4 = obligate zooplankton, 5 = non-obligate zooplankton, 6 = baleen whales
             if (initialisation.TrackMarineSpecifics && MarineCell)
             {
                 // Get the trophic level index of the functional group that mass is flowing to
@@ -368,6 +371,9 @@ namespace Madingley
                                 }
                                 break;
                         }
+                        break;
+                    case "carnivore":
+                        Debug.Fail("Carnivore performing herbivory!");
                         break;
                     default:
                         Debug.Fail("Specified nutrition source is not supported");
