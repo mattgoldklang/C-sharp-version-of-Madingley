@@ -562,11 +562,6 @@ namespace Madingley
                     TempString = new string[1] { "Ecto carn it" };
                     CohortTraitValuesMarine.Add("Ecto carn it", TempString);
                     CohortTraitIndicesMarine.Add("Ecto carn it", cohortFunctionalGroupDefinitions.GetFunctionalGroupIndex("group description", "Ecto carn it", false));
-
-                    TempString = new string[1] { "Ecto carn sem" };
-                    CohortTraitValuesMarine.Add("Ecto carn sem", TempString);
-                    CohortTraitIndicesMarine.Add("Ecto carn sem", cohortFunctionalGroupDefinitions.GetFunctionalGroupIndex("group description", "Ecto carn sem", false));
-
                 }
 
                 // Add unique trait values to each of the lists that will contain output data arranged by trait value
