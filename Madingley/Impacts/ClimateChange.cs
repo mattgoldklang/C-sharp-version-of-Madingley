@@ -60,7 +60,6 @@ namespace Madingley
                 }
                 else if (temperatureScenario.Item1 == "escalating")
                 {
-
                     // If this is the first time step, add items to the cell environment to store the original cell temperature
                     if (currentTimestep == 0)
                     {
@@ -79,6 +78,16 @@ namespace Madingley
                             temperatureScenario.Item2));
                         // cellEnvironment["Temperature"][currentMonth] += gridCellStocks[actingStock].TotalBiomass *
                         //     (Math.Min(5.0, (((currentTimestep - burninSteps) / 12.0) * humanNPPScenario.Item2)));
+                    }
+                }
+                else if (temperatureScenario.Item1 == "pb")
+                {
+                    // If the spin-up period (100 years) has been completed, then increment cell temperature
+                    // according to the number of time-steps that have elapsed since the spin-up ended, for a period of 100 years until the 
+                    // maximum thermal increase is reached
+                    if ((currentTimestep > (1199)) && (currentTimestep < 2400))
+                    {
+                          cellEnvironment["Temperature"][currentMonth] += (temperatureScenario.Item2 / 1200) * (currentTimestep - 1199);
                     }
                 }
                 else
