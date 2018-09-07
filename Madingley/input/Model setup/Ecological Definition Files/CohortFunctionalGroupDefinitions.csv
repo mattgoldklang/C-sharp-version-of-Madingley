@@ -8,8 +8,6 @@ Heterotroph,Omnivore,All,Marine,Mobile,iteroparity,Ectotherm,0.8,0.8,0.5,1.00E-0
 Heterotroph,Omnivore,All,Marine,Mobile,iteroparity,Ectotherm,0.8,0.8,0.5,1.00E-03,1.00E+03,100,Ecto omni large it
 Heterotroph,Carnivore,All,Marine,Mobile,iteroparity,Ectotherm,0,0.8,0.5,1.00E+01,1.00E+04,100,Ecto carn it
 Heterotroph,Carnivore,All,Marine,Mobile,iteroparity,Endotherm,0,0.8,0.5,1.00E+02,1.00E+05,100,Mammals carn
-Heterotroph,Carnivore,All,Marine,Mobile,iteroparity,Ectotherm,0,0.8,0.5,1.00E+00,1.00E+06,0,Ecto carn it old
-Heterotroph,Carnivore,All,Marine,Mobile,Semelparity,Ectotherm,0,0.8,0.5,1.00E+01,2.00E+03,0,Ecto carn sem
 Heterotroph,Herbivore,All,Terrestrial,Mobile,iteroparity,Endotherm,0.5,0,0.5,1.5,5000000,111,itHerbEndo
 Heterotroph,Carnivore,All,Terrestrial,Mobile,iteroparity,Endotherm,0,0.8,0.5,3,700000,111,itCarnEndo
 Heterotroph,Omnivore,All,Terrestrial,Mobile,iteroparity,Endotherm,0.4,0.64,0.5,3,1500000,111,itOmnEndo
