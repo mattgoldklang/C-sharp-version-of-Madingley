@@ -6,9 +6,9 @@ Impact duration (years),0
 Recovery duration (years),0
 Top Latitude,50
 Bottom Latitude,40
-Leftmost Longitude,-70
+Leftmost Longitude,-75
 Rightmost Longitude,-60
-Grid Cell Size,2
+Grid Cell Size,5
 Read State,
 Specific Location File,
 Locations to Track File,
