@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using MathNet.Numerics;
 using System.Diagnostics;
 
 namespace Madingley
@@ -244,7 +244,31 @@ namespace Madingley
             }
 
         }
+        /// <summary>
+        /// Calculate coefficients for the abundance-size slope
+        /// </summary>
+        /// <param name="temperature"></param>
+        /// <param name="no3"></param>
+        /// <returns></returns>
+        public Tuple<double, double> GetPhytoAbundSizeSlope(double temperature, double no3)
+        {
+            double[] phyto = new double[3];
+            double[] nsfPhyto = new double[3];
+            double[] phytoSize = new double[3] { Math.Log10(1E-9), Math.Log10(1E-7), Math.Log10(1E-5) };
+            double[] regCoefs = new double[2];
 
+            phyto[0] = 1.145 - 0.021 * no3 - 6.936E-6 * temperature;
+            phyto[1] = 1.146 + 0.013 * no3 - 0.064 * temperature;
+            phyto[2] = 0.804 - 0.002 * no3 - 0.077 * temperature;
+            nsfPhyto[0] = Math.Log10(Math.Exp(phyto[0]) / (Math.Exp(phyto[0]) + Math.Exp(phyto[1]) + Math.Exp(phyto[2])));
+            nsfPhyto[1] = Math.Log10(Math.Exp(phyto[1]) / (Math.Exp(phyto[0]) + Math.Exp(phyto[1]) + Math.Exp(phyto[2])));
+            nsfPhyto[2] = Math.Log10(Math.Exp(phyto[2]) / (Math.Exp(phyto[0]) + Math.Exp(phyto[1]) + Math.Exp(phyto[2])));
+
+            Tuple<double, double> linReg = Fit.Line(phytoSize, nsfPhyto);
+            regCoefs[0] = linReg.Item1; // intercept
+            regCoefs[1] = linReg.Item2; // regression coefficient
+            return Tuple.Create(regCoefs[0], regCoefs[1]);
+        }
 
         /// <summary>
         /// Calculate the potential biomass that could be gained through herbivory on each grid cell autotroph stock
@@ -261,7 +285,15 @@ namespace Madingley
         {
             // Set the total biomass eaten by the acting cohort to zero
             _TotalBiomassEatenByCohort = 0.0;
+
+            // Get current temperature in grid cell
             double temperature = cellEnvironment["Temperature"][currentMonth];
+
+            // Calculate the coefficients for phytoplankton abundance-size curve
+            double no3 = cellEnvironment["no3"][currentMonth];
+            double[] slopeCoefficient = new double[2];
+
+            Tuple<double, double> regCoefs = GetPhytoAbundSizeSlope(temperature, no3);
 
             // Get the individual body mass of the acting cohort
             _BodyMassHerbivore = gridCellCohorts[actingCohort].IndividualBodyMass;
@@ -295,7 +327,7 @@ namespace Madingley
                     _PhytoStockType = madingleyStockDefinitions.GetTraitNames("stock name", FunctionalGroup);
                     // Calculate the potential biomass eaten from this stock by the acting cohort
                     _PotentialBiomassesEaten[FunctionalGroup][i] = CalculatePotentialBiomassEatenMarine(EdibleMass, _BodyMassHerbivore,
-                        _HerbivoreLogOptimalPreyBodySizeRatio, _PhytoStockType, temperature);
+                        _HerbivoreLogOptimalPreyBodySizeRatio, _PhytoStockType, temperature, regCoefs);
 
                     // Add the time required to handle the potential biomass eaten from this stock to the cumulative total for all stocks
                     _TimeUnitsToHandlePotentialFoodItems += _PotentialBiomassesEaten[FunctionalGroup][i] *

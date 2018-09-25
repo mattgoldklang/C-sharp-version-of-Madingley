@@ -223,7 +223,7 @@ namespace Madingley
         /// <param name="herbivoreIndividualMass">The individual body mass of the acting (herbivore) cohort</param>
         /// <returns>The potential biomass eaten by the herbivore cohort</returns>
         private double CalculatePotentialBiomassEatenMarine(double autotrophBiomass, double herbivoreIndividualMass,
-            double logOptimalPreyPredatorMassRatio, string cohortPhytoType, double temperature)
+            double logOptimalPreyPredatorMassRatio, string cohortPhytoType, double temperature, Tuple<double, double> regCoefs)
         {
             // Calculate the inidividual herbivory rate per unit autotroph mass-density per hectare
             double IndividualHerbivoryRate = CalculateIndividualHerbivoryRatePerHectareMarine(herbivoreIndividualMass,
@@ -234,8 +234,20 @@ namespace Madingley
             double optPreySize = optPreyPredatorMassRatio * herbivoreIndividualMass;
 
             // Calculate proportion of NPP available to the cohort
-            double propAvailableNPP = RandomNumberGenerator.GetProportionNPP(cohortPhytoType, optPreySize, temperature);
+            int withProp = 1;
+            double propAvailableNPP = 0.0;
 
+            if(withProp == 0)
+            {
+                propAvailableNPP = 1.0;
+            }
+            else
+            {
+                propAvailableNPP = regCoefs.Item2 * Math.Log10(optPreySize) + regCoefs.Item1;
+                propAvailableNPP = Math.Pow(10, propAvailableNPP);
+                //propAvailableNPP = RandomNumberGenerator.GetProportionNPP(cohortPhytoType, optPreySize, temperature);
+            }
+            
             // Adjust total NPP by the proportion available
             double autotrophBiomassBin = autotrophBiomass * propAvailableNPP;
 

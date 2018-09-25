@@ -116,6 +116,9 @@
     <Reference Include="FetchClimate">
       <HintPath>References\FetchClimate.exe</HintPath>
     </Reference>
+    <Reference Include="MathNet.Numerics, Version=4.5.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MathNet.Numerics.4.5.1\lib\net461\MathNet.Numerics.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Ccr.Core, Version=2.2.76.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Program Files (x86)\Reference Assemblies\Microsoft\Research\Scientific DataSet 1.3\Microsoft.Ccr.Core.dll</HintPath>
@@ -167,6 +170,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -311,6 +315,9 @@
     </None>
     <None Include="input\Data\Original\Ocean\nano_npp.nc">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="input\Data\Original\Ocean\no3_test.nc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="input\Data\Original\Ocean\OceanNPP.nc">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
