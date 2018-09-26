@@ -245,6 +245,8 @@ namespace Madingley
             {
                 propAvailableNPP = regCoefs.Item2 * Math.Log10(optPreySize) + regCoefs.Item1;
                 propAvailableNPP = Math.Pow(10, propAvailableNPP);
+                if (Double.IsNaN(propAvailableNPP))
+                    ;
                 //propAvailableNPP = RandomNumberGenerator.GetProportionNPP(cohortPhytoType, optPreySize, temperature);
             }
             

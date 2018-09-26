@@ -530,7 +530,8 @@ namespace Madingley
         public void InterpolateMissingValues()
         {
             SortedList<string, double[]> WorkingCellEnvironment = new SortedList<string, double[]>();
-            Boolean Changed = false;
+
+            uint[,] InterpolatedCells = new uint[_NumLatCells,_NumLonCells];
 
             for (uint ii = 0; ii < _NumLatCells; ii++)
             {
@@ -539,44 +540,87 @@ namespace Madingley
                     WorkingCellEnvironment = GetCellEnvironment(ii, jj);
 
                     // If the cell environment does not contain valid NO3 data then interpolate values
-                    if (!InternalGrid[ii, jj].ContainsData(WorkingCellEnvironment["no3"], WorkingCellEnvironment["Missing Value"][0]))
+                    if (WorkingCellEnvironment["Realm"][0] == 2)
                     {
-                        // If NO3 doesn't exist then interpolate from surround values (of the same realm)
-                        WorkingCellEnvironment["no3"] = GetInterpolatedValues(ii, jj, GetCellLatitude(ii), GetCellLongitude(jj), "no3", WorkingCellEnvironment["Realm"][0]);
+                        if (!InternalGrid[ii, jj].ContainsData(WorkingCellEnvironment["no3"], WorkingCellEnvironment["Missing Value"][0]))
+                        {
+                            // If NO3 doesn't exist then interpolate from surround values (of the same realm)
+
+                            WorkingCellEnvironment["no3"] = GetInterpolatedValues(ii, jj, GetCellLatitude(ii), GetCellLongitude(jj), "no3", WorkingCellEnvironment["Realm"][0], InterpolatedCells);
+                            InterpolatedCells[ii, jj] = 1;
+                        }
                     }
+
+                    InternalGrid[ii, jj].CellEnvironment = WorkingCellEnvironment;
+                }
+            }
+
+            InterpolatedCells.Initialize();
+          
+            for (uint ii = 0; ii < _NumLatCells; ii++)
+            {
+                for (uint jj = 0; jj < _NumLonCells; jj++)
+                {
+
+                    WorkingCellEnvironment = GetCellEnvironment(ii, jj);
 
                     // If the cell environment does not contain valid NPP data then interpolate values
                     if (!InternalGrid[ii, jj].ContainsData(WorkingCellEnvironment["NPP"], WorkingCellEnvironment["Missing Value"][0]))
                     {
-                        //If NPP doesn't exist the interpolate from surrounding values (of the same realm)
-                        WorkingCellEnvironment["NPP"] = GetInterpolatedValues(ii, jj, GetCellLatitude(ii), GetCellLongitude(jj), "NPP", WorkingCellEnvironment["Realm"][0]);
-                        
+                        //If NPP doesn't exist in any month then interpolate from surrounding values (of the same realm)
+                        WorkingCellEnvironment["NPP"] = GetInterpolatedValues(ii, jj, GetCellLatitude(ii), GetCellLongitude(jj), "NPP", WorkingCellEnvironment["Realm"][0], InterpolatedCells);
+
                         //Calculate NPP seasonality - for use in converting annual NPP estimates to monthly
                         WorkingCellEnvironment["Seasonality"] = InternalGrid[ii, jj].CalculateNPPSeasonality(WorkingCellEnvironment["NPP"], WorkingCellEnvironment["Missing Value"][0]);
-                        Changed = true;
-                    }
+                     }
                     // Otherwise convert the missing data values to zeroes where they exist amongst valid data eg in polar regions.
                     else
                     {
                         WorkingCellEnvironment["NPP"] = InternalGrid[ii, jj].ConvertMissingValuesToZero(WorkingCellEnvironment["NPP"], WorkingCellEnvironment["Missing Value"][0]);
                     }
 
+                    InternalGrid[ii, jj].CellEnvironment = WorkingCellEnvironment;
+               
+                }
+            }
+
+
+            InterpolatedCells.Initialize();
+    
+
+            for (uint ii = 0; ii < _NumLatCells; ii++)
+            {
+                for (uint jj = 0; jj < _NumLonCells; jj++)
+                {
+
+                    WorkingCellEnvironment = GetCellEnvironment(ii, jj);
+
                     // If the cell environment does not contain valid monthly mean diurnal temperature range data then interpolate values
                     if (InternalGrid[ii, jj].ContainsMissingValue(WorkingCellEnvironment["DiurnalTemperatureRange"], WorkingCellEnvironment["Missing Value"][0]))
                     {
                         //If NPP doesn't exist the interpolate from surrounding values (of the same realm)
-                        WorkingCellEnvironment["DiurnalTemperatureRange"] = FillWithInterpolatedValues(ii, jj, GetCellLatitude(ii), GetCellLongitude(jj), "DiurnalTemperatureRange", WorkingCellEnvironment["Realm"][0]);
+                        WorkingCellEnvironment["DiurnalTemperatureRange"] = GetInterpolatedValues(ii, jj, GetCellLatitude(ii), GetCellLongitude(jj), "DiurnalTemperatureRange", WorkingCellEnvironment["Realm"][0], InterpolatedCells);
 
-                        Changed = true;
                     }
+
+                    InternalGrid[ii, jj].CellEnvironment = WorkingCellEnvironment;
+                }
+            }
+
+            InterpolatedCells.Initialize();
+       
+            for (uint ii = 0; ii < _NumLatCells; ii++)
+            {
+                for (uint jj = 0; jj < _NumLonCells; jj++)
+                {
+                     WorkingCellEnvironment = GetCellEnvironment(ii, jj);
 
                     // Same for u and v velocities
                     if (!InternalGrid[ii, jj].ContainsData(WorkingCellEnvironment["uVel"], WorkingCellEnvironment["Missing Value"][0]))
                     {
                         //If u doesn't exist the interpolate from surrounding values (of the same realm)
-                        WorkingCellEnvironment["uVel"] = GetInterpolatedValues(ii, jj, GetCellLatitude(ii), GetCellLongitude(jj), "uVel", WorkingCellEnvironment["Realm"][0]);
+                        WorkingCellEnvironment["uVel"] = GetInterpolatedValues(ii, jj, GetCellLatitude(ii), GetCellLongitude(jj), "uVel", WorkingCellEnvironment["Realm"][0], InterpolatedCells);
 
-                        Changed = true;
                     }
                     // Otherwise convert the missing data values to zeroes where they exist amongst valid data eg in polar regions.
                     else
@@ -587,19 +631,22 @@ namespace Madingley
                     if (!InternalGrid[ii, jj].ContainsData(WorkingCellEnvironment["vVel"], WorkingCellEnvironment["Missing Value"][0]))
                     {
                         //If v vel doesn't exist the interpolate from surrounding values (of the same realm)
-                        WorkingCellEnvironment["vVel"] = GetInterpolatedValues(ii, jj, GetCellLatitude(ii), GetCellLongitude(jj), "vVel", WorkingCellEnvironment["Realm"][0]);
+                        WorkingCellEnvironment["vVel"] = GetInterpolatedValues(ii, jj, GetCellLatitude(ii), GetCellLongitude(jj), "vVel", WorkingCellEnvironment["Realm"][0], InterpolatedCells);
 
-                        Changed = true;
                     }
                     // Otherwise convert the missing data values to zeroes where they exist amongst valid data eg in polar regions.
                     else
                     {
                         WorkingCellEnvironment["vVel"] = InternalGrid[ii, jj].ConvertMissingValuesToZero(WorkingCellEnvironment["vVel"], WorkingCellEnvironment["Missing Value"][0]);
                     }
-                    
-                    if(Changed) InternalGrid[ii, jj].CellEnvironment = WorkingCellEnvironment;
+
+                    InternalGrid[ii, jj].CellEnvironment = WorkingCellEnvironment;
                 }
             }
+
+            InterpolatedCells.Initialize();
+     
+
         }
 
         /// <summary>
@@ -613,135 +660,97 @@ namespace Madingley
         /// <param name="dataName">Names of the data for which weighted value is requested</param>
         /// <param name="realm">Realm of the grid cell for which data is to be averaged over</param>
         /// <returns>The weighted average value of the specified data type across surrounding grid cells of the specified realm</returns>
-        private double[] GetInterpolatedValues(uint latIndex, uint lonIndex, double lat, double lon, string dataName, double realm)
+        private double[] GetInterpolatedValues(uint latIndex, uint lonIndex, double lat, double lon, string dataName, double realm, uint[,] interpolatedCells)
         {
             SortedList<string, double[]> TempCellEnvironment = GetCellEnvironment(latIndex, lonIndex);
             double[] InterpData = new double[TempCellEnvironment[dataName].Length];
-            uint[] InterpCount = new uint[TempCellEnvironment[dataName].Length];
 
-            uint LowerLatIndex = latIndex - 1;
-            uint UpperLatIndex = latIndex + 1;
-            uint LowerLonIndex = lonIndex - 1;
-            uint UpperLonIndex = lonIndex + 1;
+            int[] InterpCount = new int[TempCellEnvironment[dataName].Length];
 
-
-            if (latIndex == 0) LowerLatIndex = latIndex;
-            if (lat.CompareTo(this.MaxLatitude) == 0) UpperLatIndex = latIndex;
-
-            if (lonIndex == 0) LowerLonIndex = lonIndex;
-            if (lon.CompareTo(this.MaxLongitude) == 0) UpperLonIndex = lonIndex;
+            int LowerLatIndex;
+            int UpperLatIndex;
+            int LowerLonIndex;
+            int UpperLonIndex;
+            int SearchRadius = 0;
 
             //Loop over surrounding cells in the datalayer
-            for (uint ii = LowerLatIndex; ii <= UpperLatIndex; ii++)
+            while (InterpCount.Sum() < 1)
             {
-                for (uint jj = LowerLonIndex; jj < UpperLonIndex; jj++)
+                SearchRadius++;
+
+                InterpCount.Initialize();
+                InterpData.Initialize();
+
+                LowerLatIndex = (int)latIndex - SearchRadius;
+                UpperLatIndex = (int)latIndex + SearchRadius;
+                LowerLonIndex = (int)lonIndex - SearchRadius;
+                UpperLonIndex = (int)lonIndex + SearchRadius;
+
+                if (latIndex == 0) LowerLatIndex = (int)latIndex;
+                if (lat.CompareTo(this.MaxLatitude) == 0) UpperLatIndex = (int)latIndex;
+
+                if (lonIndex == 0) LowerLonIndex = (int)lonIndex;
+                if (lon.CompareTo(this.MaxLongitude) == 0) UpperLonIndex = (int)lonIndex;
+
+
+                // Check to see if tries to search outside the bounds of the grid
+                if (LowerLatIndex < 0)
+                    LowerLatIndex = 0;
+                if (UpperLatIndex > _NumLatCells)
+                    UpperLatIndex = (int)_NumLatCells;
+                if (LowerLonIndex < 0)
+                    LowerLonIndex = 0;
+                if (UpperLonIndex > _NumLonCells)
+                    UpperLonIndex = (int)_NumLonCells;
+
+                for (uint hh = 0; hh < InterpData.Length; hh++)
                 {
-                    if (ii < _NumLatCells && jj < _NumLonCells)
+                    for (int ii = LowerLatIndex; ii <= UpperLatIndex; ii++)
                     {
-                        TempCellEnvironment = GetCellEnvironment(ii, jj);
-
-                        for (uint hh = 0; hh < InterpData.Length; hh++)
+                        for (int jj = LowerLonIndex; jj <= UpperLonIndex; jj++)
                         {
-                            //If the cell contains data then sum this and increment count
-                            if (TempCellEnvironment[dataName][hh] != TempCellEnvironment["Missing Value"][0] && TempCellEnvironment["Realm"][0] == realm)
-                            {
-                                InterpData[hh] += TempCellEnvironment[dataName][hh];
-                                InterpCount[hh]++;
-                            }
-                        }
-                    }
-                }
-            }
-
-            //take the mean over surrounding valid cells for each timestep
-            for (int hh = 0; hh < InterpData.Length; hh++)
-            {
-                if (InterpCount[hh] > 0)
-                {
-                    InterpData[hh] /= InterpCount[hh];
-                }
-                else
-                {
-                    InterpData[hh] = 0.0;
-                }
-            }
-            return InterpData;
-        }
-
-        /// <summary>
-        /// Calculate the weighted average of surrounding grid cell data, where those grid cells are of the specified realm and contain
-        /// non missing data values
-        /// </summary>
-        /// <param name="latIndex">Index of the latitude cell for which the weighted average over surrounding cells is requested</param>
-        /// <param name="lonIndex">Index of the longitude cell for which the weighted average over surrounding cells is requested</param>
-        /// <param name="lat">Latitude of the cell for which the weighted value is requested</param>
-        /// <param name="lon">Longitude of the cell for which the weighted value is requested</param>
-        /// <param name="dataName">Names of the data for which weighted value is requested</param>
-        /// <param name="realm">Realm of the grid cell for which data is to be averaged over</param>
-        /// <returns>The weighted average value of the specified data type across surrounding grid cells of the specified realm</returns>
-        private double[] FillWithInterpolatedValues(uint latIndex, uint lonIndex, double lat, double lon, string dataName, double realm)
-        {
-            SortedList<string, double[]> TempCellEnvironment = GetCellEnvironment(latIndex, lonIndex);
-            double[] InterpData = new double[TempCellEnvironment[dataName].Length];
-            uint[] InterpCount = new uint[TempCellEnvironment[dataName].Length];
-            uint LowerLatIndex = latIndex - 1;
-            uint UpperLatIndex = latIndex + 1;
-            uint LowerLonIndex = lonIndex - 1;
-            uint UpperLonIndex = lonIndex + 1;
-
-
-            if (latIndex == 0) LowerLatIndex = latIndex;
-            if (lat.CompareTo(this.MaxLatitude) == 0) UpperLatIndex = latIndex;
-
-            if (lonIndex == 0) LowerLonIndex = lonIndex;
-            if (lon.CompareTo(this.MaxLongitude) == 0) UpperLonIndex = lonIndex;
-
-            for (uint hh = 0; hh < InterpData.Length; hh++)
-            {
-                if (TempCellEnvironment[dataName][hh] == TempCellEnvironment["Missing Value"][0])
-                {
-                    //Loop over surrounding cells in the datalayer
-                    for (uint ii = LowerLatIndex; ii <= UpperLatIndex; ii++)
-                    {
-                        for (uint jj = LowerLonIndex; jj <= UpperLonIndex; jj++)
-                        {
-                            if (ii < _NumLatCells && jj < _NumLonCells)
-                            {
-                                TempCellEnvironment = GetCellEnvironment(ii, jj);
-
-                                //If the cell contains data then sum this and increment count
-                                if (TempCellEnvironment[dataName][hh] != TempCellEnvironment["Missing Value"][0] && TempCellEnvironment["Realm"][0] == realm)
+                           
+                                if (ii < _NumLatCells && jj < _NumLonCells)
                                 {
-                                    InterpData[hh] += TempCellEnvironment[dataName][hh];
-                                    InterpCount[hh]++;
-                                }
+                                if (interpolatedCells[ii,jj] < 1)
+                                {
+                                    TempCellEnvironment = GetCellEnvironment((uint)ii, (uint)jj);
 
+
+                                    //If the cell contains data then sum this and increment count
+                                    if (TempCellEnvironment[dataName][hh] != TempCellEnvironment["Missing Value"][0] && TempCellEnvironment["Realm"][0] == realm)
+                                    {
+                                        InterpData[hh] += TempCellEnvironment[dataName][hh];
+                                        InterpCount[hh]++;
+                                    }
+                                }
                             }
                         }
+
                     }
+                }
+
+
+
                     //take the mean over surrounding valid cells for each timestep
-                    if (InterpCount[hh] > 0)
+                    for (int nn = 0; nn < InterpData.Length; nn++)
                     {
-                        InterpData[hh] /= InterpCount[hh];
+                        if (InterpCount[nn] > 0)
+                        {
+                            InterpData[nn] /= InterpCount[nn];
+                        }
+                        else
+                        {
+                            InterpData[nn] = 0.0;
+                        }
                     }
-                    else
-                    {
-                        InterpData[hh] = 0.0;
-                    }
-                }
-                else
-                {
-                    InterpData[hh] = TempCellEnvironment[dataName][hh];
-                }
+                    
+                
             }
-
-
             return InterpData;
         }
 
-
-
-        /// <summary>
+              /// <summary>
         /// Seed the stocks and cohorts from output from a previous simulation
         /// </summary>
         /// <param name="cellIndices">A list of the active cells in the model grid</param>

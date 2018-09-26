@@ -422,11 +422,17 @@ namespace Madingley
                     deltas["organicpool"]["herbivory"] += _BiomassesEaten[FunctionalGroup][i] * (1 - AssimilationEfficiency);
                 
                 }
-                
+
                 // Check that the delta biomass from eating for the acting cohort is not negative
                 // Commented out for the purposes of speed
-                //Debug.Assert(deltas["biomass"]["herbivory"] >= 0, "Delta biomass from herbviory is negative");
-                
+
+
+                if (double.IsNaN(deltas["biomass"]["herbivory"]))
+                    ;
+
+                Debug.Assert(deltas["biomass"]["herbivory"] >= 0, "Delta biomass from herbviory is negative");
+                Debug.Assert(!double.IsNaN(deltas["biomass"]["herbivory"]), "Delta biomass from herbviory is NaN");
+
                 // Calculate the total biomass eaten by the acting (herbivore) cohort
                 _TotalBiomassEatenByCohort = deltas["biomass"]["herbivory"] * gridCellCohorts[actingCohort].CohortAbundance;
 

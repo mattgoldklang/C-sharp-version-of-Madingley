@@ -698,7 +698,9 @@ namespace Madingley
                 }
             }
 
-            
+                            if (double.IsNaN(deltas["biomass"]["herbivory"]))
+                    ;
+
 
             // Add the biomass eaten and assimilated by an individual to the delta biomass for the acting (predator) cohort
             deltas["biomass"]["predation"] = TempDouble * _PredatorAssimilationEfficiency;
@@ -706,8 +708,12 @@ namespace Madingley
             // Move the biomass eaten but not assimilated by an individual into the organic matter pool
             deltas["organicpool"]["predation"] = TempDouble * _PredatorNonAssimilation * _AbundancePredator;
 
+            if (double.IsNaN(deltas["biomass"]["herbivory"]))
+                ;
+
             // Check that the delta biomass from eating for the acting cohort is not negative
-            //Debug.Assert(deltas["biomass"]["predation"] >= 0, "Predation yields negative biomass");
+            Debug.Assert(deltas["biomass"]["herbivory"] >= 0, "Delta biomass from predation is negative");
+            Debug.Assert(!double.IsNaN(deltas["biomass"]["herbivory"]), "Delta biomass from predation is NaN");
 
             // Calculate the total biomass eaten by the acting (predator) cohort
             _TotalBiomassEatenByCohort = deltas["biomass"]["predation"] * _AbundancePredator;
