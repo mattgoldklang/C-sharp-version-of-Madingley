@@ -538,6 +538,13 @@ namespace Madingley
                 {
                     WorkingCellEnvironment = GetCellEnvironment(ii, jj);
 
+                    // If the cell environment does not contain valid NO3 data then interpolate values
+                    if (!InternalGrid[ii, jj].ContainsData(WorkingCellEnvironment["no3"], WorkingCellEnvironment["Missing Value"][0]))
+                    {
+                        // If NO3 doesn't exist then interpolate from surround values (of the same realm)
+                        WorkingCellEnvironment["no3"] = GetInterpolatedValues(ii, jj, GetCellLatitude(ii), GetCellLongitude(jj), "no3", WorkingCellEnvironment["Realm"][0]);
+                    }
+
                     // If the cell environment does not contain valid NPP data then interpolate values
                     if (!InternalGrid[ii, jj].ContainsData(WorkingCellEnvironment["NPP"], WorkingCellEnvironment["Missing Value"][0]))
                     {
