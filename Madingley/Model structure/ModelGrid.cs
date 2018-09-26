@@ -556,7 +556,31 @@ namespace Madingley
             }
 
             InterpolatedCells.Initialize();
-          
+
+            for (uint ii = 0; ii < _NumLatCells; ii++)
+            {
+                for (uint jj = 0; jj < _NumLonCells; jj++)
+                {
+                    WorkingCellEnvironment = GetCellEnvironment(ii, jj);
+
+                    // If the cell environment does not contain valid NO3 data then interpolate values
+                    if (WorkingCellEnvironment["Realm"][0] == 2)
+                    {
+                        if (!InternalGrid[ii, jj].ContainsData(WorkingCellEnvironment["Temperature"], WorkingCellEnvironment["Missing Value"][0]))
+                        {
+                            // If NO3 doesn't exist then interpolate from surround values (of the same realm)
+
+                            WorkingCellEnvironment["Temperature"] = GetInterpolatedValues(ii, jj, GetCellLatitude(ii), GetCellLongitude(jj), "Temperature", WorkingCellEnvironment["Realm"][0], InterpolatedCells);
+                            InterpolatedCells[ii, jj] = 1;
+                        }
+                    }
+
+                    InternalGrid[ii, jj].CellEnvironment = WorkingCellEnvironment;
+                }
+            }
+
+            InterpolatedCells.Initialize();
+
             for (uint ii = 0; ii < _NumLatCells; ii++)
             {
                 for (uint jj = 0; jj < _NumLonCells; jj++)

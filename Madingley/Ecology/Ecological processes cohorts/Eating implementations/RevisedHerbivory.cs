@@ -234,21 +234,9 @@ namespace Madingley
             double optPreySize = optPreyPredatorMassRatio * herbivoreIndividualMass;
 
             // Calculate proportion of NPP available to the cohort
-            int withProp = 1;
             double propAvailableNPP = 0.0;
-
-            if(withProp == 0)
-            {
-                propAvailableNPP = 1.0;
-            }
-            else
-            {
-                propAvailableNPP = regCoefs.Item2 * Math.Log10(optPreySize) + regCoefs.Item1;
-                propAvailableNPP = Math.Pow(10, propAvailableNPP);
-                if (Double.IsNaN(propAvailableNPP))
-                    ;
-                //propAvailableNPP = RandomNumberGenerator.GetProportionNPP(cohortPhytoType, optPreySize, temperature);
-            }
+            propAvailableNPP = regCoefs.Item2 * Math.Log10(optPreySize) + regCoefs.Item1;
+            propAvailableNPP = Math.Pow(10, propAvailableNPP);
             
             // Adjust total NPP by the proportion available
             double autotrophBiomassBin = autotrophBiomass * propAvailableNPP;
