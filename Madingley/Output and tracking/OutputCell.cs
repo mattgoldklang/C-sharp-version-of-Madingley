@@ -273,6 +273,9 @@ namespace Madingley
         private EcosytemMetrics Metrics;
 
 
+        double CumulativeBiomass;
+        double CumulativeAbundance;
+
         /// <summary>
         /// Constructor for the cell output class
         /// </summary>
@@ -1275,7 +1278,27 @@ namespace Madingley
             // File outputs for medium and high detail levels
             if ((ModelOutputDetail == OutputDetailLevel.Medium) || (ModelOutputDetail == OutputDetailLevel.High))
             {
-                
+                CumulativeAbundance = 0.0;
+                CumulativeBiomass = 0.0;
+
+                // Calculat cumulative biomass and cumulative abundance in each grid cell. Do this once to save time.
+                GridCellCohortHandler CellCohorts = ecosystemModelGrid.GetGridCellCohorts(cellIndices[cellIndex][0], cellIndices[cellIndex][1]);
+
+                double[][] CohortBiomass = new double[CellCohorts.Count][];
+
+                //Retrieve the biomass
+                for (int fg = 0; fg < CellCohorts.Count; fg++)
+                {
+                    CohortBiomass[fg] = new double[CellCohorts[fg].Count];
+
+                    for (int ii = 0; ii < CellCohorts[fg].Count; ii++)
+                    {
+
+                        CohortBiomass[fg][ii] = (CellCohorts[fg][ii].IndividualBodyMass + CellCohorts[fg][ii].IndividualReproductivePotentialMass) * CellCohorts[fg][ii].CohortAbundance;
+                        CumulativeBiomass += CohortBiomass[fg][ii];
+                        CumulativeAbundance += CellCohorts[fg][ii].CohortAbundance;
+                    }
+                }
 
                 if (MarineCell)
                 {
@@ -1320,18 +1343,18 @@ namespace Madingley
 
                 if (OutputMetrics)
                 {
-                    DataConverter.ValueToSDS1D(Metrics.CalculateMeanTrophicLevelCell(ecosystemModelGrid,cellIndices,cellIndex),
+                    DataConverter.ValueToSDS1D(Metrics.CalculateMeanTrophicLevelCell(ecosystemModelGrid,cellIndices,cellIndex, CohortBiomass),
                                                 "Mean Trophic Level", "Time step", ecosystemModelGrid.GlobalMissingValue,
                                                 BasicOutputMemory, 0);
-                    DataConverter.ValueToSDS1D(Metrics.CalculateFunctionalEvennessRao(ecosystemModelGrid, cohortFunctionalGroupDefinitions,cellIndices, cellIndex,"trophic index"),
+                    DataConverter.ValueToSDS1D(Metrics.CalculateFunctionalEvennessRao(ecosystemModelGrid, cohortFunctionalGroupDefinitions,cellIndices, cellIndex,"trophic index", CohortBiomass),
                                                 "Trophic Evenness", "Time step", ecosystemModelGrid.GlobalMissingValue,
                                                 BasicOutputMemory, 0);
-                    DataConverter.ValueToSDS1D(Metrics.CalculateFunctionalEvennessRao(ecosystemModelGrid, cohortFunctionalGroupDefinitions, cellIndices, cellIndex, "biomass"),
+                    DataConverter.ValueToSDS1D(Metrics.CalculateFunctionalEvennessRao(ecosystemModelGrid, cohortFunctionalGroupDefinitions, cellIndices, cellIndex, "biomass", CohortBiomass),
                                                 "Biomass Evenness", "Time step", ecosystemModelGrid.GlobalMissingValue,
                                                 BasicOutputMemory, 0);
 
                     double[] FunctionalDiversity = Metrics.CalculateFunctionalDiversity(ecosystemModelGrid, cohortFunctionalGroupDefinitions, 
-                        cellIndices, cellIndex);
+                        cellIndices, cellIndex, CohortBiomass);
 
                     DataConverter.ValueToSDS1D(FunctionalDiversity[0],
                                                  "Functional Richness", "Time step", ecosystemModelGrid.GlobalMissingValue,
@@ -1360,10 +1383,10 @@ namespace Madingley
                                                 "Max Trophic Index", "Time step", ecosystemModelGrid.GlobalMissingValue,
                                                 BasicOutputMemory, 0);
 
-                    DataConverter.ValueToSDS1D(Metrics.CalculateArithmeticCommunityMeanBodyMass(ecosystemModelGrid, cellIndices, cellIndex),
+                    DataConverter.ValueToSDS1D(Metrics.CalculateArithmeticCommunityMeanBodyMass(cellIndex, CumulativeAbundance, CumulativeBiomass),
                                                 "Arithmetic Mean Bodymass", "Time step", ecosystemModelGrid.GlobalMissingValue,
                                                 BasicOutputMemory, 0);
-                    DataConverter.ValueToSDS1D(Metrics.CalculateGeometricCommunityMeanBodyMass(ecosystemModelGrid, cellIndices, cellIndex),
+                    DataConverter.ValueToSDS1D(Metrics.CalculateGeometricCommunityMeanBodyMass(ecosystemModelGrid, cellIndices, cellIndex, CumulativeAbundance),
                                                 "Geometric Mean Bodymass", "Time step", ecosystemModelGrid.GlobalMissingValue,
                                                 BasicOutputMemory, 0);
                     DataConverter.ValueToSDS1D(Metrics.CalculateBiomassWeightedSystemMetabolism(ecosystemModelGrid, cellIndices, cellIndex),
@@ -1382,7 +1405,7 @@ namespace Madingley
                 {
                     if (OutputMetrics)
                     {
-                        DataConverter.VectorToSDS2D(Metrics.CalculateTrophicDistribution(ecosystemModelGrid,cellIndices,cellIndex), "Trophic Index Distribution",
+                        DataConverter.VectorToSDS2D(Metrics.CalculateTrophicDistribution(ecosystemModelGrid,cellIndices,cellIndex, CohortBiomass), "Trophic Index Distribution",
                         new string[2] { "Time step", "Trophic Index Bins" }, TimeSteps, Metrics.TrophicIndexBinValues, ecosystemModelGrid.GlobalMissingValue, MassBinsOutputMemory, 0);
                     }
 
@@ -1587,6 +1610,28 @@ namespace Madingley
             // File outputs for medium and high detail levels
             if ((ModelOutputDetail == OutputDetailLevel.Medium) || (ModelOutputDetail == OutputDetailLevel.High))
             {
+                CumulativeAbundance = 0.0;
+                CumulativeBiomass = 0.0;
+
+                // Calculat cumulative biomass and cumulative abundance in each grid cell. Do this once to save time.
+                GridCellCohortHandler CellCohorts = ecosystemModelGrid.GetGridCellCohorts(cellIndices[cellIndex][0], cellIndices[cellIndex][1]);
+
+                double[][] CohortBiomass = new double[CellCohorts.Count][];
+
+                //Retrieve the biomass
+                for (int fg = 0; fg < CellCohorts.Count; fg++)
+                {
+                    CohortBiomass[fg] = new double[CellCohorts[fg].Count];
+
+                    for (int ii = 0; ii < CellCohorts[fg].Count; ii++)
+                    {
+
+                        CohortBiomass[fg][ii] = (CellCohorts[fg][ii].IndividualBodyMass + CellCohorts[fg][ii].IndividualReproductivePotentialMass) * CellCohorts[fg][ii].CohortAbundance;
+                        CumulativeBiomass += CohortBiomass[fg][ii];
+                        CumulativeAbundance += CellCohorts[fg][ii].CohortAbundance;
+                    }
+                }
+
                 if (MarineCell)
                 {
                     // Loop over all cohort trait value combinations and output abundances, densities and biomasses
@@ -1623,17 +1668,17 @@ namespace Madingley
                 // If ouputting ecosystem metrics has been specified then add these metrics to the output
                 if ((OutputMetrics) && (currentTimeStep >= initialisation.TimeStepToStartProcessTrackers))
                 {
-                    DataConverter.ValueToSDS1D(Metrics.CalculateMeanTrophicLevelCell(ecosystemModelGrid, cellIndices, cellIndex),
+                    DataConverter.ValueToSDS1D(Metrics.CalculateMeanTrophicLevelCell(ecosystemModelGrid, cellIndices, cellIndex, CohortBiomass),
                                                 "Mean Trophic Level", "Time step", ecosystemModelGrid.GlobalMissingValue,
                                                 BasicOutputMemory, (int)currentTimeStep + 1);
-                    DataConverter.ValueToSDS1D(Metrics.CalculateFunctionalEvennessRao(ecosystemModelGrid,cohortFunctionalGroupDefinitions, cellIndices, cellIndex,"trophic index"),
+                    DataConverter.ValueToSDS1D(Metrics.CalculateFunctionalEvennessRao(ecosystemModelGrid,cohortFunctionalGroupDefinitions, cellIndices, cellIndex,"trophic index",CohortBiomass),
                                                 "Trophic Evenness", "Time step", ecosystemModelGrid.GlobalMissingValue,
                                                 BasicOutputMemory, (int)currentTimeStep + 1);
-                    DataConverter.ValueToSDS1D(Metrics.CalculateFunctionalEvennessRao(ecosystemModelGrid, cohortFunctionalGroupDefinitions, cellIndices, cellIndex, "biomass"),
+                    DataConverter.ValueToSDS1D(Metrics.CalculateFunctionalEvennessRao(ecosystemModelGrid, cohortFunctionalGroupDefinitions, cellIndices, cellIndex, "biomass", CohortBiomass),
                                                 "Biomass Evenness", "Time step", ecosystemModelGrid.GlobalMissingValue,
                                                 BasicOutputMemory, (int)currentTimeStep + 1);
                     double[] FunctionalDiversity = Metrics.CalculateFunctionalDiversity(ecosystemModelGrid, cohortFunctionalGroupDefinitions, 
-                        cellIndices, cellIndex);
+                        cellIndices, cellIndex, CohortBiomass);
                     DataConverter.ValueToSDS1D(FunctionalDiversity[0],
                                                  "Functional Richness", "Time step", ecosystemModelGrid.GlobalMissingValue,
                                                  BasicOutputMemory, (int)currentTimeStep + 1);
@@ -1661,12 +1706,12 @@ namespace Madingley
                                                 "Max Trophic Index", "Time step", ecosystemModelGrid.GlobalMissingValue,
                                                 BasicOutputMemory, (int)currentTimeStep + 1);
 
-                    DataConverter.ValueToSDS1D(Metrics.CalculateArithmeticCommunityMeanBodyMass(ecosystemModelGrid, cellIndices, cellIndex),
+                    DataConverter.ValueToSDS1D(Metrics.CalculateArithmeticCommunityMeanBodyMass(cellIndex, CumulativeAbundance, CumulativeBiomass),
                                                 "Arithmetic Mean Bodymass", "Time step", ecosystemModelGrid.GlobalMissingValue,
                                                 BasicOutputMemory, (int)currentTimeStep + 1);
-                    DataConverter.ValueToSDS1D(Metrics.CalculateGeometricCommunityMeanBodyMass(ecosystemModelGrid, cellIndices, cellIndex),
-                                                "Geometric Mean Bodymass", "Time step", ecosystemModelGrid.GlobalMissingValue,
-                                                BasicOutputMemory, (int)currentTimeStep + 1);
+                    //DataConverter.ValueToSDS1D(Metrics.CalculateGeometricCommunityMeanBodyMass(ecosystemModelGrid, cellIndices, cellIndex),
+                    //                            "Geometric Mean Bodymass", "Time step", ecosystemModelGrid.GlobalMissingValue,
+                    //                            BasicOutputMemory, (int)currentTimeStep + 1);
                     DataConverter.ValueToSDS1D(Metrics.CalculateBiomassWeightedSystemMetabolism(ecosystemModelGrid, cellIndices, cellIndex),
                                                 "Ecosystem Metabolism Per Unit Biomass", "Time step", ecosystemModelGrid.GlobalMissingValue,
                                                 BasicOutputMemory, (int)currentTimeStep + 1);
@@ -1694,7 +1739,7 @@ namespace Madingley
 
                     if (OutputMetrics)
                     {
-                        DataConverter.VectorToSDS2D(Metrics.CalculateTrophicDistribution(ecosystemModelGrid,cellIndices,cellIndex), "Trophic Index Distribution",
+                        DataConverter.VectorToSDS2D(Metrics.CalculateTrophicDistribution(ecosystemModelGrid,cellIndices,cellIndex, CohortBiomass), "Trophic Index Distribution",
                             new string[2] { "Time step", "Trophic Index Bins" }, TimeSteps, Metrics.TrophicIndexBinValues, ecosystemModelGrid.GlobalMissingValue, MassBinsOutputMemory, (int)currentTimeStep + 1);
                     }
 

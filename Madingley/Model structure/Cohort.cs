@@ -183,7 +183,6 @@ namespace Madingley
             get { return _LogOptimalPreyBodySizeRatio ; }
             set { _LogOptimalPreyBodySizeRatio = value; }
         }
-        
 
         /// <summary>
         /// Constructor for the Cohort class: assigns cohort starting properties
