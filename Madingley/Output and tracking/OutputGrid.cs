@@ -484,21 +484,21 @@ namespace Madingley
                     Timings[0] += OutputTimer.GetElapsedTimeSecs();
 
                     OutputTimer.Start();
-                    MetricsGrid["Trophic Evenness"][latIndex, lonIndex] = Metrics.CalculateFunctionalEvennessRao(ecosystemModelGrid, cohortFunctionalGroupDefinitions, cellIndices, i, "trophic index");
+                    MetricsGrid["Trophic Evenness"][latIndex, lonIndex] = 0.0;// Metrics.CalculateFunctionalEvennessRao(ecosystemModelGrid, cohortFunctionalGroupDefinitions, cellIndices, i, "trophic index");
                     OutputTimer.Stop();
                     Timings[1] += OutputTimer.GetElapsedTimeSecs();
 
 
                     OutputTimer.Start();
-                    MetricsGrid["Biomass Evenness"][latIndex, lonIndex] = Metrics.CalculateFunctionalEvennessRao(ecosystemModelGrid, cohortFunctionalGroupDefinitions, cellIndices, i, "biomass");
+                    MetricsGrid["Biomass Evenness"][latIndex, lonIndex] = 0.0; // Metrics.CalculateFunctionalEvennessRao(ecosystemModelGrid, cohortFunctionalGroupDefinitions, cellIndices, i, "biomass");
                     OutputTimer.Stop();
 
                     Timings[2] += OutputTimer.GetElapsedTimeSecs();
 
 
                     OutputTimer.Start();
-                    double[] FunctionalDiversity = Metrics.CalculateFunctionalDiversity(ecosystemModelGrid, cohortFunctionalGroupDefinitions,
-                                                                                                       cellIndices, i);
+                    double[] FunctionalDiversity = new double[] {0.0,0.0};// Metrics.CalculateFunctionalDiversity(ecosystemModelGrid, cohortFunctionalGroupDefinitions,
+                                                                       //                                cellIndices, i);
                     OutputTimer.Stop();
 
                     Timings[3] += OutputTimer.GetElapsedTimeSecs();
