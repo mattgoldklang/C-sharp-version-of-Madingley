@@ -330,6 +330,8 @@ namespace Madingley
 
             tempVector = _CellEnvironment["Temperature"];
 
+            _CellEnvironment.Add("BaselineTemperature", tempVector);
+
             double Average = tempVector.Average();
             meantemp[0] = Average;
             double SumOfSquaresDifferences = tempVector.Select(val => (val - Average) * (val - Average)).Sum();

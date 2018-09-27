@@ -8,7 +8,7 @@ Top Latitude,65
 Bottom Latitude,-65
 Leftmost Longitude,-180
 Rightmost Longitude,180
-Grid Cell Size,5
+Grid Cell Size,10
 Read State,
 Specific Location File,
 Locations to Track File,
