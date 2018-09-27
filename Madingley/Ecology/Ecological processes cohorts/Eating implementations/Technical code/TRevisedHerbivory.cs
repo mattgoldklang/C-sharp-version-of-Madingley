@@ -250,7 +250,7 @@ namespace Madingley
         /// <param name="temperature"></param>
         /// <param name="no3"></param>
         /// <returns></returns>
-        public Tuple<double, double> GetPhytoAbundSizeSlope(double temperature, double no3)
+        public Tuple<double, double> GetPhytoAbundSizeSlope(double temperature, double no3, SortedList<string, double[]> cellEnvironment, uint currentMonth, uint currentTimeStep)
         {
             double[] phyto = new double[3];
             double[] nsfPhyto = new double[3];
@@ -263,6 +263,19 @@ namespace Madingley
             nsfPhyto[0] = Math.Log10(Math.Exp(phyto[0]) / (Math.Exp(phyto[0]) + Math.Exp(phyto[1]) + Math.Exp(phyto[2])));
             nsfPhyto[1] = Math.Log10(Math.Exp(phyto[1]) / (Math.Exp(phyto[0]) + Math.Exp(phyto[1]) + Math.Exp(phyto[2])));
             nsfPhyto[2] = Math.Log10(Math.Exp(phyto[2]) / (Math.Exp(phyto[0]) + Math.Exp(phyto[1]) + Math.Exp(phyto[2])));
+
+            Boolean booboo = false;
+            if (booboo)
+            {
+                nsfPhyto[0] *= 0.15;
+                nsfPhyto[1] -= 0.5 - nsfPhyto[0];
+                nsfPhyto[2] -= 0.5 - nsfPhyto[0];
+            }
+
+            cellEnvironment["microNPP"][currentMonth] = nsfPhyto[2] * cellEnvironment["OceanNPP"][currentMonth];
+            cellEnvironment["nanoNPP"][currentMonth] = nsfPhyto[1] * cellEnvironment["OceanNPP"][currentMonth];
+            cellEnvironment["picoNPP"][currentMonth] = nsfPhyto[0] * cellEnvironment["OceanNPP"][currentMonth];
+
 
             Tuple<double, double> linReg = Fit.Line(phytoSize, nsfPhyto);
             regCoefs[0] = linReg.Item1; // intercept
@@ -293,7 +306,7 @@ namespace Madingley
             double no3 = cellEnvironment["no3"][currentMonth];
             double[] slopeCoefficient = new double[2];
 
-            Tuple<double, double> regCoefs = GetPhytoAbundSizeSlope(temperature, no3);
+            Tuple<double, double> regCoefs = GetPhytoAbundSizeSlope(temperature, no3, cellEnvironment, currentMonth, currentTimeStep);
 
             // Get the individual body mass of the acting cohort
             _BodyMassHerbivore = gridCellCohorts[actingCohort].IndividualBodyMass;

@@ -78,6 +78,11 @@ namespace Madingley
                     case "oceannpp":
                         // Get NPP from cell environment
                         NPP = cellEnvironment["NPP"][currentMonth];
+                        Boolean booboo = false;
+                        if (booboo)
+                        {
+                            NPP *= 0.15;
+                        }
 
                         // If NPP is a missing value then set to zero
                         if (NPP == cellEnvironment["Missing Value"][0]) NPP = 0.0;
