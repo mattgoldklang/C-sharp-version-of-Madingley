@@ -153,6 +153,9 @@ namespace Madingley
         /// </summary>
         private EcosytemMetrics Metrics;
 
+        private StopWatch OutputTimer;
+        private StopWatch MetricsTimer;
+
         public OutputGrid(string outputDetail, MadingleyModelInitialisation modelInitialisation)
         {
             // Set the output path
@@ -187,6 +190,10 @@ namespace Madingley
             // Set the local variable designating whether to display live outputs during this model run
             if (modelInitialisation.LiveOutputs)
                 LiveOutputs = true;
+
+            OutputTimer = new StopWatch();
+            MetricsTimer = new StopWatch();
+
 
         }
 
@@ -461,6 +468,7 @@ namespace Madingley
 
 
 
+            double[] Timings = new double[10];
 
             if ((OutputMetrics) && (currentTimeStep >= initialisation.TimeStepToStartProcessTrackers))
             {
@@ -492,31 +500,96 @@ namespace Madingley
 
                     uint latIndex = cellIndices[i][0];
                     uint lonIndex = cellIndices[i][1];
+                    OutputTimer.Start();
+
                     MetricsGrid["Mean Trophic Level"][latIndex, lonIndex] = Metrics.CalculateMeanTrophicLevelCell(ecosystemModelGrid, cellIndices, i,CohortBiomass);
+                    OutputTimer.Stop();
+                    Timings[0] += OutputTimer.GetElapsedTimeSecs();
+
+                    OutputTimer.Start();
                     MetricsGrid["Trophic Evenness"][latIndex, lonIndex] = Metrics.CalculateFunctionalEvennessRao(ecosystemModelGrid, cohortFunctionalGroupDefinitions, cellIndices, i, "trophic index", CohortBiomass);
+                    OutputTimer.Stop();
+                    Timings[1] += OutputTimer.GetElapsedTimeSecs();
+
+
+                    OutputTimer.Start();
                     MetricsGrid["Biomass Evenness"][latIndex, lonIndex] = Metrics.CalculateFunctionalEvennessRao(ecosystemModelGrid, cohortFunctionalGroupDefinitions, cellIndices, i, "biomass", CohortBiomass);
+                    OutputTimer.Stop();
+
+                    Timings[2] += OutputTimer.GetElapsedTimeSecs();
+
+
+                    OutputTimer.Start();
                     double[] FunctionalDiversity = Metrics.CalculateFunctionalDiversity(ecosystemModelGrid, cohortFunctionalGroupDefinitions,
                                                                                         cellIndices, i, CohortBiomass);
+                    OutputTimer.Stop();
+
+                    Timings[3] += OutputTimer.GetElapsedTimeSecs();
+
+
                     // Functional Richness not currently calculated
                     //MetricsGrid["Functional Richness"][latIndex, lonIndex] = FunctionalDiversity[0];
+                    OutputTimer.Start();
                     MetricsGrid["Rao Functional Evenness"][latIndex, lonIndex] = FunctionalDiversity[1];
+                    OutputTimer.Stop();
+
+                    Timings[4] += OutputTimer.GetElapsedTimeSecs();
+
+
+                    OutputTimer.Start();
                     double[] TempArray = Metrics.CalculateFunctionalRichness(ecosystemModelGrid, cohortFunctionalGroupDefinitions, cellIndices, i, "Biomass");
+                    OutputTimer.Stop();
+                    Timings[5] += OutputTimer.GetElapsedTimeSecs();
+
+
                     MetricsGrid["Biomass Richness"][latIndex, lonIndex] = TempArray[0];
                     MetricsGrid["Min Bodymass"][latIndex, lonIndex] = TempArray[1];
                     MetricsGrid["Max Bodymass"][latIndex, lonIndex] = TempArray[2];
+
+                    OutputTimer.Start();
                     TempArray = Metrics.CalculateFunctionalRichness(ecosystemModelGrid, cohortFunctionalGroupDefinitions, cellIndices, i, "Trophic Index");
+                    OutputTimer.Stop();
+                    Timings[6] += OutputTimer.GetElapsedTimeSecs();
+
+
                     MetricsGrid["Trophic Richness"][latIndex, lonIndex] = TempArray[0];
                     MetricsGrid["Min Trophic Index"][latIndex, lonIndex] = TempArray[1];
                     MetricsGrid["Max Trophic Index"][latIndex, lonIndex] = TempArray[2];
 
+                    OutputTimer.Start();
                     MetricsGrid["Arithmetic Mean Bodymass"][latIndex, lonIndex] = Metrics.CalculateArithmeticCommunityMeanBodyMass(i, CumulativeAbundance, CumulativeBiomass);
+                    OutputTimer.Stop();
+                    Timings[7] += OutputTimer.GetElapsedTimeSecs();
+
+
+                    OutputTimer.Start();
+
                     MetricsGrid["Geometric Mean Bodymass"][latIndex, lonIndex] = Metrics.CalculateGeometricCommunityMeanBodyMass(ecosystemModelGrid, cellIndices, i, CumulativeAbundance);
-                   // MetricsGrid["Geometric Mean Bodymass"][latIndex, lonIndex] = Metrics.CalculateGeometricCommunityMeanBodyMass(ecosystemModelGrid, cellIndices, i);
-                    MetricsGrid["Ecosystem metabolism per unit biomass"][latIndex, lonIndex] = Metrics.CalculateBiomassWeightedSystemMetabolism(ecosystemModelGrid, cellIndices, i);        
+                    OutputTimer.Stop();
+                    Timings[8] += OutputTimer.GetElapsedTimeSecs();
+
+
+                    // MetricsGrid["Geometric Mean Bodymass"][latIndex, lonIndex] = Metrics.CalculateGeometricCommunityMeanBodyMass(ecosystemModelGrid, cellIndices, i);
+                    OutputTimer.Start();
+                    MetricsGrid["Ecosystem metabolism per unit biomass"][latIndex, lonIndex] = Metrics.CalculateBiomassWeightedSystemMetabolism(ecosystemModelGrid, cellIndices, i);
+                    OutputTimer.Stop();
+
+                    Timings[9] += OutputTimer.GetElapsedTimeSecs();
+
                 }
             }
-            
 
+
+            Console.WriteLine("Calculating MTL took: {0}", Timings[0]);
+            Console.WriteLine("Calculating trophic evenness took: {0}", Timings[1]);
+            Console.WriteLine("Calculating biomass evenness took: {0}", Timings[2]);
+            Console.WriteLine("Calculating functional diversity took: {0}", Timings[3]);
+            Console.WriteLine("Calculating rao took: {0}", Timings[4]);
+            Console.WriteLine("Calculating functional richness (biomass) took: {0}", Timings[5]);
+            Console.WriteLine("Calculating functional richness (trophic index) took: {0}", Timings[6]);
+            Console.WriteLine("Calculating mean body mass took: {0}", Timings[7]);
+            Console.WriteLine("Calculating geometric mean body mass took: {0}", Timings[8]);
+            Console.WriteLine("Calculating ecosystem metabolism took: {0}", Timings[9]);
         }
 
         public void InitialOutputs(ModelGrid ecosystemModelGrid, FunctionalGroupDefinitions cohortFunctionalGroupDefinitions, FunctionalGroupDefinitions
@@ -593,8 +666,16 @@ namespace Madingley
         public void TimeStepOutputs(ModelGrid ecosystemModelGrid, FunctionalGroupDefinitions cohortFunctionalGroupDefinitions, FunctionalGroupDefinitions
             stockFunctionalGroupDefinitions, List<uint[]> cellIndices, uint currentTimeStep, MadingleyModelInitialisation initialisation)
         {
+
+            Console.WriteLine("Calculting metrics");
+            MetricsTimer.Start();
+
             // Calculate the output variables for this time step
             CalculateOutputs(ecosystemModelGrid, cohortFunctionalGroupDefinitions, stockFunctionalGroupDefinitions, cellIndices, initialisation, currentTimeStep);
+            MetricsTimer.Stop();
+
+
+            Console.WriteLine("Calculating metrics took: {0}", MetricsTimer.GetElapsedTimeSecs());
 
             // Write the total biomass of cohorts to the live display
             if (LiveOutputs)
@@ -604,6 +685,7 @@ namespace Madingley
             }
 
             Console.WriteLine("Writing grid ouputs to file...\n");
+            OutputTimer.Start();
 
             // Add the grid of total biomass in cells to the file dataset
             DataConverter.Array2DToSDS3D(LogBiomassDensityGridCohorts, "Biomass density", new string[] { "Latitude", "Longitude", "Time step" },
@@ -658,6 +740,11 @@ namespace Madingley
                                                 GridOutput);
                 }
             }
+
+            OutputTimer.Stop();
+
+
+            Console.WriteLine("Writing outputs took: {0}", OutputTimer.GetElapsedTimeSecs());
 
 
         }
