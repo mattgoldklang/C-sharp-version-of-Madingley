@@ -642,7 +642,7 @@ namespace Madingley
 
                     // Remove number of prey eaten from the prey cohort
                     gridCellCohorts[FunctionalGroup][i].CohortAbundance -= _AbundancesEaten[FunctionalGroup][i];
-                   
+
                     gridCellCohorts[actingCohort].TrophicIndex += (_BodyMassPrey + gridCellCohorts[FunctionalGroup][i].IndividualReproductivePotentialMass) * _AbundancesEaten[FunctionalGroup][i] * gridCellCohorts[FunctionalGroup][i].TrophicIndex;
 
                     

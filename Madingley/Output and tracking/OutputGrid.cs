@@ -414,9 +414,6 @@ namespace Madingley
         private void CalculateOutputs(ModelGrid ecosystemModelGrid, FunctionalGroupDefinitions cohortFunctionalGroupDefinitions,
             FunctionalGroupDefinitions stockFunctionalGroupDefinitions, List<uint[]> cellIndices, MadingleyModelInitialisation initialisation, uint currentTimeStep)
         {
-            double CumulativeAbundance = new double();
-            double CumulativeBiomass = new double();
-
             // Get grids of the total biomass densities of all stocks and all cohorts in each grid cell
             LogBiomassDensityGridCohorts = ecosystemModelGrid.GetStateVariableGridLogDensityPerSqKm("Biomass", "NA", cohortFunctionalGroupDefinitions.
                 AllFunctionalGroupsIndex, cellIndices, "cohort", initialisation);
@@ -467,53 +464,30 @@ namespace Madingley
             HANPP = ecosystemModelGrid.GetEnviroGrid("HANPP", 0);
 
 
-
             double[] Timings = new double[10];
-
+            
             if ((OutputMetrics) && (currentTimeStep >= initialisation.TimeStepToStartProcessTrackers))
             {
                 //Calculate the values for the ecosystem metrics for each of the grid cells
                 for (int i = 0; i < cellIndices.Count; i++)
                 {
-                    CumulativeAbundance = 0.0;
-                    CumulativeBiomass = 0.0;
-
-                    // Calculat cumulative biomass and cumulative abundance in each grid cell. Do this once to save time.
-                    GridCellCohortHandler CellCohorts = ecosystemModelGrid.GetGridCellCohorts(cellIndices[i][0], cellIndices[i][1]);
-
-                    double [][] CohortBiomass = new double[CellCohorts.Count][];
-
-                    //Retrieve the biomass
-                    for (int fg = 0; fg < CellCohorts.Count; fg++)
-                    {
-                        CohortBiomass[fg] = new double[CellCohorts[fg].Count];
-
-                        for (int ii = 0; ii < CellCohorts[fg].Count; ii++)
-                        {
-
-                           CohortBiomass[fg][ii] = (CellCohorts[fg][ii].IndividualBodyMass + CellCohorts[fg][ii].IndividualReproductivePotentialMass) * CellCohorts[fg][ii].CohortAbundance;
-                            CumulativeBiomass += CohortBiomass[fg][ii];
-                           CumulativeAbundance += CellCohorts[fg][ii].CohortAbundance;
-                       }
-                    }
-
-
                     uint latIndex = cellIndices[i][0];
                     uint lonIndex = cellIndices[i][1];
+
                     OutputTimer.Start();
 
-                    MetricsGrid["Mean Trophic Level"][latIndex, lonIndex] = Metrics.CalculateMeanTrophicLevelCell(ecosystemModelGrid, cellIndices, i,CohortBiomass);
+                    MetricsGrid["Mean Trophic Level"][latIndex, lonIndex] = Metrics.CalculateMeanTrophicLevelCell(ecosystemModelGrid, cellIndices, i);
                     OutputTimer.Stop();
                     Timings[0] += OutputTimer.GetElapsedTimeSecs();
 
                     OutputTimer.Start();
-                    MetricsGrid["Trophic Evenness"][latIndex, lonIndex] = Metrics.CalculateFunctionalEvennessRao(ecosystemModelGrid, cohortFunctionalGroupDefinitions, cellIndices, i, "trophic index", CohortBiomass);
+                    MetricsGrid["Trophic Evenness"][latIndex, lonIndex] = Metrics.CalculateFunctionalEvennessRao(ecosystemModelGrid, cohortFunctionalGroupDefinitions, cellIndices, i, "trophic index");
                     OutputTimer.Stop();
                     Timings[1] += OutputTimer.GetElapsedTimeSecs();
 
 
                     OutputTimer.Start();
-                    MetricsGrid["Biomass Evenness"][latIndex, lonIndex] = Metrics.CalculateFunctionalEvennessRao(ecosystemModelGrid, cohortFunctionalGroupDefinitions, cellIndices, i, "biomass", CohortBiomass);
+                    MetricsGrid["Biomass Evenness"][latIndex, lonIndex] = Metrics.CalculateFunctionalEvennessRao(ecosystemModelGrid, cohortFunctionalGroupDefinitions, cellIndices, i, "biomass");
                     OutputTimer.Stop();
 
                     Timings[2] += OutputTimer.GetElapsedTimeSecs();
@@ -521,16 +495,21 @@ namespace Madingley
 
                     OutputTimer.Start();
                     double[] FunctionalDiversity = Metrics.CalculateFunctionalDiversity(ecosystemModelGrid, cohortFunctionalGroupDefinitions,
-                                                                                        cellIndices, i, CohortBiomass);
+                                                                                                       cellIndices, i);
                     OutputTimer.Stop();
 
                     Timings[3] += OutputTimer.GetElapsedTimeSecs();
 
+                    MetricsGrid["Mean Trophic Level"][latIndex, lonIndex] = Metrics.CalculateMeanTrophicLevelCell(ecosystemModelGrid, cellIndices, i);
+                    MetricsGrid["Trophic Evenness"][latIndex, lonIndex] = Metrics.CalculateFunctionalEvennessRao(ecosystemModelGrid, cohortFunctionalGroupDefinitions, cellIndices, i, "trophic index");
+                    MetricsGrid["Biomass Evenness"][latIndex, lonIndex] = Metrics.CalculateFunctionalEvennessRao(ecosystemModelGrid, cohortFunctionalGroupDefinitions, cellIndices, i, "biomass");
+                 
 
                     // Functional Richness not currently calculated
                     //MetricsGrid["Functional Richness"][latIndex, lonIndex] = FunctionalDiversity[0];
                     OutputTimer.Start();
                     MetricsGrid["Rao Functional Evenness"][latIndex, lonIndex] = FunctionalDiversity[1];
+
                     OutputTimer.Stop();
 
                     Timings[4] += OutputTimer.GetElapsedTimeSecs();
@@ -557,14 +536,14 @@ namespace Madingley
                     MetricsGrid["Max Trophic Index"][latIndex, lonIndex] = TempArray[2];
 
                     OutputTimer.Start();
-                    MetricsGrid["Arithmetic Mean Bodymass"][latIndex, lonIndex] = Metrics.CalculateArithmeticCommunityMeanBodyMass(i, CumulativeAbundance, CumulativeBiomass);
+                    MetricsGrid["Arithmetic Mean Bodymass"][latIndex, lonIndex] = Metrics.CalculateArithmeticCommunityMeanBodyMass(ecosystemModelGrid, cellIndices, i);
                     OutputTimer.Stop();
                     Timings[7] += OutputTimer.GetElapsedTimeSecs();
 
 
                     OutputTimer.Start();
 
-                    MetricsGrid["Geometric Mean Bodymass"][latIndex, lonIndex] = Metrics.CalculateGeometricCommunityMeanBodyMass(ecosystemModelGrid, cellIndices, i, CumulativeAbundance);
+                    MetricsGrid["Geometric Mean Bodymass"][latIndex, lonIndex] = Metrics.CalculateGeometricCommunityMeanBodyMass(ecosystemModelGrid, cellIndices, i);
                     OutputTimer.Stop();
                     Timings[8] += OutputTimer.GetElapsedTimeSecs();
 
@@ -576,6 +555,17 @@ namespace Madingley
 
                     Timings[9] += OutputTimer.GetElapsedTimeSecs();
 
+                    MetricsGrid["Biomass Richness"][latIndex, lonIndex] = Metrics.CalculateFunctionalRichness(ecosystemModelGrid, cohortFunctionalGroupDefinitions, cellIndices, i, "Biomass")[0];
+                    MetricsGrid["Min Bodymass"][latIndex, lonIndex] = Metrics.CalculateFunctionalRichness(ecosystemModelGrid, cohortFunctionalGroupDefinitions, cellIndices, i, "Biomass")[1];
+                    MetricsGrid["Max Bodymass"][latIndex, lonIndex] = Metrics.CalculateFunctionalRichness(ecosystemModelGrid, cohortFunctionalGroupDefinitions, cellIndices, i, "Biomass")[2];
+                    MetricsGrid["Trophic Richness"][latIndex, lonIndex] = Metrics.CalculateFunctionalRichness(ecosystemModelGrid, cohortFunctionalGroupDefinitions, cellIndices, i, "Trophic Index")[0];
+                    MetricsGrid["Min Trophic Index"][latIndex, lonIndex] = Metrics.CalculateFunctionalRichness(ecosystemModelGrid, cohortFunctionalGroupDefinitions, cellIndices, i, "Trophic Index")[1];
+                    MetricsGrid["Max Trophic Index"][latIndex, lonIndex] = Metrics.CalculateFunctionalRichness(ecosystemModelGrid, cohortFunctionalGroupDefinitions, cellIndices, i, "Trophic Index")[2];
+
+                    MetricsGrid["Arithmetic Mean Bodymass"][latIndex, lonIndex] = Metrics.CalculateArithmeticCommunityMeanBodyMass(ecosystemModelGrid, cellIndices, i);
+                    MetricsGrid["Geometric Mean Bodymass"][latIndex, lonIndex] = Metrics.CalculateGeometricCommunityMeanBodyMass(ecosystemModelGrid, cellIndices, i);
+                    MetricsGrid["Geometric Mean Bodymass"][latIndex, lonIndex] = Metrics.CalculateGeometricCommunityMeanBodyMass(ecosystemModelGrid, cellIndices, i);
+                    MetricsGrid["Ecosystem metabolism per unit biomass"][latIndex, lonIndex] = Metrics.CalculateBiomassWeightedSystemMetabolism(ecosystemModelGrid, cellIndices, i);        
                 }
             }
 

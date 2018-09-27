@@ -105,7 +105,7 @@ namespace Madingley
         /// <param name="cellIndices">The list of cell indices in the current model simulation</param>
         /// <param name="cellIndex">The index of the current cell in the list of cells to run</param>
         /// <returns>The mean trophic level of individuals in the grid cell</returns>
-        public double CalculateMeanTrophicLevelCell(ModelGrid ecosystemModelGrid, List<uint[]> cellIndices, int cellIndex, double[][] cohortBiomasses)
+        public double CalculateMeanTrophicLevelCell(ModelGrid ecosystemModelGrid,List<uint[]> cellIndices, int cellIndex)
         {
             //Get the cohorts for the specified cell
             GridCellCohortHandler CellCohorts = ecosystemModelGrid.GetGridCellCohorts(cellIndices[cellIndex][0], cellIndices[cellIndex][1]);
@@ -113,12 +113,12 @@ namespace Madingley
             double TotalBiomass = 0.0;
             double CohortBiomass = 0.0;
 
-            for (int fg = 0; fg < CellCohorts.Count; fg++)
+            foreach (var CohortList in CellCohorts)
             {
-                for (int ii = 0; ii < CellCohorts[fg].Count; ii++)
+                foreach (Cohort c in CohortList)
                 {
-                    CohortBiomass = cohortBiomasses[fg][ii];
-                    BiomassWeightedTI += CohortBiomass * CellCohorts[fg][ii].TrophicIndex;
+                    CohortBiomass = (c.IndividualBodyMass + c.IndividualReproductivePotentialMass) * c.CohortAbundance;
+                    BiomassWeightedTI += CohortBiomass * c.TrophicIndex;
                     TotalBiomass += CohortBiomass;
                 }
             }
@@ -134,20 +134,20 @@ namespace Madingley
         /// <param name="cellIndices">The list of cell indices to be run in the current model simulation</param>
         /// <param name="cellIndex">The index of the current cell in the list of cells to be run</param>
         /// <returns>The distribution of biomasses among trophic level bins</returns>
-        public double[] CalculateTrophicDistribution(ModelGrid ecosystemModelGrid, List<uint[]> cellIndices, int cellIndex, double[][] cohortBiomasses)
+        public double[] CalculateTrophicDistribution(ModelGrid ecosystemModelGrid, List<uint[]> cellIndices, int cellIndex)
         {
             //Get the cohorts for the specified cell
             GridCellCohortHandler CellCohorts = ecosystemModelGrid.GetGridCellCohorts(cellIndices[cellIndex][0], cellIndices[cellIndex][1]);
             double[] TrophicIndexBinMasses = new double[NumberTrophicBins];
             int BinIndex;
-            
-            for (int fg = 0; fg < CellCohorts.Count; fg++)
+
+
+            foreach (var CohortList in CellCohorts)
             {
-                for (int ii = 0; ii < CellCohorts[fg].Count; ii++)
-                //foreach (Cohort c in CohortList)
+                foreach (Cohort c in CohortList)
                 {
-                    BinIndex = _TrophicIndexBinValues.ToList().IndexOf(_TrophicIndexBinValues.Last(x => x < CellCohorts[fg][ii].TrophicIndex));
-                    TrophicIndexBinMasses[BinIndex] += cohortBiomasses[fg][ii];
+                    BinIndex = _TrophicIndexBinValues.ToList().IndexOf(_TrophicIndexBinValues.Last(x => x < c.TrophicIndex));
+                    TrophicIndexBinMasses[BinIndex] += (c.IndividualBodyMass + c.IndividualReproductivePotentialMass) * c.CohortAbundance;
                 }
             }
 
@@ -226,7 +226,7 @@ namespace Madingley
         /// <param name="cellIndex">The index of the current cell within the list of cells to be run</param>
         /// <returns>Trophic evenness</returns>
         public double CalculateFunctionalEvennessRao(ModelGrid ecosystemModelGrid, FunctionalGroupDefinitions cohortDefinitions,
-            List<uint[]> cellIndices, int cellIndex, string trait, double[][] cohortBiomasses)
+            List<uint[]> cellIndices, int cellIndex, string trait)
         {
             //Get the cohorts for the specified cell
             GridCellCohortHandler CellCohorts = ecosystemModelGrid.GetGridCellCohorts(cellIndices[cellIndex][0], cellIndices[cellIndex][1]);
@@ -249,11 +249,11 @@ namespace Madingley
                 case "biomass":
                     for (int fg = 0; fg < CellCohorts.Count; fg++)
                     {
-                        for (int ii = 0; ii < CellCohorts[fg].Count; ii++)
+                        foreach (Cohort c in CellCohorts[fg])
                         {
 
-                            FunctionalTrait[CohortNumberCounter] = CellCohorts[fg][ii].IndividualBodyMass;
-                            CohortTotalBiomasses[CohortNumberCounter] = cohortBiomasses[fg][ii];
+                            FunctionalTrait[CohortNumberCounter] = c.IndividualBodyMass;
+                            CohortTotalBiomasses[CohortNumberCounter] = (c.IndividualBodyMass + c.IndividualReproductivePotentialMass) * c.CohortAbundance;
 
                             CohortNumberCounter++;
                         }
@@ -266,11 +266,11 @@ namespace Madingley
                 case "trophic index":
                     for (int fg = 0; fg < CellCohorts.Count; fg++)
                     {
-                        for (int ii = 0; ii < CellCohorts[fg].Count; ii++)
+                        foreach (Cohort c in CellCohorts[fg])
                         {
 
-                            FunctionalTrait[CohortNumberCounter] = CellCohorts[fg][ii].IndividualBodyMass;
-                            CohortTotalBiomasses[CohortNumberCounter] = cohortBiomasses[fg][ii];
+                            FunctionalTrait[CohortNumberCounter] = c.IndividualBodyMass;
+                            CohortTotalBiomasses[CohortNumberCounter] = (c.IndividualBodyMass + c.IndividualReproductivePotentialMass) * c.CohortAbundance;
 
                             CohortNumberCounter++;
                         }
@@ -315,10 +315,27 @@ namespace Madingley
         /// <param name="cellIndices">The list of indices of cells to be run in the current model simulation</param>
         /// <param name="cellIndex">The index of the current cell within the list of cells to be run</param>
         /// <returns>arithmetic community weighted mean body mass</returns>
-        public double CalculateArithmeticCommunityMeanBodyMass(int cellIndex, double CumulativeAbundance, double CumulativeBiomass)
+        public double CalculateArithmeticCommunityMeanBodyMass(ModelGrid ecosystemModelGrid, List<uint[]> cellIndices, int cellIndex)
         {
 
-            return (CumulativeBiomass / CumulativeAbundance);
+            //Get the cohorts for the specified cell
+            GridCellCohortHandler CellCohorts = ecosystemModelGrid.GetGridCellCohorts(cellIndices[cellIndex][0], cellIndices[cellIndex][1]);
+            double CumulativeAbundance = 0.0;
+            double CumulativeBiomass = 0.0;
+
+            //Retrieve the biomass
+            foreach (var CohortList in CellCohorts)
+            {
+                foreach (Cohort c in CohortList)
+                {
+                    CumulativeBiomass += (c.IndividualBodyMass + c.IndividualReproductivePotentialMass) * c.CohortAbundance;
+                    CumulativeAbundance += c.CohortAbundance;
+                }
+            }
+
+            double CWAMBM = (CumulativeBiomass / CumulativeAbundance);
+
+            return (CWAMBM);
 
         }
 
@@ -329,11 +346,12 @@ namespace Madingley
         /// <param name="cellIndices">The list of indices of cells to be run in the current model simulation</param>
         /// <param name="cellIndex">The index of the current cell within the list of cells to be run</param>
         /// <returns>geometric community weighted mean body mass</returns>
-        public double CalculateGeometricCommunityMeanBodyMass(ModelGrid ecosystemModelGrid, List<uint[]> cellIndices, int cellIndex, double cumulativeAbundance)
+        public double CalculateGeometricCommunityMeanBodyMass(ModelGrid ecosystemModelGrid, List<uint[]> cellIndices, int cellIndex)
         {
 
             //Get the cohorts for the specified cell
             GridCellCohortHandler CellCohorts = ecosystemModelGrid.GetGridCellCohorts(cellIndices[cellIndex][0], cellIndices[cellIndex][1]);
+            double CumulativeAbundance = 0.0;
             double CumulativeLogBiomass = 0.0;
             
             //Retrieve the biomass
@@ -342,11 +360,14 @@ namespace Madingley
                 foreach (Cohort c in CohortList)
                 {
                     CumulativeLogBiomass += Math.Log(c.IndividualBodyMass + c.IndividualReproductivePotentialMass) * c.CohortAbundance;
-                   // CumulativeAbundance += c.CohortAbundance;
+                    CumulativeAbundance += c.CohortAbundance;
                 }
             }
 
-            return Math.Exp(CumulativeLogBiomass / cumulativeAbundance);
+            double CWGMBM = Math.Exp(CumulativeLogBiomass / CumulativeAbundance);
+
+            return (CWGMBM);
+
         }
 
         /// <summary>
@@ -357,7 +378,7 @@ namespace Madingley
         /// <param name="cellIndex">The index of the current cell within the list of cells to be run</param>
         /// <returns>Trophic evenness</returns>
         /// <remarks>From Mouillot et al (2005) Functional regularity: a neglected aspect of functional diversity, Oecologia</remarks>
-        public double CalculateTrophicEvennessFRO(ModelGrid ecosystemModelGrid, List<uint[]> cellIndices, int cellIndex, double[][] cohortBiomasses)
+        public double CalculateTrophicEvennessFRO(ModelGrid ecosystemModelGrid, List<uint[]> cellIndices, int cellIndex)
         {
 
             //Get the cohorts for the specified cell
@@ -366,13 +387,13 @@ namespace Madingley
             double[] TIBiomass;
             double[] EW;
 
-            for (int fg = 0; fg < CellCohorts.Count; fg++)
+            foreach (var CohortList in CellCohorts)
             {
-                for (int ii = 0; ii < CellCohorts[fg].Count; ii++)
+                foreach (Cohort c in CohortList)
                 {
                     TIBiomass = new double[2];
-                    TIBiomass[0] = CellCohorts[fg][ii].TrophicIndex;
-                    TIBiomass[1] = cohortBiomasses[fg][ii];
+                    TIBiomass[0] = c.TrophicIndex;
+                    TIBiomass[1] = (c.IndividualBodyMass + c.IndividualReproductivePotentialMass) * c.CohortAbundance;
                     TrophicIndexBiomassDistribution.Add(TIBiomass);
                 }
             }
@@ -411,14 +432,13 @@ namespace Madingley
         /// <param name="cellIndex">The index of the current cell within the list of cells to run</param>
         /// <returns>A pair of values representing the functional richness and functional divergence (functional richness currently disabled!)</returns>
         public double[] CalculateFunctionalDiversity(ModelGrid ecosystemModelGrid, FunctionalGroupDefinitions cohortDefinitions, 
-            List<uint[]> cellIndices, int cellIndex, double[][] cohortBiomasses)
+            List<uint[]> cellIndices, int cellIndex)
         {
             //Get the cohorts for the specified cell
             GridCellCohortHandler CellCohorts = ecosystemModelGrid.GetGridCellCohorts(cellIndices[cellIndex][0], cellIndices[cellIndex][1]);
 
             //Variable to hold the functional richness value for the current cohorts
             double FunctionalRichness;
-
             //Variable to hold the functional divergence value for the current cohorts
             double RaoFunctionalDivergence = 0.0;
             double[,] Distances= new double[CellCohorts.GetNumberOfCohorts(), CellCohorts.GetNumberOfCohorts()];
@@ -461,25 +481,25 @@ namespace Madingley
             double[] QuantitativeTraitValues= new double[2];
             int CohortNumberCounter = 0;
             for (int fg = 0; fg < CellCohorts.Count; fg++)
-            {
-                for (int ii = 0; ii < CellCohorts[fg].Count; ii++)
+			{
+                foreach (Cohort c in CellCohorts[fg])
                 {
                     TraitValues = cohortDefinitions.GetTraitValues(TraitNames, fg);
-                    for (int jj  = 0; jj < TraitValues.Length; jj++)
+                    for (int ii = 0; ii < TraitValues.Length; ii++)
                     {
-			            CohortNominalTraitValues[jj][CohortNumberCounter] = TraitValues[jj];
+			            CohortNominalTraitValues[ii][CohortNumberCounter] = TraitValues[ii];
                     }
 
 
-                    IndividualBodyMasses[CohortNumberCounter] = CellCohorts[fg][ii].IndividualBodyMass;
-                    TrophicIndex[CohortNumberCounter] = CellCohorts[fg][ii].TrophicIndex;
+                    IndividualBodyMasses[CohortNumberCounter] = c.IndividualBodyMass;
+                    TrophicIndex[CohortNumberCounter] = c.TrophicIndex;
  
-                    QuantitativeTraitValues[0] = CellCohorts[fg][ii].IndividualBodyMass;
-                    QuantitativeTraitValues[1] = CellCohorts[fg][ii].TrophicIndex;
+                    QuantitativeTraitValues[0] = c.IndividualBodyMass;
+                    QuantitativeTraitValues[1] = c.TrophicIndex;
 
                     CohortFunctionalTraits[CohortNumberCounter] = new Tuple<double[], string[]>(QuantitativeTraitValues, TraitValues);
                     
-                    CohortTotalBiomasses[CohortNumberCounter] = cohortBiomasses[fg][ii];
+                    CohortTotalBiomasses[CohortNumberCounter] = (c.IndividualBodyMass + c.IndividualReproductivePotentialMass) * c.CohortAbundance;
                     
                     CohortNumberCounter++;
                 }
