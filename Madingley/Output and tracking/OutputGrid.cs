@@ -115,6 +115,7 @@ namespace Madingley
         private double[,] Realm;
         private double[,] HANPP;
         private double[,] FrostDays;
+        private double[,] Temperature;
 
         private double[,] FracEvergreen;
         
@@ -269,12 +270,14 @@ namespace Madingley
             FracEvergreen = new double[ecosystemModelGrid.NumLatCells, ecosystemModelGrid.NumLonCells];
             Realm = new double[ecosystemModelGrid.NumLatCells, ecosystemModelGrid.NumLonCells];
             HANPP = new double[ecosystemModelGrid.NumLatCells, ecosystemModelGrid.NumLonCells];
+            Temperature = new double[ecosystemModelGrid.NumLatCells, ecosystemModelGrid.NumLonCells];
 
             // Temporary outputs for checking plant model
             DataConverter.AddVariable(GridOutput, "Fraction year frost", 3, GeographicalDimensions, ecosystemModelGrid.GlobalMissingValue, outLats, outLons, TimeSteps);
             DataConverter.AddVariable(GridOutput, "Fraction evergreen", 3, GeographicalDimensions, ecosystemModelGrid.GlobalMissingValue, outLats, outLons, TimeSteps);
             DataConverter.AddVariable(GridOutput, "Realm", 3, GeographicalDimensions, ecosystemModelGrid.GlobalMissingValue, outLats, outLons, TimeSteps);
             DataConverter.AddVariable(GridOutput, "HANPP", 3, GeographicalDimensions, ecosystemModelGrid.GlobalMissingValue, outLats, outLons, TimeSteps);
+            DataConverter.AddVariable(GridOutput, "Temperature", 3, GeographicalDimensions, ecosystemModelGrid.GlobalMissingValue, outLats, outLons, TimeSteps);
 
             // Set up outputs for medium or high output levels
             if ((ModelOutputDetail == OutputDetailLevel.Medium) || (ModelOutputDetail == OutputDetailLevel.High))
@@ -462,7 +465,7 @@ namespace Madingley
             }
 
             HANPP = ecosystemModelGrid.GetEnviroGrid("HANPP", 0);
-
+            Temperature = ecosystemModelGrid.GetEnviroGrid("Temperature", 0);
 
             double[] Timings = new double[10];
             
@@ -612,6 +615,9 @@ namespace Madingley
             DataConverter.Array2DToSDS3D(HANPP, "HANPP", new string[] { "Latitude", "Longitude", "Time step" },
                 0, ecosystemModelGrid.GlobalMissingValue, GridOutput);
 
+            DataConverter.Array2DToSDS3D(Temperature, "Temperature", new string[] { "Latitude", "Longitude", "Time step" },
+                0, ecosystemModelGrid.GlobalMissingValue, GridOutput);
+
             // File outputs for medium and high detail levels
             if ((ModelOutputDetail == OutputDetailLevel.Medium) || (ModelOutputDetail == OutputDetailLevel.High))
             {
@@ -693,6 +699,8 @@ namespace Madingley
             DataConverter.Array2DToSDS3D(FracEvergreen, "Fraction evergreen", new string[] { "Latitude", "Longitude", "Time step" },
                 (int)currentTimeStep + 1, ecosystemModelGrid.GlobalMissingValue, GridOutput);
             DataConverter.Array2DToSDS3D(HANPP, "HANPP", new string[] { "Latitude", "Longitude", "Time step" },
+                (int)currentTimeStep + 1, ecosystemModelGrid.GlobalMissingValue, GridOutput);
+            DataConverter.Array2DToSDS3D(Temperature, "Temperature", new string[] { "Latitude", "Longitude", "Time step" },
                 (int)currentTimeStep + 1, ecosystemModelGrid.GlobalMissingValue, GridOutput);
 
 
