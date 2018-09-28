@@ -370,6 +370,23 @@ namespace Madingley
 
         }
 
+        public double CalculateGeometricCommunityMeanBodyMassbyFG(ModelGrid ecosystemModelGrid, List<uint[]> cellIndices, int cellIndex, int functionalGroup)
+        {
+            //Get the cohorts for the specified cell
+            GridCellCohortHandler CellCohorts = ecosystemModelGrid.GetGridCellCohorts(cellIndices[cellIndex][0], cellIndices[cellIndex][1]);
+
+            double CumulativeAbundance = 0.0;
+            double CumulativeLogBiomass = 0.0;
+
+                foreach (Cohort c in CellCohorts[functionalGroup])
+                {
+                    CumulativeLogBiomass += Math.Log(c.IndividualBodyMass + c.IndividualReproductivePotentialMass) * c.CohortAbundance;
+                    CumulativeAbundance += c.CohortAbundance;
+                }
+
+            return Math.Exp(CumulativeLogBiomass / CumulativeAbundance);
+        }
+
         /// <summary>
         /// Calculates trophic evenness using the FRO Index of Mouillot et al.
         /// </summary>
