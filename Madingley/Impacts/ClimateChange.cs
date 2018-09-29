@@ -92,9 +92,9 @@ namespace Madingley
                         //cellEnvironment["Temperature"][currentMonth] += (temperatureScenario.Item2 / 1200) * (currentTimestep - 1199);
 
 
-                        for (int ii = 0; ii < 11; ii++)
+                        for (int ii = 0; ii < 12; ii++)
                         {
-                            cellEnvironment["Temperature"][ii] = cellEnvironment["BaselineTemperature"][ii] + (temperatureScenario.Item2 / 1200) * (currentTimestep - 1199);
+                            cellEnvironment["Temperature"][ii] = cellEnvironment["BaselineTemperature"][ii] + ((temperatureScenario.Item2 / 1200) * (currentTimestep+ii - 1199));
                         }
 
                         cellEnvironment["AnnualTemperature"][0] = cellEnvironment["Temperature"].Average();

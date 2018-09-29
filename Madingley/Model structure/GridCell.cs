@@ -328,7 +328,7 @@ namespace Madingley
             double[] sdtemp = new double[12];
             double[] meantemp = new double[12];
 
-            tempVector = _CellEnvironment["Temperature"];
+            tempVector = (double[])_CellEnvironment["Temperature"].Clone();
 
             _CellEnvironment.Add("BaselineTemperature", tempVector);
 

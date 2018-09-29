@@ -555,7 +555,7 @@ namespace Madingley
 
                     // Write out grid outputs for this time step
                     GridOutputs.TimeStepOutputs(EcosystemModelGrid, CohortFunctionalGroupDefinitions, StockFunctionalGroupDefinitions, _CellList,
-                        CurrentTimeStep, initialisation);
+                        CurrentTimeStep, initialisation,CurrentMonth);
 
                 }
 
@@ -996,7 +996,7 @@ namespace Madingley
                     CohortFunctionalGroupDefinitions, StockFunctionalGroupDefinitions);
 
                 // Create initial grid outputs
-                GridOutputs.InitialOutputs(EcosystemModelGrid, CohortFunctionalGroupDefinitions, StockFunctionalGroupDefinitions, _CellList, initialisation, 0);
+                GridOutputs.InitialOutputs(EcosystemModelGrid, CohortFunctionalGroupDefinitions, StockFunctionalGroupDefinitions, _CellList, initialisation, 0, CurrentMonth);
             }
 
         }

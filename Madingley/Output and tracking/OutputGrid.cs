@@ -415,7 +415,7 @@ namespace Madingley
         }
 
         private void CalculateOutputs(ModelGrid ecosystemModelGrid, FunctionalGroupDefinitions cohortFunctionalGroupDefinitions,
-            FunctionalGroupDefinitions stockFunctionalGroupDefinitions, List<uint[]> cellIndices, MadingleyModelInitialisation initialisation, uint currentTimeStep)
+            FunctionalGroupDefinitions stockFunctionalGroupDefinitions, List<uint[]> cellIndices, MadingleyModelInitialisation initialisation, uint currentTimeStep,uint currentMonth)
         {
             // Get grids of the total biomass densities of all stocks and all cohorts in each grid cell
             LogBiomassDensityGridCohorts = ecosystemModelGrid.GetStateVariableGridLogDensityPerSqKm("Biomass", "NA", cohortFunctionalGroupDefinitions.
@@ -465,7 +465,7 @@ namespace Madingley
             }
 
             HANPP = ecosystemModelGrid.GetEnviroGrid("HANPP", 0);
-            Temperature = ecosystemModelGrid.GetEnviroGrid("Temperature", 0);
+            Temperature = ecosystemModelGrid.GetEnviroGrid("Temperature", currentMonth);
 
             double[] Timings = new double[10];
             
@@ -586,12 +586,12 @@ namespace Madingley
         }
 
         public void InitialOutputs(ModelGrid ecosystemModelGrid, FunctionalGroupDefinitions cohortFunctionalGroupDefinitions, FunctionalGroupDefinitions
-            stockFunctionalGroupDefinitions, List<uint[]> cellIndices, MadingleyModelInitialisation initialisation, uint currentTimeStep)
+            stockFunctionalGroupDefinitions, List<uint[]> cellIndices, MadingleyModelInitialisation initialisation, uint currentTimeStep,uint currentMonth)
         {
             Console.WriteLine("Writing initial grid outputs...");
 
             // Calculate the output variables
-            CalculateOutputs(ecosystemModelGrid, cohortFunctionalGroupDefinitions, stockFunctionalGroupDefinitions, cellIndices, initialisation, currentTimeStep);
+            CalculateOutputs(ecosystemModelGrid, cohortFunctionalGroupDefinitions, stockFunctionalGroupDefinitions, cellIndices, initialisation, currentTimeStep, currentMonth);
 
             // Write the total biomass of cohorts to the live display
             if (LiveOutputs)
@@ -660,14 +660,14 @@ namespace Madingley
 
         
         public void TimeStepOutputs(ModelGrid ecosystemModelGrid, FunctionalGroupDefinitions cohortFunctionalGroupDefinitions, FunctionalGroupDefinitions
-            stockFunctionalGroupDefinitions, List<uint[]> cellIndices, uint currentTimeStep, MadingleyModelInitialisation initialisation)
+            stockFunctionalGroupDefinitions, List<uint[]> cellIndices, uint currentTimeStep, MadingleyModelInitialisation initialisation,uint currentMonth)
         {
 
             Console.WriteLine("Calculting metrics");
             MetricsTimer.Start();
 
             // Calculate the output variables for this time step
-            CalculateOutputs(ecosystemModelGrid, cohortFunctionalGroupDefinitions, stockFunctionalGroupDefinitions, cellIndices, initialisation, currentTimeStep);
+            CalculateOutputs(ecosystemModelGrid, cohortFunctionalGroupDefinitions, stockFunctionalGroupDefinitions, cellIndices, initialisation, currentTimeStep, currentMonth);
             MetricsTimer.Stop();
 
 
