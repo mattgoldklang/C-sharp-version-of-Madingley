@@ -72,6 +72,9 @@ namespace Madingley
         /// </summary>
         private SortedList<string, int[]> CohortTraitIndices = new SortedList<string, int[]>();
 
+        /// Holds a list of the functional group indices corresponding to each functional group
+        private SortedList<string, int[]> FunctionalGroupIndices = new SortedList<string, int[]>();
+
         /// <summary>
         /// Holds a list of the functional group indices corresponding to each unique stock trait
         /// </summary>
@@ -111,6 +114,11 @@ namespace Madingley
         /// Grids of ecosystem metric values in individual grid cells, arranged by metric name
         /// </summary>
         private SortedList<string, double[,]> MetricsGrid = new SortedList<string, double[,]>();
+
+        /// <summary>
+        /// Grids of geometric mean abundances in individual grid cells, arranged by functional group
+        /// </summary>
+        private SortedList<string, double[,]> GeoMeansGrid = new SortedList<string, double[,]>();
 
         private double[,] Realm;
         private double[,] HANPP;
@@ -282,19 +290,29 @@ namespace Madingley
             // Set up outputs for medium or high output levels
             if ((ModelOutputDetail == OutputDetailLevel.Medium) || (ModelOutputDetail == OutputDetailLevel.High))
             {
-                double[,] temp = new double[ecosystemModelGrid.NumLatCells, ecosystemModelGrid.NumLonCells];
+
                 foreach (string TraitValue in CohortTraitIndices.Keys)
                 {
+                    double[,] temp = new double[ecosystemModelGrid.NumLatCells, ecosystemModelGrid.NumLonCells];
                     BiomassDensityGrid.Add(TraitValue, temp);
                     DataConverter.AddVariable(GridOutput, TraitValue + "biomass density", 3, GeographicalDimensions, 0, outLats, outLons, TimeSteps);
+                    temp = new double[ecosystemModelGrid.NumLatCells, ecosystemModelGrid.NumLonCells];
                     AbundanceDensityGrid.Add(TraitValue, temp);
                     DataConverter.AddVariable(GridOutput, TraitValue + "abundance density", 3, GeographicalDimensions, 0, outLats, outLons, TimeSteps);
                 }
 
                 foreach (string TraitValue in StockTraitIndices.Keys)
                 {
+                    double[,] temp = new double[ecosystemModelGrid.NumLatCells, ecosystemModelGrid.NumLonCells];
                     BiomassDensityGrid.Add(TraitValue, temp);
                     DataConverter.AddVariable(GridOutput, TraitValue + "biomass density", 3, GeographicalDimensions, 0, outLats, outLons, TimeSteps);
+                }
+
+                foreach (string FunctionalGroup in cohortFunctionalGroupDefinitions.GetTraitValuesAllFunctionalGroups("group description"))
+                {
+                    double[,] temp = new double[ecosystemModelGrid.NumLatCells, ecosystemModelGrid.NumLonCells];
+                    GeoMeansGrid.Add(FunctionalGroup, temp);
+                    DataConverter.AddVariable(GridOutput, FunctionalGroup + "geo mean abundance", 3, GeographicalDimensions, 0, outLats, outLons, TimeSteps);
                 }
 
 
@@ -340,8 +358,8 @@ namespace Madingley
                     MetricsGrid.Add("Geometric Mean Bodymass", GeomMean);
 
                     double[,] EcosystemMetabolismPerUnitBiomass = new double[ecosystemModelGrid.NumLatCells, ecosystemModelGrid.NumLonCells];
-                    MetricsGrid.Add("Ecosystem metabolism per unit biomass", GeomMean);
-
+                    MetricsGrid.Add("Ecosystem metabolism per unit biomass", EcosystemMetabolismPerUnitBiomass);
+                    
                     DataConverter.AddVariable(GridOutput, "Mean Trophic Level", 3, GeographicalDimensions, 0, outLats, outLons, TimeSteps);
                     DataConverter.AddVariable(GridOutput, "Trophic Evenness", 3, GeographicalDimensions, 0, outLats, outLons, TimeSteps);
                     DataConverter.AddVariable(GridOutput, "Biomass Evenness", 3, GeographicalDimensions, 0, outLats, outLons, TimeSteps);
@@ -389,6 +407,11 @@ namespace Madingley
                 {
                     CohortTraitIndices.Add(TraitValue, cohortFunctionalGroupDefinitions.GetFunctionalGroupIndex(Trait, TraitValue, false));
                 }
+            }
+
+            foreach (string FunctionalGroup in cohortFunctionalGroupDefinitions.GetTraitValuesAllFunctionalGroups("group description"))
+            {
+                FunctionalGroupIndices.Add(FunctionalGroup, cohortFunctionalGroupDefinitions.GetFunctionalGroupIndex("group description", FunctionalGroup, true));
             }
 
             // Define the stock traits that will be used to separate outputs
@@ -558,17 +581,18 @@ namespace Madingley
 
                     Timings[9] += OutputTimer.GetElapsedTimeSecs();
 
-                    MetricsGrid["Biomass Richness"][latIndex, lonIndex] = Metrics.CalculateFunctionalRichness(ecosystemModelGrid, cohortFunctionalGroupDefinitions, cellIndices, i, "Biomass")[0];
-                    MetricsGrid["Min Bodymass"][latIndex, lonIndex] = Metrics.CalculateFunctionalRichness(ecosystemModelGrid, cohortFunctionalGroupDefinitions, cellIndices, i, "Biomass")[1];
-                    MetricsGrid["Max Bodymass"][latIndex, lonIndex] = Metrics.CalculateFunctionalRichness(ecosystemModelGrid, cohortFunctionalGroupDefinitions, cellIndices, i, "Biomass")[2];
-                    MetricsGrid["Trophic Richness"][latIndex, lonIndex] = Metrics.CalculateFunctionalRichness(ecosystemModelGrid, cohortFunctionalGroupDefinitions, cellIndices, i, "Trophic Index")[0];
-                    MetricsGrid["Min Trophic Index"][latIndex, lonIndex] = Metrics.CalculateFunctionalRichness(ecosystemModelGrid, cohortFunctionalGroupDefinitions, cellIndices, i, "Trophic Index")[1];
-                    MetricsGrid["Max Trophic Index"][latIndex, lonIndex] = Metrics.CalculateFunctionalRichness(ecosystemModelGrid, cohortFunctionalGroupDefinitions, cellIndices, i, "Trophic Index")[2];
-
-                    MetricsGrid["Arithmetic Mean Bodymass"][latIndex, lonIndex] = Metrics.CalculateArithmeticCommunityMeanBodyMass(ecosystemModelGrid, cellIndices, i);
-                    MetricsGrid["Geometric Mean Bodymass"][latIndex, lonIndex] = Metrics.CalculateGeometricCommunityMeanBodyMass(ecosystemModelGrid, cellIndices, i);
-                    MetricsGrid["Geometric Mean Bodymass"][latIndex, lonIndex] = Metrics.CalculateGeometricCommunityMeanBodyMass(ecosystemModelGrid, cellIndices, i);
-                    MetricsGrid["Ecosystem metabolism per unit biomass"][latIndex, lonIndex] = Metrics.CalculateBiomassWeightedSystemMetabolism(ecosystemModelGrid, cellIndices, i);        
+                    // Output geometric mean body sizes by functional group
+                    foreach (string FGI in FunctionalGroupIndices.Keys)
+                    {
+                        if (cohortFunctionalGroupDefinitions.GetFunctionalGroupIndex("group description", FGI, true).Count() > 1)
+                        {
+                            Console.WriteLine("Shouldn't be multiple FGs with the same group description");
+                        }
+                        else
+                        {
+                            GeoMeansGrid[FGI][latIndex, lonIndex] = Metrics.CalculateGeometricCommunityMeanBodyMassbyFG(ecosystemModelGrid, cellIndices, i, cohortFunctionalGroupDefinitions.GetFunctionalGroupIndex("group description", FGI, true)[0]);
+                        }
+                    }
                 }
             }
 
@@ -632,11 +656,20 @@ namespace Madingley
 
                 // Add the abundance density grid
                 foreach (var Key in AbundanceDensityGrid.Keys)
-                {
-                    
+                { 
                     DataConverter.Array2DToSDS3D(AbundanceDensityGrid[Key], Key + "abundance density", 
                         new string[] { "Latitude", "Longitude", "Time step" }, 
                         0, 
+                        ecosystemModelGrid.GlobalMissingValue,
+                        GridOutput);
+                }
+
+                // Add the geometric mean abundance grid
+                foreach (var FGI in FunctionalGroupIndices.Keys)
+                {
+                    DataConverter.Array2DToSDS3D(GeoMeansGrid[FGI], FGI + "geo mean abundance",
+                        new string[] { "Latitude", "Longitude", "Time step" },
+                        0,
                         ecosystemModelGrid.GlobalMissingValue,
                         GridOutput);
                 }
@@ -724,6 +757,8 @@ namespace Madingley
                         ecosystemModelGrid.GlobalMissingValue,
                         GridOutput);
                 }
+
+
             }
 
             // Output ecosystem metrics
@@ -740,6 +775,16 @@ namespace Madingley
             }
 
             OutputTimer.Stop();
+
+            // Add the geometric mean abundance grid
+            foreach (string FGI in FunctionalGroupIndices.Keys)
+            {
+                DataConverter.Array2DToSDS3D(GeoMeansGrid[FGI], FGI + "geo mean abundance",
+                    new string[] { "Latitude", "Longitude", "Time step" },
+                    (int)currentTimeStep + 1,
+                    ecosystemModelGrid.GlobalMissingValue,
+                    GridOutput);
+            }
 
 
             Console.WriteLine("Writing outputs took: {0}", OutputTimer.GetElapsedTimeSecs());
