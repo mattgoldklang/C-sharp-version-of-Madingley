@@ -18,8 +18,17 @@ namespace Madingley
         public ClimateChange()
         {
         }
+        public double GetNPP(double x, double y)
+        {
+            double[] phyto = new double[3];
+            phyto[0] = 1.145 - 0.021 * x - 6.936E-6 * y;
+            phyto[1] = 1.146 + 0.013 * x - 0.064 * y;
+            phyto[2] = 0.804 - 0.002 * x - 0.077 * y;
+            double total = phyto.Sum();
 
-        private void ApplyTemperatureScenario(SortedList<string, double[]> cellEnvironment,
+            return total;
+        }
+        public void ApplyTemperatureScenario(SortedList<string, double[]> cellEnvironment,
             Tuple<string, double, double> temperatureScenario, uint currentTimestep, uint currentMonth, uint burninSteps,
             uint impactSteps, Boolean impactCell)
         {
@@ -90,19 +99,9 @@ namespace Madingley
                         cellEnvironment["no3"][currentMonth] = cellEnvironment["rcpNO3"][burninSteps - currentTimestep];
                         double no3 = cellEnvironment["no3"][currentMonth];
                         double sst = cellEnvironment["Temperature"][currentMonth];
-                        double GetNPP(double x, double y)
-                        {
-                            double[] phyto = new double[3];
-                            phyto[0] = 1.145 - 0.021 * x - 6.936E-6 * y;
-                            phyto[1] = 1.146 + 0.013 * x - 0.064 * y;
-                            phyto[2] = 0.804 - 0.002 * x - 0.077 * y;
-                            double total = phyto.Sum();
-
-                            return total;
-                        }
-                        double pNPP = (GetNPP(no3, sst)-GetNPP(no3i,ssti))/GetNPP(no3i,ssti);
+                        double pNPP = (GetNPP(no3, sst) - GetNPP(no3i, ssti)) / GetNPP(no3i, ssti);
                         cellEnvironment["OceanNPP"][currentMonth] *= pNPP;
-                    }
+                      }
                 }
                 else if (temperatureScenario.Item1 == "pb")
                 {
@@ -117,9 +116,9 @@ namespace Madingley
                 else
                 {
                     Debug.Fail("There is no method for the climate change (temperature) scenario specified");
+     
                 }
-
-            }
+            }        
         }
     }
 }

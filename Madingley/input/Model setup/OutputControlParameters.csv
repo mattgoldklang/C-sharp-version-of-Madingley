@@ -1,10 +1,10 @@
 Parameter,Value
-Live outputs,no
+Live outputs,yes
 Track Processes,no
 Track Cross Cell Processes,no
 Track Global Processes,yes
 Track marine specifics,yes
-Output Detail,high
+Output Detail,medium
 Output metrics,yes
 Output Model State Timesteps,no
 New Cohorts Filename,NewCohorts
