@@ -1339,7 +1339,6 @@ namespace Madingley
                     DataConverter.ValueToSDS1D(FunctionalDiversity[1],
                                                 "Rao Functional Evenness", "Time step", ecosystemModelGrid.GlobalMissingValue,
                                                 BasicOutputMemory, 0);
-
                     DataConverter.ValueToSDS1D(Metrics.CalculateFunctionalRichness(ecosystemModelGrid, cohortFunctionalGroupDefinitions, cellIndices, cellIndex, "Biomass")[0],
                                                 "Biomass Richness", "Time step", ecosystemModelGrid.GlobalMissingValue,
                                                 BasicOutputMemory, 0);

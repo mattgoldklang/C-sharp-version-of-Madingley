@@ -73,6 +73,9 @@ namespace Madingley
                     if (currentTimestep == 0)
                     {
                         cellEnvironment.Add("Original Temperature", new double[12]);
+                        cellEnvironment.Add("microNPP", new double[12]);
+                        cellEnvironment.Add("picoNPP", new double[12]);
+                        cellEnvironment.Add("nanoNPP", new double[12]);
                         for (int m = 0; m < 12; m++)
                         {
                             cellEnvironment["Original Temperature"][m] = cellEnvironment["Temperature"][m];
@@ -85,6 +88,8 @@ namespace Madingley
                         cellEnvironment["Temperature"][currentMonth] = Math.Min((cellEnvironment["Original Temperature"][currentMonth] + 5.0),
                             cellEnvironment["Temperature"][currentMonth] + ((((currentTimestep - burninSteps) / 12) + 1) *
                             temperatureScenario.Item2));
+                        double pnpp = (GetNPP(cellEnvironment["Temperature"][currentMonth], cellEnvironment["no3"][currentTimestep]) - GetNPP(cellEnvironment["Original Temperature"][currentMonth], cellEnvironment["no3"][currentTimestep])) / GetNPP(cellEnvironment["Temperature"][currentMonth], cellEnvironment["no3"][currentTimestep]);
+                        cellEnvironment["NPP"][currentMonth] *= 1 + pnpp;
                         // cellEnvironment["Temperature"][currentMonth] += gridCellStocks[actingStock].TotalBiomass *
                         //     (Math.Min(5.0, (((currentTimestep - burninSteps) / 12.0) * humanNPPScenario.Item2)));
                     }
@@ -100,7 +105,7 @@ namespace Madingley
                         double no3 = cellEnvironment["no3"][currentMonth];
                         double sst = cellEnvironment["Temperature"][currentMonth];
                         double pNPP = (GetNPP(no3, sst) - GetNPP(no3i, ssti)) / GetNPP(no3i, ssti);
-                        cellEnvironment["OceanNPP"][currentMonth] *= pNPP;
+                        cellEnvironment["NPP"][currentMonth] *= 1+pNPP;
                       }
                 }
                 else if (temperatureScenario.Item1 == "pb")

@@ -272,9 +272,9 @@ namespace Madingley
                 nsfPhyto[2] -= 0.5 - nsfPhyto[0];
             }
 
-            //cellEnvironment["microNPP"][currentMonth] = nsfPhyto[2] * cellEnvironment["OceanNPP"][currentMonth];
-            //cellEnvironment["nanoNPP"][currentMonth] = nsfPhyto[1] * cellEnvironment["OceanNPP"][currentMonth];
-            //cellEnvironment["picoNPP"][currentMonth] = nsfPhyto[0] * cellEnvironment["OceanNPP"][currentMonth];
+            cellEnvironment["microNPP"][currentMonth] = nsfPhyto[2] * cellEnvironment["NPP"][currentMonth];
+            cellEnvironment["nanoNPP"][currentMonth] = nsfPhyto[1] * cellEnvironment["NPP"][currentMonth];
+            cellEnvironment["picoNPP"][currentMonth] = nsfPhyto[0] * cellEnvironment["NPP"][currentMonth];
 
 
             Tuple<double, double> linReg = Fit.Line(phytoSize, nsfPhyto);
