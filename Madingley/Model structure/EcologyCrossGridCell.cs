@@ -53,7 +53,7 @@ namespace Madingley
             _DispersalFormulations.Add("Basic dispersal", DispersalFormulation);
 
             // Initialise apply ecology
-            ApplyCrossGridCellEcologicalProcessResults = new ApplyCrossGridCellEcology();
+           // ApplyCrossGridCellEcologicalProcessResults = new ApplyCrossGridCellEcology();
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace Madingley
         public void RunCrossGridCellEcology(uint[] cellIndex, ModelGrid gridForDispersal, bool dispersalOnly, FunctionalGroupDefinitions madingleyCohortDefinitions, FunctionalGroupDefinitions madingleyStockDefinitions, uint currentMonth)
         {
             // RUN DISPERSAL
-            _DispersalFormulations["Basic dispersal"].RunCrossGridCellEcologicalProcess(cellIndex, gridForDispersal, dispersalOnly, madingleyCohortDefinitions, madingleyStockDefinitions, currentMonth);       
+           // _DispersalFormulations["Basic dispersal"].RunCrossGridCellEcologicalProcess(cellIndex, gridForDispersal, dispersalOnly, madingleyCohortDefinitions, madingleyStockDefinitions, currentMonth);       
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace Madingley
         public void UpdateCrossGridCellEcology(ModelGrid madingleyModelGrid, ref uint dispersalCounter, CrossCellProcessTracker trackCrossCellProcesses, uint currentTimeStep)
         {
             // Apply the results of cross-cell ecological processes
-            ApplyCrossGridCellEcologicalProcessResults.UpdateAllCrossGridCellEcology(madingleyModelGrid, ref dispersalCounter, trackCrossCellProcesses, currentTimeStep);
+           // ApplyCrossGridCellEcologicalProcessResults.UpdateAllCrossGridCellEcology(madingleyModelGrid, ref dispersalCounter, trackCrossCellProcesses, currentTimeStep);
 
         }
     }
