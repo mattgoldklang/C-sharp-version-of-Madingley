@@ -276,6 +276,15 @@ namespace Madingley
                         tempVector[0] = 2.0;
                         _CellEnvironment.Add("Realm", tempVector);
 
+                        tempVector = new double[12];
+                        _CellEnvironment.Add("microNPP", tempVector);
+
+                        tempVector = new double[12];
+                        _CellEnvironment.Add("nanoNPP", tempVector);
+
+                        tempVector = new double[12];
+                        _CellEnvironment.Add("picoNPP", tempVector);
+
                         _CellEnvironment.Add("NPP", _CellEnvironment["OceanNPP"]);
                         _CellEnvironment.Add("DiurnalTemperatureRange", _CellEnvironment["OceanDTR"]);
                         if (_CellEnvironment.ContainsKey("Temperature"))

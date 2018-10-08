@@ -67,6 +67,8 @@ namespace Madingley
         /// </summary>
         private SortedDictionary<string, string[]> StockTraitValues;
 
+        private List<string> phytoNames = new List<string> { "microNPP", "nanoNPP", "picoNPP" };
+
         /// <summary>
         /// Holds a list of the functional group indices correpsonding to each unique cohort trait
         /// </summary>
@@ -332,6 +334,8 @@ namespace Madingley
                     double[,] EcosystemMetabolismPerUnitBiomass = new double[ecosystemModelGrid.NumLatCells, ecosystemModelGrid.NumLonCells];
                     MetricsGrid.Add("Ecosystem metabolism per unit biomass", GeomMean);
 
+                    double[,]Temperature = new double[ecosystemModelGrid.NumLatCells, ecosystemModelGrid.NumLonCells];
+
                     DataConverter.AddVariable(GridOutput, "Mean Trophic Level", 3, GeographicalDimensions, 0, outLats, outLons, TimeSteps);
                     DataConverter.AddVariable(GridOutput, "Trophic Evenness", 3, GeographicalDimensions, 0, outLats, outLons, TimeSteps);
                     DataConverter.AddVariable(GridOutput, "Biomass Evenness", 3, GeographicalDimensions, 0, outLats, outLons, TimeSteps);
@@ -346,6 +350,11 @@ namespace Madingley
                     DataConverter.AddVariable(GridOutput, "Arithmetic Mean Bodymass", 3, GeographicalDimensions, 0, outLats, outLons, TimeSteps);
                     DataConverter.AddVariable(GridOutput, "Geometric Mean Bodymass", 3, GeographicalDimensions, 0, outLats, outLons, TimeSteps);
                     DataConverter.AddVariable(GridOutput, "Ecosystem metabolism per unit biomass", 3, GeographicalDimensions, 0, outLats, outLons, TimeSteps);
+                    DataConverter.AddVariable(GridOutput, "Temperature", 3, GeographicalDimensions, 0, outLats, outLons, TimeSteps);
+                    foreach(string stock in phytoNames)
+                    {                      
+                        DataConverter.AddVariable(GridOutput, stock, 3, GeographicalDimensions, 0, outLats, outLons, TimeSteps);
+                    }
 
                 }
             }
@@ -581,6 +590,9 @@ namespace Madingley
             // Add the grid of total abudance in cells to the file dataset
             DataConverter.Array2DToSDS3D(LogAbundanceDensityGridCohorts, "Abundance density", new string[] { "Latitude", "Longitude", "Time step" },
                 (int)currentTimeStep + 1, 0, GridOutput);
+            double[,] Temperature = ecosystemModelGrid.GetEnviroGrid("Temperature", currentTimeStep % 12);
+            DataConverter.Array2DToSDS3D(Temperature, "Abundance density", new string[] { "Latitude", "Longitude", "Time step" },
+                (int)currentTimeStep + 1, 0, GridOutput);
 
             // Temporary outputs to check plant model
             DataConverter.Array2DToSDS3D(Realm, "Realm", new string[] { "Latitude", "Longitude", "Time step" },
@@ -603,7 +615,12 @@ namespace Madingley
                     { "Latitude", "Longitude", "Time step" }, (int)currentTimeStep+1, ecosystemModelGrid.GlobalMissingValue, GridOutput);
 
                 }
-
+                foreach (string stock in phytoNames)
+                {
+                    double[,] phytos = ecosystemModelGrid.GetEnviroGrid(stock, currentTimeStep%12);
+                    DataConverter.Array2DToSDS3D(phytos, stock, new string[]
+                    { "Latitude", "Longitude", "Time step" }, (int)currentTimeStep + 1, ecosystemModelGrid.GlobalMissingValue, GridOutput);
+                }
                 foreach (var Key in AbundanceDensityGrid.Keys)
                 {
                     

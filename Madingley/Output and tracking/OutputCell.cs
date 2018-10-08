@@ -79,6 +79,8 @@ namespace Madingley
         /// </summary>
         private double TotalLivingBiomassDensity;
 
+        private double Temp;
+
         /// <summary>
         /// The total heterotroph biomass in the model
         /// </summary>
@@ -94,6 +96,8 @@ namespace Madingley
         /// Total NPP incoming from the marine model
         /// </summary>
         private double TotalIncomingNPP;
+
+        private SortedList<string, double> TotalPhytoDensitiesOut = new SortedList<string, double>();
 
         /// <summary>
         /// Total densities of all cohorts within each combination of cohort traits
@@ -696,11 +700,16 @@ namespace Madingley
                 DataConverter.AddVariable(BasicOutputMemory, "Geometric Mean Bodymass", "g", 1, TimeDimension, ecosystemModelGrid.GlobalMissingValue, TimeSteps);
                 DataConverter.AddVariable(BasicOutputMemory, "Arithmetic Mean Bodymass", "g", 1, TimeDimension, ecosystemModelGrid.GlobalMissingValue, TimeSteps);
                 DataConverter.AddVariable(BasicOutputMemory, "Ecosystem Metabolism Per Unit Biomass", "gC / g", 1, TimeDimension, ecosystemModelGrid.GlobalMissingValue, TimeSteps);
+                DataConverter.AddVariable(BasicOutputMemory, "Temperature", "C", 1, TimeDimension, ecosystemModelGrid.GlobalMissingValue, TimeSteps);
+
 
             }
 
             if (marineCell)
             {
+                DataConverter.AddVariable(BasicOutputMemory, "microNPP", "gC/m2", 1, TimeDimension, ecosystemModelGrid.GlobalMissingValue, TimeSteps);
+                DataConverter.AddVariable(BasicOutputMemory, "nanoNPP", "gC/m2", 1, TimeDimension, ecosystemModelGrid.GlobalMissingValue, TimeSteps);
+                DataConverter.AddVariable(BasicOutputMemory, "picoNPP", "gC/m2", 1, TimeDimension, ecosystemModelGrid.GlobalMissingValue, TimeSteps);
                 foreach (string TraitValue in CohortTraitIndicesMarine.Keys)
                 {
 
@@ -1051,13 +1060,13 @@ namespace Madingley
             TotalLivingBiomassDensity = ecosystemModelGrid.GetStateVariableDensity("Biomass", "NA", cohortFunctionalGroupDefinitions.AllFunctionalGroupsIndex, cellIndices[cellIndex][0], cellIndices[cellIndex][1], "cohort", initialisation) / 1000.0;
             TotalHeterotrophAbundanceDensity = ecosystemModelGrid.GetStateVariableDensity("Abundance", "NA", cohortFunctionalGroupDefinitions.AllFunctionalGroupsIndex, cellIndices[cellIndex][0], cellIndices[cellIndex][1], "cohort", initialisation);
             TotalHeterotrophBiomassDensity = TotalLivingBiomassDensity;
-
+            bool vExists;
+            Temp = ecosystemModelGrid.GetEnviroLayer("Temperature", month, cellIndices[cellIndex][0], cellIndices[cellIndex][1], out vExists);
 
             if (MarineCell)
             {
                 // Get the list of stock trait combinations to consider
                 Keys = StockTraitIndicesMarine.Keys.ToArray();
-
                 // Get biomass and biomass density for each of the trait combinations
                 foreach (string TraitValue in Keys)
                 {
@@ -1088,6 +1097,11 @@ namespace Madingley
             {
                 bool varExists;
                 TotalIncomingNPP = ecosystemModelGrid.GetEnviroLayer("NPP", month, cellIndices[cellIndex][0], cellIndices[cellIndex][1], out varExists);
+                string[] phytoKeys = new string[3] { "microNPP", "nanoNPP", "picoNPP" };
+                foreach (string stock in phytoKeys)
+                {
+                    TotalPhytoDensitiesOut[stock] = ecosystemModelGrid.GetEnviroLayer(stock, month, cellIndices[cellIndex][0], cellIndices[cellIndex][1], out varExists);
+                }
             }
         }
 
@@ -1368,11 +1382,19 @@ namespace Madingley
                     DataConverter.ValueToSDS1D(Metrics.CalculateBiomassWeightedSystemMetabolism(ecosystemModelGrid, cellIndices, cellIndex),
                                                 "Ecosystem Metabolism Per Unit Biomass", "Time step", ecosystemModelGrid.GlobalMissingValue,
                                                 BasicOutputMemory, 0);
+                    DataConverter.ValueToSDS1D(Temp,"Temperature", "Time step", ecosystemModelGrid.GlobalMissingValue,
+                                               BasicOutputMemory, 0);
                 }
 
                 if (MarineCell && TrackMarineSpecifics)
                 {
                     DataConverter.ValueToSDS1D(TotalIncomingNPP, "Incoming NPP", "Time step", ecosystemModelGrid.GlobalMissingValue,
+                        BasicOutputMemory, 0);
+                    DataConverter.ValueToSDS1D(TotalPhytoDensitiesOut["microNPP"], "microNPP", "Time step", ecosystemModelGrid.GlobalMissingValue,
+                        BasicOutputMemory, 0);
+                    DataConverter.ValueToSDS1D(TotalPhytoDensitiesOut["nanoNPP"], "nanoNPP", "Time step", ecosystemModelGrid.GlobalMissingValue,
+                        BasicOutputMemory, 0);
+                    DataConverter.ValueToSDS1D(TotalPhytoDensitiesOut["picoNPP"], "picoNPP", "Time step", ecosystemModelGrid.GlobalMissingValue,
                         BasicOutputMemory, 0);
                 }
 
@@ -1676,6 +1698,11 @@ namespace Madingley
                 {
                     DataConverter.ValueToSDS1D(TotalIncomingNPP, "Incoming NPP", "Time step", ecosystemModelGrid.GlobalMissingValue,
                         BasicOutputMemory, (int)currentTimeStep + 1);
+                    foreach(string stock in TotalPhytoDensitiesOut.Keys.ToArray())
+                    {
+                        DataConverter.ValueToSDS1D(TotalPhytoDensitiesOut[stock], stock, "Time step", ecosystemModelGrid.GlobalMissingValue,
+                       BasicOutputMemory, (int)currentTimeStep + 1);
+                    }
                 }
 
 

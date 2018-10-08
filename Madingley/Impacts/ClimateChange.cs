@@ -73,9 +73,7 @@ namespace Madingley
                     if (currentTimestep == 0)
                     {
                         cellEnvironment.Add("Original Temperature", new double[12]);
-                        cellEnvironment.Add("microNPP", new double[12]);
-                        cellEnvironment.Add("picoNPP", new double[12]);
-                        cellEnvironment.Add("nanoNPP", new double[12]);
+                        
                         for (int m = 0; m < 12; m++)
                         {
                             cellEnvironment["Original Temperature"][m] = cellEnvironment["Temperature"][m];
@@ -83,12 +81,11 @@ namespace Madingley
                     }
                     // If the spin-up period has been completed, then increment cell temperature
                     // according to the number of time-steps that have elapsed since the spin-up ended
-                    if (currentTimestep > burninSteps)
+                    if (currentTimestep >= burninSteps & currentTimestep <= burninSteps + impactSteps )
                     {
-                        cellEnvironment["Temperature"][currentMonth] = Math.Min((cellEnvironment["Original Temperature"][currentMonth] + 5.0),
-                            cellEnvironment["Temperature"][currentMonth] + ((((currentTimestep - burninSteps) / 12) + 1) *
-                            temperatureScenario.Item2));
-                        double pnpp = (GetNPP(cellEnvironment["Temperature"][currentMonth], cellEnvironment["no3"][currentTimestep]) - GetNPP(cellEnvironment["Original Temperature"][currentMonth], cellEnvironment["no3"][currentTimestep])) / GetNPP(cellEnvironment["Temperature"][currentMonth], cellEnvironment["no3"][currentTimestep]);
+                        double tstep = (currentTimestep - burninSteps) / 12;
+                        cellEnvironment["Temperature"][currentMonth] = cellEnvironment["Temperature"][currentMonth] + (temperatureScenario.Item2/100) * Math.Floor(tstep);
+                        double pnpp = (GetNPP(cellEnvironment["Temperature"][currentMonth], cellEnvironment["no3"][currentMonth]) - GetNPP(cellEnvironment["Original Temperature"][currentMonth], cellEnvironment["no3"][currentMonth])) / GetNPP(cellEnvironment["Temperature"][currentMonth], cellEnvironment["no3"][currentMonth]);
                         cellEnvironment["NPP"][currentMonth] *= 1 + pnpp;
                         // cellEnvironment["Temperature"][currentMonth] += gridCellStocks[actingStock].TotalBiomass *
                         //     (Math.Min(5.0, (((currentTimestep - burninSteps) / 12.0) * humanNPPScenario.Item2)));

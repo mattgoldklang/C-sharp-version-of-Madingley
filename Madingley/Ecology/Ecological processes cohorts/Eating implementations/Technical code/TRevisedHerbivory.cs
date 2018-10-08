@@ -260,17 +260,17 @@ namespace Madingley
             phyto[0] = 1.145 - 0.021 * no3 - 6.936E-6 * temperature;
             phyto[1] = 1.146 + 0.013 * no3 - 0.064 * temperature;
             phyto[2] = 0.804 - 0.002 * no3 - 0.077 * temperature;
-            nsfPhyto[0] = Math.Log10(Math.Exp(phyto[0]) / (Math.Exp(phyto[0]) + Math.Exp(phyto[1]) + Math.Exp(phyto[2])));
-            nsfPhyto[1] = Math.Log10(Math.Exp(phyto[1]) / (Math.Exp(phyto[0]) + Math.Exp(phyto[1]) + Math.Exp(phyto[2])));
-            nsfPhyto[2] = Math.Log10(Math.Exp(phyto[2]) / (Math.Exp(phyto[0]) + Math.Exp(phyto[1]) + Math.Exp(phyto[2])));
-
+            nsfPhyto[0] = Math.Exp(phyto[0]) / (1+ Math.Exp(phyto[0]) + Math.Exp(phyto[1]) + Math.Exp(phyto[2]));
+            nsfPhyto[1] = Math.Exp(phyto[1]) / (1+ Math.Exp(phyto[0]) + Math.Exp(phyto[1]) + Math.Exp(phyto[2]));
+            nsfPhyto[2] = Math.Exp(phyto[2]) / (1+ Math.Exp(phyto[0]) + Math.Exp(phyto[1]) + Math.Exp(phyto[2]));
             Boolean booboo = false;
-            if (booboo)
+            if (booboo == true)
             {
-                nsfPhyto[0] *= 0.15;
+                nsfPhyto[0] *= 1*0.15;
                 nsfPhyto[1] -= 0.5 - nsfPhyto[0];
                 nsfPhyto[2] -= 0.5 - nsfPhyto[0];
             }
+
 
             cellEnvironment["microNPP"][currentMonth] = nsfPhyto[2] * cellEnvironment["NPP"][currentMonth];
             cellEnvironment["nanoNPP"][currentMonth] = nsfPhyto[1] * cellEnvironment["NPP"][currentMonth];
