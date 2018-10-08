@@ -21,9 +21,9 @@ namespace Madingley
         public double GetNPP(double x, double y)
         {
             double[] phyto = new double[3];
-            phyto[0] = 1.145 - 0.021 * x - 6.936E-6 * y;
-            phyto[1] = 1.146 + 0.013 * x - 0.064 * y;
-            phyto[2] = 0.804 - 0.002 * x - 0.077 * y;
+            phyto[0] = (1.145 - 0.021 * x - 6.936E-6 * y);
+            phyto[1] = (1.146 + 0.013 * x - 0.064 * y);
+            phyto[2] = (0.804 - 0.002 * x - 0.077 * y);
             double total = phyto.Sum();
 
             return total;
@@ -73,20 +73,23 @@ namespace Madingley
                     if (currentTimestep == 0)
                     {
                         cellEnvironment.Add("Original Temperature", new double[12]);
-                        
+                        cellEnvironment.Add("Original NPP", new double[12]);
+
+
                         for (int m = 0; m < 12; m++)
                         {
                             cellEnvironment["Original Temperature"][m] = cellEnvironment["Temperature"][m];
+                            cellEnvironment["Original NPP"][m] = cellEnvironment["NPP"][m];
                         }
                     }
                     // If the spin-up period has been completed, then increment cell temperature
                     // according to the number of time-steps that have elapsed since the spin-up ended
                     if (currentTimestep >= burninSteps & currentTimestep <= burninSteps + impactSteps )
                     {
-                        double tstep = (currentTimestep - burninSteps) / 12;
-                        cellEnvironment["Temperature"][currentMonth] = cellEnvironment["Temperature"][currentMonth] + (temperatureScenario.Item2/100) * Math.Floor(tstep);
+                        double tstep = 1 + (currentTimestep - burninSteps) / 12;
+                        cellEnvironment["Temperature"][currentMonth] = cellEnvironment["Original Temperature"][currentMonth] + (temperatureScenario.Item2/(impactSteps / 12)) * Math.Floor(tstep);
                         double pnpp = (GetNPP(cellEnvironment["Temperature"][currentMonth], cellEnvironment["no3"][currentMonth]) - GetNPP(cellEnvironment["Original Temperature"][currentMonth], cellEnvironment["no3"][currentMonth])) / GetNPP(cellEnvironment["Temperature"][currentMonth], cellEnvironment["no3"][currentMonth]);
-                        cellEnvironment["NPP"][currentMonth] *= 1 + pnpp;
+                        cellEnvironment["NPP"][currentMonth] = cellEnvironment["Original NPP"][currentMonth]*(1 + pnpp);
                         // cellEnvironment["Temperature"][currentMonth] += gridCellStocks[actingStock].TotalBiomass *
                         //     (Math.Min(5.0, (((currentTimestep - burninSteps) / 12.0) * humanNPPScenario.Item2)));
                     }
@@ -102,7 +105,7 @@ namespace Madingley
                         double no3 = cellEnvironment["no3"][currentMonth];
                         double sst = cellEnvironment["Temperature"][currentMonth];
                         double pNPP = (GetNPP(no3, sst) - GetNPP(no3i, ssti)) / GetNPP(no3i, ssti);
-                        cellEnvironment["NPP"][currentMonth] *= 1+pNPP;
+                        cellEnvironment["NPP"][currentMonth] *= (1+pNPP);
                       }
                 }
                 else if (temperatureScenario.Item1 == "pb")
@@ -110,7 +113,7 @@ namespace Madingley
                     // If the spin-up period (100 years) has been completed, then increment cell temperature
                     // according to the number of time-steps that have elapsed since the spin-up ended, for a period of 100 years until the 
                     // maximum thermal increase is reached
-                    if ((currentTimestep > (1199)) && (currentTimestep < 2400))
+                    if ((currentTimestep > (burninSteps)) && (currentTimestep < burninSteps + impactSteps))
                     {
                           cellEnvironment["Temperature"][currentMonth] += (temperatureScenario.Item2 / 1200) * (currentTimestep - 1199);
                     }

@@ -591,7 +591,7 @@ namespace Madingley
             DataConverter.Array2DToSDS3D(LogAbundanceDensityGridCohorts, "Abundance density", new string[] { "Latitude", "Longitude", "Time step" },
                 (int)currentTimeStep + 1, 0, GridOutput);
             double[,] Temperature = ecosystemModelGrid.GetEnviroGrid("Temperature", currentTimeStep % 12);
-            DataConverter.Array2DToSDS3D(Temperature, "Abundance density", new string[] { "Latitude", "Longitude", "Time step" },
+            DataConverter.Array2DToSDS3D(Temperature, "Temperature", new string[] { "Latitude", "Longitude", "Time step" },
                 (int)currentTimeStep + 1, 0, GridOutput);
 
             // Temporary outputs to check plant model
