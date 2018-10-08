@@ -472,26 +472,61 @@ namespace Madingley
                 {
                     uint latIndex = cellIndices[i][0];
                     uint lonIndex = cellIndices[i][1];
+
+
+                    MetricsGrid["Mean Trophic Level"][latIndex, lonIndex] = Metrics.CalculateMeanTrophicLevelCell(ecosystemModelGrid, cellIndices, i);
+
+                    MetricsGrid["Trophic Evenness"][latIndex, lonIndex] = 0.0;// Metrics.CalculateFunctionalEvennessRao(ecosystemModelGrid, cohortFunctionalGroupDefinitions, cellIndices, i, "trophic index");
+
+
+                    MetricsGrid["Biomass Evenness"][latIndex, lonIndex] = 0.0; // Metrics.CalculateFunctionalEvennessRao(ecosystemModelGrid, cohortFunctionalGroupDefinitions, cellIndices, i, "biomass");
+
+
+
+                    double[] FunctionalDiversity = new double[] { 0.0, 0.0 };// Metrics.CalculateFunctionalDiversity(ecosystemModelGrid, cohortFunctionalGroupDefinitions,
+                                                                             //                                cellIndices, i);
+
+
                     MetricsGrid["Mean Trophic Level"][latIndex, lonIndex] = Metrics.CalculateMeanTrophicLevelCell(ecosystemModelGrid, cellIndices, i);
                     MetricsGrid["Trophic Evenness"][latIndex, lonIndex] = Metrics.CalculateFunctionalEvennessRao(ecosystemModelGrid, cohortFunctionalGroupDefinitions, cellIndices, i, "trophic index");
                     MetricsGrid["Biomass Evenness"][latIndex, lonIndex] = Metrics.CalculateFunctionalEvennessRao(ecosystemModelGrid, cohortFunctionalGroupDefinitions, cellIndices, i, "biomass");
-                    double[] FunctionalDiversity = Metrics.CalculateFunctionalDiversity(ecosystemModelGrid, cohortFunctionalGroupDefinitions,
-                                                                                        cellIndices, i);
+
+
                     // Functional Richness not currently calculated
                     //MetricsGrid["Functional Richness"][latIndex, lonIndex] = FunctionalDiversity[0];
                     MetricsGrid["Rao Functional Evenness"][latIndex, lonIndex] = FunctionalDiversity[1];
-                    MetricsGrid["Biomass Richness"][latIndex, lonIndex] = Metrics.CalculateFunctionalRichness(ecosystemModelGrid, cohortFunctionalGroupDefinitions, cellIndices, i, "Biomass")[0];
-                    MetricsGrid["Min Bodymass"][latIndex, lonIndex] = Metrics.CalculateFunctionalRichness(ecosystemModelGrid, cohortFunctionalGroupDefinitions, cellIndices, i, "Biomass")[1];
-                    MetricsGrid["Max Bodymass"][latIndex, lonIndex] = Metrics.CalculateFunctionalRichness(ecosystemModelGrid, cohortFunctionalGroupDefinitions, cellIndices, i, "Biomass")[2];
-                    MetricsGrid["Trophic Richness"][latIndex, lonIndex] = Metrics.CalculateFunctionalRichness(ecosystemModelGrid, cohortFunctionalGroupDefinitions, cellIndices, i, "Trophic Index")[0];
-                    MetricsGrid["Min Trophic Index"][latIndex, lonIndex] = Metrics.CalculateFunctionalRichness(ecosystemModelGrid, cohortFunctionalGroupDefinitions, cellIndices, i, "Trophic Index")[1];
-                    MetricsGrid["Max Trophic Index"][latIndex, lonIndex] = Metrics.CalculateFunctionalRichness(ecosystemModelGrid, cohortFunctionalGroupDefinitions, cellIndices, i, "Trophic Index")[2];
+
+
+
+
+                    double[] TempArray = Metrics.CalculateFunctionalRichness(ecosystemModelGrid, cohortFunctionalGroupDefinitions, cellIndices, i, "Biomass");
+
+
+                    MetricsGrid["Biomass Richness"][latIndex, lonIndex] = TempArray[0];
+                    MetricsGrid["Min Bodymass"][latIndex, lonIndex] = TempArray[1];
+                    MetricsGrid["Max Bodymass"][latIndex, lonIndex] = TempArray[2];
+
+                    TempArray = Metrics.CalculateFunctionalRichness(ecosystemModelGrid, cohortFunctionalGroupDefinitions, cellIndices, i, "Trophic Index");
+
+
+                    MetricsGrid["Trophic Richness"][latIndex, lonIndex] = TempArray[0];
+                    MetricsGrid["Min Trophic Index"][latIndex, lonIndex] = TempArray[1];
+                    MetricsGrid["Max Trophic Index"][latIndex, lonIndex] = TempArray[2];
 
                     MetricsGrid["Arithmetic Mean Bodymass"][latIndex, lonIndex] = Metrics.CalculateArithmeticCommunityMeanBodyMass(ecosystemModelGrid, cellIndices, i);
+
+
+
                     MetricsGrid["Geometric Mean Bodymass"][latIndex, lonIndex] = Metrics.CalculateGeometricCommunityMeanBodyMass(ecosystemModelGrid, cellIndices, i);
-                    MetricsGrid["Geometric Mean Bodymass"][latIndex, lonIndex] = Metrics.CalculateGeometricCommunityMeanBodyMass(ecosystemModelGrid, cellIndices, i);
-                    MetricsGrid["Ecosystem metabolism per unit biomass"][latIndex, lonIndex] = Metrics.CalculateBiomassWeightedSystemMetabolism(ecosystemModelGrid, cellIndices, i);        
-                }
+
+
+                    // MetricsGrid["Geometric Mean Bodymass"][latIndex, lonIndex] = Metrics.CalculateGeometricCommunityMeanBodyMass(ecosystemModelGrid, cellIndices, i);
+                    MetricsGrid["Ecosystem metabolism per unit biomass"][latIndex, lonIndex] = Metrics.CalculateBiomassWeightedSystemMetabolism(ecosystemModelGrid, cellIndices, i);
+
+
+                    // Output geometric mean body sizes by functional group
+                  
+                    }
             }
             
 
