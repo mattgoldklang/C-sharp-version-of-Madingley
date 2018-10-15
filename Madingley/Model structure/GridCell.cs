@@ -528,6 +528,26 @@ namespace Madingley
         }
 
         /// <summary>
+        /// Seed zooplankton every time step
+        /// </summary>
+        /// <param name="cohortFunctionalGroups">The functional group definitions for cohorts in the model</param>
+        /// <param name="stockFunctionalGroups">The functional group definitions for stocks in the model</param>
+        /// <param name="globalDiagnostics">A list of global diagnostic variables</param>
+        /// <param name="nextCohortID">The ID number to be assigned to the next produced cohort</param>
+        /// <param name="tracking">boolean to indicate if cohorts are to be tracked in this model</param>
+        /// <param name="totalCellTerrestrialCohorts">The total number of cohorts to be seeded in each terrestrial grid cell</param>
+        /// <param name="totalCellMarineCohorts">The total number of cohorts to be seeded in each marine grid cell</param>
+        /// <param name="DrawRandomly">Whether the model is set to use random draws</param>
+        /// <param name="ZeroAbundance">Set this parameter to 'true' if you want to seed the cohorts with zero abundance</param>
+        public void SeedGridCellCohortsAndStocksPerTimeStep(FunctionalGroupDefinitions cohortFunctionalGroups, FunctionalGroupDefinitions stockFunctionalGroups,
+            SortedList<string, double> globalDiagnostics, ref Int64 nextCohortID, Boolean tracking, double totalCellTerrestrialCohorts,
+            double totalCellMarineCohorts, Boolean DrawRandomly, Boolean ZeroAbundance, uint CellNum)
+            {
+            GridCellSeeder.SeedGridCellCohortsPerTimeStep(GridCellCohorts, ref cohortFunctionalGroups, ref _CellEnvironment,
+            globalDiagnostics, ref nextCohortID, tracking, totalCellTerrestrialCohorts, totalCellMarineCohorts, DrawRandomly, ZeroAbundance, CellNum);
+        }
+
+        /// <summary>
         /// Gets the value in this grid cell of a specified environmental variable at a specified time interval
         /// </summary>
         /// <param name="variableName">The name of the environmental layer from which to extract the value</param>
